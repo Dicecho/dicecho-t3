@@ -1,3 +1,5 @@
+import type { languages } from "@/lib/i18n/settings"
+
 export enum LanguageCodes {
   AF = 'af',
   SQ = 'sq',

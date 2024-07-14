@@ -2,10 +2,8 @@
 import { Globe } from "lucide-react";
 import { SelectContent, SelectItem } from "@/components/ui/select";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { useRouter, usePathname, useParams } from "next/navigation";
-import { languages } from '@/lib/i18n/settings'
-
-const LANGUAGE_PREFIXES = languages.map(l => `/${l}`)
+import { useRouter, useParams } from "next/navigation";
+import { usePurePathname } from '@/hooks/usePurePathname'
 
 const LanguageKey = {
   en: "en",
@@ -20,20 +18,12 @@ const LanguageLabel = {
 };
 
 export const LanguageChanger = () => {
-  const pathname = usePathname();
+  const purePathname = usePurePathname();
   const router = useRouter();
   const params = useParams<{ lng: string }>();
 
   const changeLanguage = (locale: string) => {
-    let path = pathname
-
-    LANGUAGE_PREFIXES.forEach((prefix) => {
-      if (path.startsWith(prefix)) {
-        path = path.replace(prefix, '')
-      }
-    })
-
-    router.push(`/${locale}${path}`)
+    router.push(`/${locale}${purePathname}`)
   };
 
   return (

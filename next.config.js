@@ -5,6 +5,19 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.dicecho.com",
+      },
+    ],
+  },
+  experimental: {
+    scrollRestoration: true,
+  },
+};
 
 export default config;

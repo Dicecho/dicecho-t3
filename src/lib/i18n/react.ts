@@ -10,6 +10,7 @@ import { useCookies } from "react-cookie";
 import resourcesToBackend from "i18next-resources-to-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { getOptions, languages, cookieName, defaultNS } from "./settings";
+import { useParams } from "next/navigation";
 
 const runsOnServerSide = typeof window === "undefined";
 
@@ -32,10 +33,12 @@ i18next
   });
 
 export function useTranslation(
-  lng: string,
+  _lng?: string,
   ns: string | string[] = defaultNS,
   options: ReactOptions = {},
 ) {
+  const params = useParams<{ lng: string }>();
+  const lng = _lng ?? params.lng;
   const [cookies, setCookie] = useCookies([cookieName]);
   const ret = useTranslationOrg(ns, options);
   const { i18n } = ret;

@@ -27,22 +27,37 @@ import { getServerAuthSession } from "@/server/auth";
 import { useTranslation } from "@/lib/i18n";
 
 export type HeaderProps = ComponentProps<"div"> & {
-  lng: string
+  lng: string;
 };
 
 export const Header: FC<HeaderProps> = async (props) => {
   const session = await getServerAuthSession();
-  const { t } = await useTranslation(props.lng)
+  const { t } = await useTranslation(props.lng);
+
+  const menus = [
+    {
+      title: t("scenario"),
+      link: "/scenario",
+    },
+    {
+      title: t("forum"),
+      link: "/forum",
+    },
+    {
+      title: t("replay"),
+      link: "/replay",
+    },
+  ];
 
   return (
     <div
       {...props}
-      className={clsx("bg-base-200 sticky left-0 right-0 top-0 z-10 shadow-xl")}
+      className={clsx("sticky left-0 right-0 top-0 z-10 bg-base-200 shadow-xl")}
     >
       <div className="container mx-auto">
         <div className="flex min-h-16 items-center">
           <div className="w-1/2 justify-start">
-            <Link href="/" passHref>
+            <Link href={`/${props.lng}`} passHref>
               <Img src={logo.src} alt="diceho logo" width={32} height={32} />
             </Link>
           </div>
@@ -50,45 +65,25 @@ export const Header: FC<HeaderProps> = async (props) => {
           <div className="hidden shrink-0 md:flex">
             <NavigationMenu>
               <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link href="/scenario" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={clsx(
-                        navigationMenuTriggerStyle(),
-                        "capitalize",
-                      )}
+                {menus.map((menu) => (
+                  <NavigationMenuItem key={menu.link}>
+                    <Link
+                      href={`/${props.lng}${menu.link}`}
+                      legacyBehavior
+                      passHref
                     >
-                      <BookOpenText size={16} />
-                      {t("scenario")}
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link href="/forum" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={clsx(
-                        navigationMenuTriggerStyle(),
-                        "capitalize",
-                      )}
-                    >
-                      <MessageCircleMore size={16} />
-                      {t("forum")}
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link href="/replay" legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={clsx(
-                        navigationMenuTriggerStyle(),
-                        "capitalize",
-                      )}
-                    >
-                      <Videotape size={16} />
-                      {t("replay")}
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
+                      <NavigationMenuLink
+                        className={clsx(
+                          navigationMenuTriggerStyle(),
+                          "capitalize",
+                        )}
+                      >
+                        <BookOpenText size={16} />
+                        {menu.title}
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                ))}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
@@ -102,8 +97,11 @@ export const Header: FC<HeaderProps> = async (props) => {
             {session ? (
               <Popover>
                 <PopoverTrigger>
-                  <Avatar className="hover:shadow-lg transition-all">
-                    <AvatarImage className="object-cover" src={session.user.avatarUrl} />
+                  <Avatar className="transition-all hover:shadow-lg">
+                    <AvatarImage
+                      className="object-cover"
+                      src={session.user.avatarUrl}
+                    />
                     <AvatarFallback>{session.user.nickName}</AvatarFallback>
                   </Avatar>
                 </PopoverTrigger>

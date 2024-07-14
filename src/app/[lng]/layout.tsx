@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "@/styles/components.css";
 
 import { GeistSans } from "geist/font/sans";
 import { dir } from 'i18next'
