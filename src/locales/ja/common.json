@@ -1,0 +1,20 @@
+{
+  "scenario": "シナリオ",
+  "forum": "フォーラム",
+  "replay": "リプレイ",
+  "sign_in": "登録",
+  "sign_out": "退出",
+  "profile": "個人情報",
+  "notification": "通知",
+  "collection": "集合",
+  "settings": "設定",
+  "search": "検索",
+  "search_result": "<loading></loading>{{count}} 件の検索結果",
+  "filter": "濾過器",
+  "reset_filter": "リセット",
+  "random_scenario": "ランダム",
+  "refresh": "更新",
+  "load_more": "ロードモア",
+  "scenario_publish": "シナリオ投稿",
+  "commit_scenario_page": "コミットシナリオのページ"
+}

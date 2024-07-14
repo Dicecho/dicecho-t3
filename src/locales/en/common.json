@@ -1,0 +1,20 @@
+{
+  "scenario": "scenario",
+  "forum": "forum",
+  "replay": "replay",
+  "sign_in": "sign in",
+  "sign_out": "sign out",
+  "profile": "profile",
+  "notification": "notification",
+  "collection": "collection",
+  "settings": "settings",
+  "search": "search",
+  "search_result": "<loading></loading>{{count}} results found",
+  "filter": "filter",
+  "reset_filter": "reset filter",
+  "random_scenario": "random",
+  "refresh": "refresh",
+  "load_more": "load more",
+  "scenario_publish": "scenario publish",
+  "commit_scenario_page": "commit scenario page"
+}

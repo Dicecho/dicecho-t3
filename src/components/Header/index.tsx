@@ -1,12 +1,12 @@
 import clsx from "clsx";
-import type { ComponentProps, FC } from "react";
+import { type ComponentProps, type FC } from "react";
 // import { useTranslation } from "next-i18next";
 import { BookOpenText, MessageCircleMore, Videotape } from "lucide-react";
 import Link from "next/link";
 import Img from "next/image";
 import logo from "./logo.png";
 // import { ThemeChanger } from "@/components/theme/ThemeChanger";
-// import { LanguageChanger } from "@/components/i18n/LanguageChanger";
+import { LanguageChanger } from "./LanguageChanger";
 import { UserBox } from "./UserBox";
 import {
   NavigationMenu,
@@ -24,11 +24,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/Auth/AuthDialog";
 import { getServerAuthSession } from "@/server/auth";
+import { useTranslation } from "@/lib/i18n";
 
-export type HeaderProps = ComponentProps<"div">;
+export type HeaderProps = ComponentProps<"div"> & {
+  lng: string
+};
+
 export const Header: FC<HeaderProps> = async (props) => {
   const session = await getServerAuthSession();
-  // const [t] = useTranslation(["common"]);
+  const { t } = await useTranslation(props.lng)
 
   return (
     <div
@@ -55,8 +59,7 @@ export const Header: FC<HeaderProps> = async (props) => {
                       )}
                     >
                       <BookOpenText size={16} />
-                      scenario
-                      {/* {t("scenario")} */}
+                      {t("scenario")}
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -69,8 +72,7 @@ export const Header: FC<HeaderProps> = async (props) => {
                       )}
                     >
                       <MessageCircleMore size={16} />
-                      forum
-                      {/* {t("forum")} */}
+                      {t("forum")}
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -83,8 +85,7 @@ export const Header: FC<HeaderProps> = async (props) => {
                       )}
                     >
                       <Videotape size={16} />
-                      replay
-                      {/* {t("replay")} */}
+                      {t("replay")}
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -96,8 +97,8 @@ export const Header: FC<HeaderProps> = async (props) => {
         <div className="navbar-center">
         </div> */}
           <div className="flex w-1/2 items-center justify-end gap-4 capitalize">
-            {/* <LanguageChanger />
-            <ThemeChanger /> */}
+            <LanguageChanger />
+            {/* <ThemeChanger /> */}
             {session ? (
               <Popover>
                 <PopoverTrigger>

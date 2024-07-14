@@ -1,0 +1,20 @@
+{
+  "scenario": "模组",
+  "forum": "讨论区",
+  "replay": "视频",
+  "sign_in": "登录",
+  "sign_out": "登出",
+  "profile": "个人中心",
+  "notification": "消息中心",
+  "collection": "我的收藏",
+  "settings": "设置",
+  "search": "搜索",
+  "search_result": "找到 <loading></loading>{{count}} 条结果",
+  "filter": "筛选",
+  "reset_filter": "重置筛选",
+  "random_scenario": "随便看看",
+  "refresh": "刷新",
+  "load_more": "加载更多",
+  "scenario_publish": "模组投稿",
+  "commit_scenario_page": "添加讨论词条"
+}
