@@ -2,18 +2,12 @@
 import React, { useEffect } from "react";
 import { ModSortKey, SortOrder } from "@dicecho/types";
 import { type LanguageCodes, LanguageCodeMap } from "@/utils/language";
-// import { api } from "@/utils/api";
-// import useSWRImmutable from "swr/immutable";
 import { ArrowUpNarrowWide, ArrowDownNarrowWide } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// import { useTranslation } from "next-i18next";
-
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -31,10 +25,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useQuery } from "@tanstack/react-query";
-import { useDicecho } from "@/hooks/useDicecho";
 import { useTranslation } from "@/lib/i18n/react";
-import { useParams } from "next/navigation";
 
 interface ModFilterConfig {
   rules: Array<{ _id: string; count: number }>;
@@ -91,7 +82,7 @@ const formSchema = z.object({
 
 export type FormData = z.infer<typeof formSchema>;
 
-interface ScenarioFilterProps {
+export interface ScenarioFilterProps {
   config: ModFilterConfig;
   initialFilter?: Partial<FormData>;
   onChange?: (filter: FormData) => void;

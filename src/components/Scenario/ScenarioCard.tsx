@@ -1,15 +1,18 @@
+'use client'
 import React from "react";
 import type { IModDto } from "@dicecho/types";
 import { RandomAvatar } from "react-random-avatars";
 import { Rate } from "@/components/ui/rate";
 import clsx from "clsx";
 import Image from "next/image";
+import { useTranslation } from "@/lib/i18n/react";
 
 interface ScenarioCardProps {
   scenario: IModDto;
 }
 
 export function ScenarioCard({ scenario }: ScenarioCardProps) {
+  const { t } = useTranslation();
 
   return (
     <div className="card group">
@@ -46,8 +49,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
 
       <div className="w-full flex items-center">
         {scenario.rateAvg === 0 ? (
-          // <div className="text-sm opacity-60">{t('no_review_yet')}</div>
-          <></>
+          <div className="text-sm opacity-60">{t('no_review_yet')}</div>
         ) : (
           <>
             <Rate value={scenario.rateAvg} size="sm" allowHalf readOnly />

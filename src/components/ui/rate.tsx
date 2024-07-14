@@ -40,6 +40,7 @@ export const Rate: FC<RateProps> = ({
       {allowClear && (
         <input
           readOnly
+          disabled={readOnly}
           type="radio"
           name={name}
           className="rating-hidden hidden"
@@ -49,6 +50,7 @@ export const Rate: FC<RateProps> = ({
       {new Array(itemCount).fill("").map((_, index) => (
         <input
           key={index}
+          disabled={readOnly}
           readOnly={readOnly}
           checked={score === index + 1}
           type="radio"

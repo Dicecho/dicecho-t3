@@ -1,68 +1,19 @@
-import { IModListQuery, ModSortKey } from "@dicecho/types";
-import { useState } from "react";
+import type { IModListQuery } from "@dicecho/types";
 import { Upload, Plus, Search } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
-import {
-  ScenarioFilter,
-  FormData as ScenarioFilterData,
-} from "@/components/Scenario/ScenarioFilter";
+import { queryToFormData } from "@/components/Scenario/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScenarioList } from "@/components/Scenario/ScenarioList";
-import { omit } from "lodash";
+import { Filter as ScenarioFilter } from "./Filter";
 import qs from "qs";
 import { getDicechoServerApi } from "@/server/dicecho";
-
-// export const getServerSideProps: GetServerSideProps<PageProps> = async ({
-//   query,
-//   locale,
-// }) => ({
-//   props: {
-//     initialQuery: urlToQuery(qs.stringify(query)),
-//     ...(await serverSideTranslations(locale ?? "en", ["common", "scenario"])),
-//   },
-// });
+import { redirect } from "next/navigation";
 
 const DEFAULT_QUERY: Partial<IModListQuery> = {
   sort: { lastRateAt: -1 },
 };
-
-// function queryToFormData(query: Partial<IModListQuery>): ScenarioFilterData {
-//   return {
-//     rule: query.filter?.moduleRule,
-//     language: query.languages?.[0],
-//     sortKey: Object.keys(query.sort ?? { lastRateAt: "-1" })[0] as ModSortKey,
-//     sortOrder: Object.values(query.sort ?? { lastRateAt: "-1" })[0],
-//   };
-// }
-
-// function formDataToQuery(data: ScenarioFilterData): Partial<IModListQuery> {
-//   const query: Partial<IModListQuery> = {};
-//   if (data.rule) {
-//     Object.assign(query, {
-//       filter: {
-//         moduleRule: data.rule,
-//       },
-//     });
-//   }
-
-//   if (data.language) {
-//     Object.assign(query, {
-//       languages: [data.language],
-//     });
-//   }
-
-//   if (data.sortKey && data.sortOrder) {
-//     Object.assign(query, {
-//       sort: {
-//         [data.sortKey]: data.sortOrder,
-//       },
-//     });
-//   }
-
-//   return query;
-// }
 
 function urlToQuery(searchQuery: string): Partial<IModListQuery> {
   return {
@@ -89,54 +40,48 @@ const ScenarioPage = async ({
   const api = await getDicechoServerApi();
   const config = await api.module.config();
   const scenarios = await api.module.list(query);
-  // const [query, setQuery] = useState<Partial<IModListQuery>>(initialQuery);
-  // const [searchText, setSearchText] = useState("");
 
-  // const handleQueryChange = (newQuery: Partial<IModListQuery>) => {
-  //   const query = omit(newQuery, "page");
-  //   const newUrlQuery = queryToUrl(query);
-  //   router.replace({ query: newUrlQuery });
+  const handleSearch = async (data: FormData) => {
+    "use server";
+    const keyword = data.get("keyword")?.toString();
+    if (keyword && keyword !== "") {
+      const newQuery: Partial<IModListQuery> = {
+        ...query,
+        keyword,
+      };
 
-  //   setQuery(query);
-  // };
-
-  const handleSearch = () => {
-    console.log("search todo");
-    // handleQueryChange({
-    //   ...query,
-    //   keyword: searchText,
-    // });
+      redirect(`/${lng}/scenario?${queryToUrl(newQuery)}`);
+    }
   };
 
-  const handleRandom = () => {
-    console.log("random todo");
+  const handleRandom = async () => {
+    "use server";
+    const api = await getDicechoServerApi();
+    const scenario = await api.module.random(query);
 
-    // api.module.random().then((res) => {
-    //   router.push(`/scenario/${res._id}`);
-    // });
+    redirect(`/${lng}/scenario/${scenario._id}`);
   };
 
   return (
     <div className="container mx-auto pt-4">
       <div className="grid grid-cols-6 gap-8">
         <div className="col-span-6 md:col-span-4">
-          <div className="join flex w-full items-center">
+          <form action={handleSearch} className="join flex w-full items-center">
             <Input
               className="join-item"
               placeholder={t("scenario_search_placeholder", { ns: "scenario" })}
-              // value={searchText}
-              // onChange={(e) => setSearchText(e.currentTarget.value)}
-              // onEnter={handleSearch}
+              name="keyword"
+              defaultValue={query.keyword}
             />
             <Button
               className="join-item capitalize"
               color="primary"
-              // onClick={handleSearch}
+              type="submit"
             >
               <Search size={16} />
               {t("search")}
             </Button>
-          </div>
+          </form>
           <ScenarioList initialData={scenarios} query={query} />
         </div>
         <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
@@ -157,16 +102,17 @@ const ScenarioPage = async ({
             <CardContent>
               <ScenarioFilter
                 config={config}
-                // initialFilter={queryToFormData(query)}
-                // onChange={(data) => handleQueryChange(formDataToQuery(data))}
+                initialFilter={queryToFormData(query)}
               />
-              <Button
-                className="mt-4 w-full capitalize"
-                // onClick={() => handleRandom()}
-                variant="outline"
-              >
-                {t("random_scenario")}
-              </Button>
+              <form action={handleRandom}>
+                <Button
+                  className="mt-4 w-full capitalize"
+                  variant="outline"
+                  type="submit"
+                >
+                  {t("random_scenario")}
+                </Button>
+              </form>
             </CardContent>
           </Card>
         </div>

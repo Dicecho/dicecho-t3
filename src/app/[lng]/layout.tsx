@@ -30,7 +30,7 @@ export default function RootLayout({
   params: { lng: string };
 }) {
   return (
-    <html lang={lng} dir={dir(lng)} className={`${GeistSans.variable}`}>
+    <html lang={lng} dir={dir(lng)} data-theme='light' className={`${GeistSans.variable}`}>
         <TRPCReactProvider>
           <AppLayout>
             <body className="bg-custom-gradient min-h-[100vh] bg-no-repeat">

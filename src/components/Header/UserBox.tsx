@@ -36,7 +36,7 @@ export const UserBox: React.FC<UserBoxProps> = ({ user }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="border-b border-slate-100 py-4 text-center text-slate-400">
+      <div className="border-b border-slate-100 py-4 text-center text-muted-foreground">
         {user.nickName}
       </div>
 
