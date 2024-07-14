@@ -1,4 +1,3 @@
-"use client";
 import { useState, useContext, createContext, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { env } from "@/env";

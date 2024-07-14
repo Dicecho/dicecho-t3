@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "@/trpc/react";
+import { Header } from '@/components/Header' 
+import { Toaster } from "@/components/ui/toaster";
 import { Layout as AppLayout } from "@/components/Layout";
 
 export const metadata = {
@@ -18,11 +20,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <body>
         <TRPCReactProvider>
-          <AppLayout>{children}</AppLayout>
+          <AppLayout>
+            <body className="bg-custom-gradient min-h-[100vh] bg-no-repeat">
+              <Header />
+              {children}
+              <Toaster />
+            </body>
+          </AppLayout>
         </TRPCReactProvider>
-      </body>
     </html>
   );
 }
