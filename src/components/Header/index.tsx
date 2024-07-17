@@ -3,8 +3,7 @@ import { type ComponentProps, type FC } from "react";
 // import { useTranslation } from "next-i18next";
 import { BookOpenText, MessageCircleMore, Videotape } from "lucide-react";
 import Link from "next/link";
-import Img from "next/image";
-import logo from "./logo.png";
+import DicechoLogo from './dicecho.svg';
 // import { ThemeChanger } from "@/components/theme/ThemeChanger";
 import { LanguageChanger } from "./LanguageChanger";
 import { UserBox } from "./UserBox";
@@ -52,13 +51,13 @@ export const Header: FC<HeaderProps> = async (props) => {
   return (
     <div
       {...props}
-      className={clsx("sticky left-0 right-0 top-0 z-10 bg-base-200 shadow-xl")}
+      className={clsx("sticky left-0 right-0 top-0 z-10 bg-base-200 shadow-xl max-md:hidden")}
     >
       <div className="container mx-auto">
         <div className="flex min-h-16 items-center">
           <div className="w-1/2 justify-start">
             <Link href={`/${props.lng}`} passHref>
-              <Img src={logo.src} alt="diceho logo" width={32} height={32} />
+              <DicechoLogo className="w-8 text-[#9396f7]" width={32} height={32} />
             </Link>
           </div>
 
@@ -116,19 +115,14 @@ export const Header: FC<HeaderProps> = async (props) => {
               </Popover>
             ) : (
               <AuthDialog>
-                <Button size="sm" color="primary">
-                  sign_in
-                  {/* {t("sign_in")} */}
+                <Button className="capitalize" size="sm" color="primary">
+                  {t("sign_in")}
                 </Button>
               </AuthDialog>
             )}
           </div>
         </div>
       </div>
-      {/* <AccountModal
-        open={accountModalOpen}
-        dismiss={() => setAccountModalOpen(false)}
-      /> */}
     </div>
   );
 };

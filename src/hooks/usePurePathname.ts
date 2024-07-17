@@ -1,19 +1,10 @@
 'use client';
 
 import { usePathname } from "next/navigation";
-import { languages } from '@/lib/i18n/settings'
-
-const LANGUAGE_PREFIXES = languages.map(l => `/${l}`)
+import { removeLngFromPathname } from '@/lib/i18n/utils'
 
 export const usePurePathname = () => {
   const pathname = usePathname()
-  let purePath = pathname
 
-  LANGUAGE_PREFIXES.forEach((prefix) => {
-    if (purePath.startsWith(prefix)) {
-      purePath = purePath.replace(prefix, '')
-    }
-  })
-
-  return purePath;
+  return removeLngFromPathname(pathname);
 }

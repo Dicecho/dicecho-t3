@@ -10,6 +10,7 @@ import type {
   PaginatedResponse,
   IUserDto,
   Response,
+  ModFilterConfig,
 } from "@dicecho/types";
 import {
   APIClient,
@@ -20,12 +21,6 @@ import { jwtDecode } from "jwt-decode";
 import * as qs from "qs";
 
 type Empty = Record<string, never>;
-
-interface ModFilterConfig {
-  rules: Array<{ _id: string; count: number }>;
-  origins: Array<{ _id: string; count: number }>;
-  languages: Array<{ _id: string; count: number }>;
-}
 
 export class DicechoApi extends APIClient {
   private refreshToken?: string;

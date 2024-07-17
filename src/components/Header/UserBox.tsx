@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import type { ComponentProps, PropsWithChildren } from "react";
-import Link from "next/link";
 import { User, Bell, Star, Settings, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import clsx from "clsx";
 import { useTranslation } from "@/lib/i18n/react";
 import { useParams } from "next/navigation";
+import { LinkWithLng } from "../Link";
 
 interface UserBoxProps {
   user: { id: string; nickName: string };
@@ -31,8 +31,31 @@ const UserBoxItem: React.FC<PropsWithChildren<ComponentProps<"div">>> = ({
 };
 
 export const UserBox: React.FC<UserBoxProps> = ({ user }) => {
-  const { lng } = useParams<{ lng: string }>()
+  const { lng } = useParams<{ lng: string }>();
   const { t } = useTranslation(lng);
+
+  const menus = [
+    {
+      icon: User,
+      label: t("profile"),
+      link: `/account/${user.id}`,
+    },
+    {
+      icon: Bell,
+      label: t("notification"),
+      link: `/account/notification`,
+    },
+    {
+      icon: Star,
+      label: t("collection"),
+      link: `/account/${user.id}/collection`,
+    },
+    {
+      icon: Settings,
+      label: t("settings"),
+      link: `/settings`,
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-2">
@@ -40,37 +63,18 @@ export const UserBox: React.FC<UserBoxProps> = ({ user }) => {
         {user.nickName}
       </div>
 
-      <Link href={`/account/${user.id}`}>
-        <UserBoxItem>
-          <User size={16} />
-          {t('profile')}
-        </UserBoxItem>
-      </Link>
-
-      <Link href={`/account/notification`}>
-        <UserBoxItem>
-          <Bell size={16} />
-          {t('notification')}
-        </UserBoxItem>
-      </Link>
-
-      <Link href={`/account/${user.id}/collection`} className="custom-link">
-        <UserBoxItem>
-          <Star size={16} />
-          {t('collection')}
-        </UserBoxItem>
-      </Link>
-
-      <Link href={`/setting`} className="custom-link">
-        <UserBoxItem>
-          <Settings size={16} />
-          {t('settings')}
-        </UserBoxItem>
-      </Link>
+      {menus.map((menu) => (
+        <LinkWithLng href={menu.link} key={menu.link}>
+          <UserBoxItem>
+            <menu.icon size={16} />
+            {menu.label}
+          </UserBoxItem>
+        </LinkWithLng>
+      ))}
 
       <UserBoxItem className="hover:text-destructive" onClick={() => signOut()}>
         <LogOut size={16} />
-        {t('sign_out')}
+        {t("sign_out")}
       </UserBoxItem>
     </div>
   );

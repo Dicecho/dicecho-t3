@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 import type { IModDto } from "@dicecho/types";
-import { RandomAvatar } from "react-random-avatars";
+import { MinidenticonImg } from '@/components/MinidenticonImg'
 import { Rate } from "@/components/ui/rate";
 import clsx from "clsx";
 import Image from "next/image";
@@ -38,7 +38,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
                 alt={scenario.author.nickName}
               />
             ) : (
-              <RandomAvatar name={scenario.author.nickName} size={16} />
+              <MinidenticonImg username={scenario.author.nickName} className="w-4 h-4" />
             )}
           </div>
         </div>

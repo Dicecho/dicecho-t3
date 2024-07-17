@@ -6,22 +6,22 @@ import { Button } from "./button";
 import { cn } from "@/lib/utils";
 
 const SelectContext = React.createContext<{
-  onValueChange?: (value: any) => void;
+  onValueChange?: (value: string) => void;
 }>({});
 
-// const Select = SelectPrimitive.Root;
 const Select = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> & {
-    allowClear?: boolean;
-  }
->(({ children, allowClear, ...props }, _) => {
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
+>(({ children, onValueChange, value, ...props }, _) => {
+  const [_value, _setValue] = React.useState(value);
+  const _onValueChange = (v: string) => _setValue(v);
+
   return (
-    <SelectPrimitive.Root {...props}>
-      <SelectContext.Provider value={{ onValueChange: props.onValueChange }}>
+    <SelectContext.Provider value={{ onValueChange: onValueChange ?? _onValueChange }}>
+      <SelectPrimitive.Root value={onValueChange ? value : _value} onValueChange={onValueChange ?? _onValueChange} {...props}>
         {children}
-      </SelectContext.Provider>
-    </SelectPrimitive.Root>
+      </SelectPrimitive.Root>
+    </SelectContext.Provider>
   );
 });
 Select.displayName = SelectPrimitive.Root.displayName;
@@ -39,13 +39,13 @@ const SelectTrigger = React.forwardRef<
   const { onValueChange = () => {} } = React.useContext(SelectContext);
 
   return (
-    <div className={cn('w-full', { join: allowClear })}>
+    <div className={cn("w-full", { join: allowClear })}>
       <SelectPrimitive.Trigger
         ref={ref}
         className={cn(
-          "flex h-10 w-full items-center justify-between text-start rounded-md border-box bg-background px-3 py-2 text-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+          "border-box flex h-10 w-full items-center justify-between rounded-md bg-muted px-3 py-2 text-start text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground [&>span]:line-clamp-1",
           { "join-item pr-2": allowClear },
-          className
+          className,
         )}
         {...props}
       >
@@ -58,11 +58,11 @@ const SelectTrigger = React.forwardRef<
       {allowClear && (
         <Button
           type="button"
-          className="join-item border-l-0 px-2 border-box"
+          className="join-item border-box border-l-0 bg-muted px-2"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            onValueChange("")
+            onValueChange('');
           }}
         >
           <XCircle className="opacity-50" size={16} />
@@ -81,7 +81,7 @@ const SelectScrollUpButton = React.forwardRef<
     ref={ref}
     className={cn(
       "flex cursor-default items-center justify-center py-1",
-      className
+      className,
     )}
     {...props}
   >
@@ -98,7 +98,7 @@ const SelectScrollDownButton = React.forwardRef<
     ref={ref}
     className={cn(
       "flex cursor-default items-center justify-center py-1",
-      className
+      className,
     )}
     {...props}
   >
@@ -116,11 +116,11 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-md border-box bg-base-200 text-foreground shadow-2xl",
+        "border-box relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-md bg-base-200 text-foreground shadow-2xl",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
-        className
+        className,
       )}
       position={position}
       {...props}
@@ -130,7 +130,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           "p-1",
           position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]",
         )}
       >
         {children}
@@ -161,7 +161,7 @@ const SelectItem = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-      className
+      className,
     )}
     {...props}
   >

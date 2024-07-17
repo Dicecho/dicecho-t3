@@ -2,6 +2,9 @@ import type { IModListQuery } from "@dicecho/types";
 import { Upload, Plus, Search } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
 import { queryToFormData } from "@/components/Scenario/utils";
+import { MobileFooter } from "@/components/Footer";
+import { MobileHeader } from "@/components/Header/MobileHeader";
+import { HeaderMenu } from "@/components/Header/HeaderMenu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,6 +66,10 @@ const ScenarioPage = async ({
   };
 
   return (
+    <>
+    <MobileHeader>
+      <HeaderMenu />
+    </MobileHeader>
     <div className="container mx-auto pt-4">
       <div className="grid grid-cols-6 gap-8">
         <div className="col-span-6 md:col-span-4">
@@ -118,6 +125,8 @@ const ScenarioPage = async ({
         </div>
       </div>
     </div>
+    <MobileFooter />
+    </>
   );
 };
 

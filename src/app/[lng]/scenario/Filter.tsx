@@ -23,7 +23,7 @@ export const Filter = ({
   const router = useRouter();
   const { lng } = useParams<{ lng: string }>();
   const handleQueryChange = (query: Partial<IModListQuery>) => {
-    router.push(`/${lng}/scenario?${queryToUrl(query)}`);
+    router.replace(`/${lng}/scenario?${queryToUrl(query)}`);
   };
 
   return (

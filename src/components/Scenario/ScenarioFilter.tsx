@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { ModSortKey, SortOrder } from "@dicecho/types";
+import { ModSortKey, SortOrder, type ModFilterConfig } from "@dicecho/types";
 import { type LanguageCodes, LanguageCodeMap } from "@/utils/language";
 import { ArrowUpNarrowWide, ArrowDownNarrowWide } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,27 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useTranslation } from "@/lib/i18n/react";
-
-interface ModFilterConfig {
-  rules: Array<{ _id: string; count: number }>;
-  origins: Array<{ _id: string; count: number }>;
-  languages: Array<{ _id: string; count: number }>;
-}
 
 const SortKeys = [
   ModSortKey.RELEASE_DATE,
@@ -192,13 +182,13 @@ export function ScenarioFilter({
             name="sortOrder"
             render={({ field }) => (
               <Button
-                className="join-item px-2 border-box"
+                className="join-item border-box px-2 bg-muted"
                 type="button"
                 onClick={() => {
                   field.onChange(
                     field.value?.toString() === SortOrder.DESC.toString()
                       ? SortOrder.ASC
-                      : SortOrder.DESC
+                      : SortOrder.DESC,
                   );
                 }}
               >
@@ -215,7 +205,7 @@ export function ScenarioFilter({
           className="w-full capitalize"
           color="destructive"
           type="button"
-          variant='outline'
+          variant="outline"
           onClick={() =>
             form.reset({
               rule: "",

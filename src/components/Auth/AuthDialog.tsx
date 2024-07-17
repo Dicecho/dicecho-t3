@@ -1,51 +1,43 @@
 "use client";
 import {
   Dialog,
-  DialogProps,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
+  type DialogProps,
+  DialogContent,
+  DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { signIn } from "next-auth/react"
-import { SigninForm } from './SigninForm';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { signIn } from "next-auth/react";
+import { SigninForm } from "./SigninForm";
 
 import type { FC } from "react";
 import { Button } from "../ui/button";
-// import { useAccount } from "@/hooks/useAccount";
+import { useTranslation } from "@/lib/i18n/react";
 
-interface AuthDialogProps extends DialogProps {}
+export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
+  const { t } = useTranslation();
 
-export const AuthDialog: FC<AuthDialogProps> = ({ children, ...props }) => {
-  // const { signByLocal } = useAccount();
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          {/* <DialogTitle>Are you absolutely sure?</DialogTitle> */}
-          {/* <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription> */}
+          <DialogTitle>{t("sign_in_to_dicecho")}</DialogTitle>
 
           <Tabs defaultValue="signin">
             <TabsList>
-              <TabsTrigger value="signin">Sign in</TabsTrigger>
-              <TabsTrigger value="signup">Sign up</TabsTrigger>
+              <TabsTrigger value="signin" className="capitalize">{t("sign_in")}</TabsTrigger>
+              <TabsTrigger value="signup" className="capitalize">{t("sign_up")}</TabsTrigger>
             </TabsList>
             <TabsContent value="signin">
-              <SigninForm onSubmit={(d) => signIn('credentials', d)}>
-                <Button className="w-full" type="submit" color='primary'>
-                  登录
+              <SigninForm onSubmit={(d) => signIn("credentials", d)}>
+                <Button className="w-full" type="submit" color="primary">
+                  {t("sign_in")}
                 </Button>
               </SigninForm>
             </TabsContent>
-            <TabsContent value="signup">
-              Change your password here.
-            </TabsContent>
+            <TabsContent value="signup">working...</TabsContent>
           </Tabs>
         </DialogHeader>
       </DialogContent>

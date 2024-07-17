@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type UseFormProps } from "react-hook-form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "@/lib/i18n/react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -26,6 +27,7 @@ interface SigninFormProps
 }
 
 export function SigninForm({ onSubmit, children, ...props }: SigninFormProps) {
+  const { t } = useTranslation();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     ...props,
@@ -39,7 +41,7 @@ export function SigninForm({ onSubmit, children, ...props }: SigninFormProps) {
           name="email"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="capitalize">{t('email')}</FormLabel>
               <FormControl>
                 <Input
                   color={fieldState.invalid ? "destructive" : "default"}
@@ -56,11 +58,12 @@ export function SigninForm({ onSubmit, children, ...props }: SigninFormProps) {
           name="password"
           render={({ field, fieldState }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="capitalize">{t('password')}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
                   color={fieldState.invalid ? "destructive" : "default"}
+                  placeholder="*******"
                   {...field}
                 />
               </FormControl>
