@@ -6,16 +6,15 @@ import { UserAvatar } from "@/components/User/Avatar";
 import dayjs from "dayjs";
 import { RateInfo } from "@/components/Scenario/RateInfo";
 import { Card } from "@/components/ui/card";
-// import { Album } from "@/components/Album";
+import { Album } from "@/components/Album";
 import { Trans } from "react-i18next/TransWithoutContext";
 import { StarIcon, HeartIcon, BookmarkPlusIcon, LinkIcon } from "lucide-react";
 import type { ComponentProps, FC, PropsWithChildren } from "react";
 import clsx from "clsx";
 import { LanguageCodes, LanguageCodeMap } from "@/utils/language";
 import Link from "next/link";
-import { MobileHeader } from "@/components/Header/MobileHeader";
+import { ScenarioDetailHeader } from './header'
 import { HeaderBack } from "@/components/Header/HeaderBack";
-
 
 const InfoItem: FC<
   PropsWithChildren<ComponentProps<"div"> & { title: string }>
@@ -133,9 +132,7 @@ const ScenarioDetailPage = async ({
 
   return (
     <>
-      <MobileHeader className="bg-transparent fixed shadow-none">
-        <HeaderBack className="text-white"/>
-      </MobileHeader>
+      <ScenarioDetailHeader title={scenario.title} />
       <div className="md:container">
         <div
           className="relative z-0 h-[280px] w-full bg-cover bg-center bg-no-repeat brightness-75 md:hidden"
@@ -208,11 +205,11 @@ const ScenarioDetailPage = async ({
 
         <div className="grid grid-cols-6 gap-4">
           <div className="col-span-6 md:col-span-4">
-            {/* {scenario.imageUrls.length > 0 && (
-            <Card className="p-4 relative w-full mt-4">
-              <Album imageUrls={scenario.imageUrls} />
-            </Card>
-          )} */}
+            {scenario.imageUrls.length > 0 && (
+              <Card className="relative mt-4 w-full p-4">
+                <Album imageUrls={scenario.imageUrls} />
+              </Card>
+            )}
 
             {scenario.description && (
               <Card className="relative mt-4 w-full p-4">
