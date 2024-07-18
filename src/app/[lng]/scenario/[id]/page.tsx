@@ -1,20 +1,23 @@
-import type { IModListQuery } from "@dicecho/types";
+import clsx from "clsx";
+import Link from "next/link";
+import dayjs from "dayjs";
 import { useTranslation } from "@/lib/i18n";
+import { RateType } from "@dicecho/types";
 import { Button } from "@/components/ui/button";
 import { getDicechoServerApi } from "@/server/dicecho";
 import { UserAvatar } from "@/components/User/Avatar";
-import dayjs from "dayjs";
 import { RateInfo } from "@/components/Scenario/RateInfo";
+import { RateList } from "@/components/Rate/RateList";
 import { Card } from "@/components/ui/card";
 import { Album } from "@/components/Album";
 import { Trans } from "react-i18next/TransWithoutContext";
 import { StarIcon, HeartIcon, BookmarkPlusIcon, LinkIcon } from "lucide-react";
-import type { ComponentProps, FC, PropsWithChildren } from "react";
-import clsx from "clsx";
-import { LanguageCodes, LanguageCodeMap } from "@/utils/language";
-import Link from "next/link";
+import { LanguageCodeMap } from "@/utils/language";
 import { ScenarioDetailHeader } from './header'
-import { HeaderBack } from "@/components/Header/HeaderBack";
+
+import type { ComponentProps, FC, PropsWithChildren } from "react";
+import type { IRateListQuery } from "@dicecho/types";
+import type { LanguageCodes } from "@/utils/language";
 
 const InfoItem: FC<
   PropsWithChildren<ComponentProps<"div"> & { title: string }>
@@ -35,6 +38,8 @@ const ScenarioDetailPage = async ({
   const { t } = await useTranslation(lng);
   const api = await getDicechoServerApi();
   const scenario = await api.module.detail(id);
+  const rateQuery: Partial<IRateListQuery> = { modId: scenario._id, filter: { type: RateType.Rate } };
+  const rates = await api.rate.list(rateQuery);
 
   const infos = (
     <>
@@ -203,24 +208,28 @@ const ScenarioDetailPage = async ({
           </div>
         </Card>
 
-        <div className="grid grid-cols-6 gap-4">
-          <div className="col-span-6 md:col-span-4">
+        <div className="grid grid-cols-6 gap-4 mt-4">
+          <div className="col-span-6 md:col-span-4 flex flex-col gap-4">
             {scenario.imageUrls.length > 0 && (
-              <Card className="relative mt-4 w-full p-4">
+              <Card className="relative w-full p-4">
                 <Album imageUrls={scenario.imageUrls} />
               </Card>
             )}
 
             {scenario.description && (
-              <Card className="relative mt-4 w-full p-4">
+              <Card className="relative w-full p-4">
                 <article className="line-clamp-4 whitespace-pre-line break-words opacity-65">
                   {scenario.description}
                 </article>
               </Card>
             )}
+
+            <Card className="p-4">
+              <RateList initialData={rates} query={rateQuery} />
+            </Card>
           </div>
           <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
-            <Card className="relative mt-4 flex w-full flex-col gap-4 p-4">
+            <Card className="relative flex w-full flex-col gap-4 p-4">
               {infos}
             </Card>
           </div>

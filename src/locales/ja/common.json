@@ -43,5 +43,13 @@
   "collect": "集める",
   "origin": "出処",
   "scenario_search_placeholder": "シナリオ名、説明、作者などを入力して検索する。",
-  "no_review_yet": "評価なし"
+  "no_review_yet": "評価なし",
+  "Rate": {
+    "view_pl": "プレイヤー役",
+    "view_kp": "ゲームマスター役",
+    "view_ob": "観客役",
+    "type_rate": "評価",
+    "type_mark": "マーキング",
+    "text_length": "全文 {{count}} ワード"
+  }
 }

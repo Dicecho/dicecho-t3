@@ -43,5 +43,13 @@
   "collect": "收藏",
   "origin": "源站",
   "scenario_search_placeholder": "输入名称 / 介绍 / 作者来搜索模组",
-  "no_review_yet": "暂无评分"
+  "no_review_yet": "暂无评分",
+  "Rate": {
+    "view_pl": "玩家视角",
+    "view_kp": "主持人视角",
+    "view_ob": "观众视角",
+    "type_rate": "评价",
+    "type_mark": "想玩",
+    "text_length": "全文 {{count}} 字"
+  }
 }

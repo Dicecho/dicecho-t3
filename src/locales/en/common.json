@@ -43,5 +43,13 @@
   "collect": "collect",
   "origin": "origin",
   "scenario_search_placeholder": "input scenario name / description / author etc for search",
-  "no_review_yet": "No review yet"
+  "no_review_yet": "No review yet",
+  "Rate": {
+    "view_pl": "as Player",
+    "view_kp": "as Game Master",
+    "view_ob": "as Spectator",
+    "type_rate": "rating",
+    "type_mark": "marking",
+    "text_length": "full text {{count}} words"
+  }
 }

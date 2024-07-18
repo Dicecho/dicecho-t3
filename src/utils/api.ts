@@ -11,6 +11,9 @@ import type {
   IUserDto,
   Response,
   ModFilterConfig,
+  IRateListQuery,
+  IRateListApiResponse,
+  IRateDto,
 } from "@dicecho/types";
 import {
   APIClient,
@@ -178,6 +181,19 @@ export class DicechoApi extends APIClient {
     // update: (typeId: string, data: TokenUpdateData) =>
     //   this.put<TokenUpdateData, Token>(`/token/${typeId}`, data),
   };
+
+  rate = {
+    list: (params: Partial<IRateListQuery> = {}) =>
+      this.request<Empty, IRateListApiResponse>(
+        `/api/rate?${qs.stringify(params)}`,
+        "GET",
+      ),
+    detail: (id: string) =>
+      this.request<Empty, IRateDto>(
+        `/api/rate/${id}`,
+        "GET",
+      ),
+  }
 }
 
 export type { APIClientOptions };
