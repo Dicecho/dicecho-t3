@@ -1,10 +1,9 @@
 import clsx from "clsx";
 import { type ComponentProps, type FC } from "react";
-// import { useTranslation } from "next-i18next";
-import { BookOpenText, MessageCircleMore, Videotape } from "lucide-react";
+import { BookOpenText } from "lucide-react";
 import Link from "next/link";
-import DicechoLogo from './dicecho.svg';
-// import { ThemeChanger } from "@/components/theme/ThemeChanger";
+import DicechoLogo from "./dicecho.svg";
+import { ThemeChanger } from "./ThemeChanger";
 import { LanguageChanger } from "./LanguageChanger";
 import { UserBox } from "./UserBox";
 import {
@@ -27,11 +26,12 @@ import { useTranslation } from "@/lib/i18n";
 
 export type HeaderProps = ComponentProps<"div"> & {
   lng: string;
+  theme: string;
 };
 
-export const Header: FC<HeaderProps> = async (props) => {
+export const Header: FC<HeaderProps> = async ({ lng, theme, ...props }) => {
   const session = await getServerAuthSession();
-  const { t } = await useTranslation(props.lng);
+  const { t } = await useTranslation(lng);
 
   const menus = [
     {
@@ -51,13 +51,19 @@ export const Header: FC<HeaderProps> = async (props) => {
   return (
     <div
       {...props}
-      className={clsx("sticky left-0 right-0 top-0 z-10 bg-base-200 shadow-xl max-md:hidden")}
+      className={clsx(
+        "sticky left-0 right-0 top-0 z-10 bg-base-200 shadow-xl max-md:hidden",
+      )}
     >
       <div className="container mx-auto">
         <div className="flex min-h-16 items-center">
           <div className="w-1/2 justify-start">
-            <Link href={`/${props.lng}`} passHref>
-              <DicechoLogo className="w-8 text-[#9396f7]" width={32} height={32} />
+            <Link href={`/${lng}`} passHref>
+              <DicechoLogo
+                className="w-8 text-[#9396f7]"
+                width={32}
+                height={32}
+              />
             </Link>
           </div>
 
@@ -67,7 +73,7 @@ export const Header: FC<HeaderProps> = async (props) => {
                 {menus.map((menu) => (
                   <NavigationMenuItem key={menu.link}>
                     <Link
-                      href={`/${props.lng}${menu.link}`}
+                      href={`/${lng}${menu.link}`}
                       legacyBehavior
                       passHref
                     >
@@ -90,9 +96,9 @@ export const Header: FC<HeaderProps> = async (props) => {
           {/* 
         <div className="navbar-center">
         </div> */}
-          <div className="flex w-1/2 items-center justify-end gap-4 capitalize">
+          <div className="flex w-1/2 items-center justify-end gap-2 capitalize">
             <LanguageChanger />
-            {/* <ThemeChanger /> */}
+            <ThemeChanger initialTheme={theme} />
             {session ? (
               <Popover>
                 <PopoverTrigger>

@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center gap-2 justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center gap-2 justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       color: {
@@ -17,8 +17,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:border-secondary/90",
         accent:
           "bg-accent text-accent-foreground hover:bg-accent/80 hover:border-accent/90",
-        neutral:
-          "bg-neutral text-neutral-foreground hover:bg-neutral/80 hover:border-neutral/90",
+        muted:
+          "bg-muted text-muted-foreground hover:bg-muted/80 hover:border-muted/90",
         success:
           "bg-success text-success-foreground border-success hover:bg-success/90 hover:border-success/90",
         info: "bg-info text-info-foreground border-info hover:bg-info/90 hover:border-info/90",
@@ -78,12 +78,12 @@ const buttonVariants = cva(
       },
       {
         variant: "outline",
-        color: "neutral",
-        class: "text-neutral hover:text-neutral/80",
+        color: "muted",
+        class: "text-muted hover:text-muted/80",
       },
     ],
     defaultVariants: {
-      color: "neutral",
+      color: "default",
       variant: "default",
       size: "default",
     },

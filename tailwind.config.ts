@@ -22,14 +22,12 @@ const config = {
     },
     extend: {
       colors: {
-        border: "rgba(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         "base-100": "hsl(var(--base-100))",
         "base-200": "hsl(var(--base-200))",
         "base-300": "hsl(var(--base-300))",
+        "base-foreground": "hsl(var(--base-foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary) / <alpha-value>)",
           foreground: "hsl(var(--primary-foreground))",
@@ -46,10 +44,6 @@ const config = {
           DEFAULT: "hsl(var(--accent) / <alpha-value>)",
           foreground: "hsl(var(--accent-foreground))",
         },
-        natural: {
-          DEFAULT: "hsl(var(--natural) / <alpha-value>)",
-          foreground: "hsl(var(--natural-foreground))",
-        },
         success: {
           DEFAULT: "hsl(var(--success) / <alpha-value>)",
           foreground: "hsl(var(--success-foreground))",
@@ -62,6 +56,19 @@ const config = {
           DEFAULT: "hsl(var(--warning) / <alpha-value>)",
           foreground: "hsl(var(--warning-foreground))",
         },
+        card: "hsl(var(--card))",
+        "card-foreground": "hsl(var(--card-foreground))",
+        popover: "hsl(var(--popover))",
+        "popover-foreground": "hsl(var(--popover-foreground))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        border: "hsla(var(--border))",
+      },
+      borderColor: {
+        DEFAULT: "hsla(var(--border))",
+      },
+      borderWidth: {
+        box: "var(--border-box)",
       },
       borderRadius: {
         lg: "var(--radius)",

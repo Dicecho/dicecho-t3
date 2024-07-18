@@ -20,7 +20,7 @@ const UserBoxItem: React.FC<PropsWithChildren<ComponentProps<"div">>> = ({
   return (
     <div
       className={clsx(
-        "flex cursor-pointer items-center gap-4 rounded-md px-4 py-2 transition-all hover:bg-slate-200 ",
+        "flex cursor-pointer items-center gap-4 rounded-md px-4 py-2 transition-all hover:bg-muted",
         className,
       )}
       {...props}
@@ -59,7 +59,7 @@ export const UserBox: React.FC<UserBoxProps> = ({ user }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="border-b border-slate-100 py-4 text-center text-muted-foreground">
+      <div className="border-b py-4 text-center text-muted-foreground">
         {user.nickName}
       </div>
 

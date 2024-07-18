@@ -75,7 +75,7 @@ const ScenarioPage = async ({
         <div className="col-span-6 md:col-span-4">
           <form action={handleSearch} className="join flex w-full items-center">
             <Input
-              className="join-item"
+              className="join-item rounded-md"
               placeholder={t("scenario_search_placeholder", { ns: "scenario" })}
               name="keyword"
               defaultValue={query.keyword}

@@ -182,7 +182,7 @@ export function ScenarioFilter({
             name="sortOrder"
             render={({ field }) => (
               <Button
-                className="join-item border-box px-2 bg-muted"
+                className="join-item border-box px-2 bg-input"
                 type="button"
                 onClick={() => {
                   field.onChange(

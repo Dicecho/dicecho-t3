@@ -20,7 +20,7 @@ export default async function AccountPage({
       <MobileHeader>
         <HeaderMenu />
       </MobileHeader>
-      <main className="container flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white max-md:pb-20">
+      <main className="flex min-h-screen items-center justify-center w-full">
         <SignIn />
       </main>
       <MobileFooter />

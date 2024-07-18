@@ -43,7 +43,7 @@ const SelectTrigger = React.forwardRef<
       <SelectPrimitive.Trigger
         ref={ref}
         className={cn(
-          "border-box flex h-10 w-full items-center justify-between rounded-md bg-muted px-3 py-2 text-start text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground [&>span]:line-clamp-1",
+          "border-box flex h-10 w-full items-center justify-between rounded-md bg-input px-3 py-2 text-start text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground [&>span]:line-clamp-1",
           { "join-item pr-2": allowClear },
           className,
         )}
@@ -58,7 +58,7 @@ const SelectTrigger = React.forwardRef<
       {allowClear && (
         <Button
           type="button"
-          className="join-item border-box border-l-0 bg-muted px-2"
+          className="join-item border-box border-l-0 bg-input text-foreground px-2"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -116,7 +116,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "border-box relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-md bg-base-200 text-foreground shadow-2xl",
+        "border-box relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-md bg-popover text-popover-foreground shadow-2xl",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",

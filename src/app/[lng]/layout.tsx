@@ -2,12 +2,13 @@ import "@/styles/globals.css";
 import "@/styles/components.css";
 
 import { GeistSans } from "geist/font/sans";
-import { dir } from 'i18next'
+import { dir } from "i18next";
 import { TRPCReactProvider } from "@/trpc/react";
-import { Header } from '@/components/Header' 
+import { Header } from "@/components/Header";
 import { Toaster } from "@/components/ui/toaster";
 import { Layout as AppLayout } from "@/components/Layout";
-import { languages } from '../../lib/i18n/settings'
+import { languages } from "@/lib/i18n/settings";
+import { getTheme } from "@/lib/theme/server";
 
 // TODO: support i18n
 export const metadata = {
@@ -17,29 +18,28 @@ export const metadata = {
 };
 
 export async function generateStaticParams() {
-  return languages.map((lng) => ({ lng }))
+  return languages.map((lng) => ({ lng }));
 }
 
 export default function RootLayout({
   children,
-  params: {
-    lng
-  }
+  params: { lng },
 }: {
   children: React.ReactNode;
   params: { lng: string };
 }) {
+  const theme = getTheme();
   return (
-    <html lang={lng} dir={dir(lng)} data-theme='light' className={`${GeistSans.variable}`}>
-        <TRPCReactProvider>
-          <AppLayout>
-            <body className="bg-custom-gradient min-h-[100vh] bg-no-repeat">
-              <Header lng={lng} />
-              {children}
-              <Toaster />
-            </body>
-          </AppLayout>
-        </TRPCReactProvider>
+    <html lang={lng} dir={dir(lng)} data-theme={theme} className={`${GeistSans.variable}`}>
+      <TRPCReactProvider>
+        <AppLayout>
+          <body className="bg-custom-gradient min-h-[100vh] bg-no-repeat">
+            <Header lng={lng} theme={theme} />
+            {children}
+            <Toaster />
+          </body>
+        </AppLayout>
+      </TRPCReactProvider>
     </html>
   );
 }

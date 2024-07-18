@@ -55,7 +55,7 @@ export const HeaderMenuDrawer: FC<PropsWithChildren> = ({ children }) => {
         <LinkWithLng
           href={isAuthenticated ? `/account/${account._id}` : "/account"}
         >
-          <DrawerHeader className="mb-4 flex gap-4 border-b border-solid border-border p-0 pb-4">
+          <DrawerHeader className="mb-4 flex gap-4 border-b border-solid p-0 pb-4">
             {isAuthenticated ? (
               <UserAvatar
                 className="h-10 w-10 rounded-full object-cover"

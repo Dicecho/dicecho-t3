@@ -1,9 +1,10 @@
-'use client'
+"use client";
 import { Globe } from "lucide-react";
 import { SelectContent, SelectItem } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { useRouter, useParams } from "next/navigation";
-import { usePurePathname } from '@/hooks/usePurePathname'
+import { usePurePathname } from "@/hooks/usePurePathname";
 
 const LanguageKey = {
   en: "en",
@@ -23,13 +24,18 @@ export const LanguageChanger = () => {
   const params = useParams<{ lng: string }>();
 
   const changeLanguage = (locale: string) => {
-    router.push(`/${locale}${purePathname}`)
+    router.push(`/${locale}${purePathname}`);
   };
 
   return (
-    <SelectPrimitive.Root value={params.lng} onValueChange={(value) => changeLanguage(value)}>
+    <SelectPrimitive.Root
+      value={params.lng}
+      onValueChange={(value) => changeLanguage(value)}
+    >
       <SelectPrimitive.Trigger asChild>
-        <Globe className="cursor-pointer" size={24} />
+        <Button variant="ghost" size="icon">
+          <Globe className="cursor-pointer" size={24} />
+        </Button>
       </SelectPrimitive.Trigger>
 
       <SelectContent position="popper" side="bottom" align="end">
