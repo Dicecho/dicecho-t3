@@ -16,7 +16,7 @@ export const RichTextEditor = (props: Omit<PlateProps, "children">) => {
       <FixedToolbar className="no-scrollbar">
         <FixedToolbarButtons />
       </FixedToolbar>
-      <Editor />
+      <Editor className="min-h-24"/>
     </Plate>
   );
 };

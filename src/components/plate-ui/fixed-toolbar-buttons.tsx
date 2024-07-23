@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import {
   MARK_BOLD,
@@ -6,26 +6,38 @@ import {
   MARK_ITALIC,
   MARK_STRIKETHROUGH,
   MARK_UNDERLINE,
-} from '@udecode/plate-basic-marks';
-import { useEditorReadOnly } from '@udecode/plate-common';
+} from "@udecode/plate-basic-marks";
 
-import { Bold, Italic, Code, Strikethrough, Underline } from 'lucide-react'
+import { MARK_COLOR, MARK_BG_COLOR } from "@udecode/plate-font";
+import { useEditorReadOnly, useEditorState } from "@udecode/plate-common";
 
-import { InsertDropdownMenu } from './insert-dropdown-menu';
-import { MarkToolbarButton } from './mark-toolbar-button';
-import { ModeDropdownMenu } from './mode-dropdown-menu';
-import { ToolbarGroup } from '@/components/plate-ui/toolbar';
-import { TurnIntoDropdownMenu } from './turn-into-dropdown-menu';
+import {
+  Bold,
+  Italic,
+  Code,
+  Strikethrough,
+  Underline,
+  Brush,
+  Paintbrush,
+} from "lucide-react";
+
+import { InsertDropdownMenu } from "./insert-dropdown-menu";
+import { MarkToolbarButton } from "./mark-toolbar-button";
+import { ModeDropdownMenu } from "./mode-dropdown-menu";
+import { ToolbarGroup } from "@/components/plate-ui/toolbar";
+import { TurnIntoDropdownMenu } from "./turn-into-dropdown-menu";
+import { ColorDropdownMenu } from "./color-dropdown-menu";
 
 export function FixedToolbarButtons() {
   const readOnly = useEditorReadOnly();
+  const {} = useEditorState();
 
   return (
     <div className="w-full overflow-hidden">
       <div
         className="flex flex-wrap"
         style={{
-          transform: 'translateX(calc(-1px))',
+          transform: "translateX(calc(-1px))",
         }}
       >
         {!readOnly && (
@@ -58,6 +70,19 @@ export function FixedToolbarButtons() {
               <MarkToolbarButton nodeType={MARK_CODE} tooltip="Code (⌘+E)">
                 <Code />
               </MarkToolbarButton>
+
+              <ToolbarGroup>
+                <ColorDropdownMenu nodeType={MARK_COLOR} tooltip="Text Color">
+                  <Brush />
+                </ColorDropdownMenu>
+
+                <ColorDropdownMenu
+                  nodeType={MARK_BG_COLOR}
+                  tooltip="Highlight Color"
+                >
+                  <Paintbrush />
+                </ColorDropdownMenu>
+              </ToolbarGroup>
             </ToolbarGroup>
           </>
         )}

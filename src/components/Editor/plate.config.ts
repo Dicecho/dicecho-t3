@@ -4,6 +4,11 @@ import { createPlugins, PlateLeaf } from "@udecode/plate-common";
 import { CodeLeaf } from "@/components/plate-ui/code-leaf";
 import { HeadingElement } from "@/components/plate-ui/heading-element";
 import {
+  createFontBackgroundColorPlugin,
+  createFontColorPlugin,
+  createFontSizePlugin,
+} from "@udecode/plate-font";
+import {
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
@@ -23,7 +28,13 @@ import {
 } from "@udecode/plate-basic-marks";
 
 export const plugins = createPlugins(
-  [createBasicElementsPlugin(), createBasicMarksPlugin()],
+  [
+    createBasicElementsPlugin(),
+    createBasicMarksPlugin(),
+    createFontColorPlugin(),
+    createFontBackgroundColorPlugin(),
+    createFontSizePlugin(),
+  ],
   {
     components: {
       // [ELEMENT_BLOCKQUOTE]: BlockquoteElement,

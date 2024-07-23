@@ -44,6 +44,7 @@
   "origin": "origin",
   "scenario_search_placeholder": "input scenario name / description / author etc for search",
   "no_review_yet": "No review yet",
+  "clear": "clear",
   "Rate": {
     "view_pl": "as Player",
     "view_kp": "as Game Master",
