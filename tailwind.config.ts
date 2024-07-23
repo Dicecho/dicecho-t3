@@ -68,7 +68,8 @@ const config = {
         DEFAULT: "hsla(var(--border))",
       },
       borderWidth: {
-        box: "var(--border-box)",
+        "w-box": "var(--border-w-box)",
+        "w-input": "var(--border-w-input)",
       },
       borderRadius: {
         lg: "var(--radius)",

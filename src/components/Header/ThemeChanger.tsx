@@ -17,7 +17,7 @@ export const ThemeChanger = (props: { initialTheme: string }) => {
   return (
     <Select defaultValue={theme} onValueChange={(t) => setTheme(t)}>
       <SelectPrimitive.Trigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button variant="outline" size="icon">
           {DARK_THEMES.some((t) => t === theme) ? <Moon /> : <Sun />}
         </Button>
       </SelectPrimitive.Trigger>
@@ -29,7 +29,7 @@ export const ThemeChanger = (props: { initialTheme: string }) => {
               data-theme={theme}
               key={theme}
               value={theme}
-              className="border-box bg-base-100 text-foreground "
+              className="border-w-box bg-base-100 text-foreground "
             >
               <div className="flex h-full w-full items-center gap-1">
                 <div className="mr-auto">{theme}</div>

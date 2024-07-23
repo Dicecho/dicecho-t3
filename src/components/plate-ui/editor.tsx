@@ -10,7 +10,7 @@ import { cva } from 'class-variance-authority';
 const editorVariants = cva(
   cn(
     'relative overflow-x-auto whitespace-pre-wrap break-words',
-    'min-h-[80px] w-full text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none',
+    'w-full text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none',
     '[&_[data-slate-placeholder]]:text-muted-foreground [&_[data-slate-placeholder]]:!opacity-100',
     '[&_[data-slate-placeholder]]:top-[auto_!important]',
     '[&_strong]:font-bold'

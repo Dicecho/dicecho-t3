@@ -6,6 +6,8 @@ import DicechoLogo from "./dicecho.svg";
 import { ThemeChanger } from "./ThemeChanger";
 import { LanguageChanger } from "./LanguageChanger";
 import { UserBox } from "./UserBox";
+import { UserAvatar } from "@/components/User/Avatar";
+
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -72,11 +74,7 @@ export const Header: FC<HeaderProps> = async ({ lng, theme, ...props }) => {
               <NavigationMenuList>
                 {menus.map((menu) => (
                   <NavigationMenuItem key={menu.link}>
-                    <Link
-                      href={`/${lng}${menu.link}`}
-                      legacyBehavior
-                      passHref
-                    >
+                    <Link href={`/${lng}${menu.link}`} legacyBehavior passHref>
                       <NavigationMenuLink
                         className={clsx(
                           navigationMenuTriggerStyle(),
@@ -102,13 +100,13 @@ export const Header: FC<HeaderProps> = async ({ lng, theme, ...props }) => {
             {session ? (
               <Popover>
                 <PopoverTrigger>
-                  <Avatar className="transition-all hover:shadow-lg">
-                    <AvatarImage
-                      className="object-cover"
-                      src={session.user.avatarUrl}
+                    <UserAvatar
+                      user={session.user}
+                      alt="avatar"
+                      width={40}
+                      height={40}
+                      className="object-cover w-10 h-10 rounded-full border cursor-pointer"
                     />
-                    <AvatarFallback>{session.user.nickName}</AvatarFallback>
-                  </Avatar>
                 </PopoverTrigger>
                 <PopoverContent align="end">
                   <UserBox

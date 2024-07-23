@@ -1,34 +1,19 @@
-import clsx from "clsx";
 import Link from "next/link";
-import dayjs from "dayjs";
 import { useTranslation } from "@/lib/i18n";
-import { RateType } from "@dicecho/types";
+import { RateSortKey, RateType } from "@dicecho/types";
 import { Button } from "@/components/ui/button";
 import { getDicechoServerApi } from "@/server/dicecho";
-import { UserAvatar } from "@/components/User/Avatar";
 import { RateInfo } from "@/components/Scenario/RateInfo";
+import { ScenarioRelatedLink } from "@/components/Scenario/ScenarioRelatedLink";
 import { RateList } from "@/components/Rate/RateList";
 import { Card } from "@/components/ui/card";
 import { Album } from "@/components/Album";
 import { Trans } from "react-i18next/TransWithoutContext";
 import { StarIcon, HeartIcon, BookmarkPlusIcon, LinkIcon } from "lucide-react";
-import { LanguageCodeMap } from "@/utils/language";
-import { ScenarioDetailHeader } from './header'
+import { ScenarioDetailHeader } from "./header";
+import { ScenarioInfo } from "./ScenarioInfo";
 
-import type { ComponentProps, FC, PropsWithChildren } from "react";
 import type { IRateListQuery } from "@dicecho/types";
-import type { LanguageCodes } from "@/utils/language";
-
-const InfoItem: FC<
-  PropsWithChildren<ComponentProps<"div"> & { title: string }>
-> = ({ title, className, children, ...props }) => {
-  return (
-    <div className="flex items-center gap-2 " {...props}>
-      <div className="font-bold capitalize">{title}</div>
-      <div className={clsx("flex-1", className)}>{children}</div>
-    </div>
-  );
-};
 
 const ScenarioDetailPage = async ({
   params: { lng, id },
@@ -38,79 +23,12 @@ const ScenarioDetailPage = async ({
   const { t } = await useTranslation(lng);
   const api = await getDicechoServerApi();
   const scenario = await api.module.detail(id);
-  const rateQuery: Partial<IRateListQuery> = { modId: scenario._id, filter: { type: RateType.Rate } };
+  const rateQuery: Partial<IRateListQuery> = {
+    modId: scenario._id,
+    filter: { type: RateType.Rate },
+    sort: { [RateSortKey.RATE_AT]: -1 },
+  };
   const rates = await api.rate.list(rateQuery);
-
-  const infos = (
-    <>
-      <InfoItem className="flex items-center" title={t("author")}>
-        <span className="mr-2 inline-block">
-          <UserAvatar
-            user={scenario.author}
-            alt={scenario.author.nickName}
-            className="h-5 w-5 rounded-full"
-            width={20}
-            height={20}
-          />
-        </span>
-        <span className="flex-1 opacity-60">{scenario.author.nickName}</span>
-      </InfoItem>
-
-      {scenario.isForeign && scenario.contributors.length > 0 && (
-        <InfoItem title={t("contributors")}>
-          <div className="flex items-center gap-2">
-            {scenario.contributors.map((contributor) => (
-              <UserAvatar
-                user={contributor}
-                key={contributor._id}
-                alt={contributor.nickName}
-                width={20}
-                height={20}
-                className="h-5 w-5 rounded-full object-cover"
-              />
-            ))}
-          </div>
-        </InfoItem>
-      )}
-
-      {scenario.tags.length > 0 && (
-        <InfoItem title={t("tags")} className="opacity-60">
-          <div className="flex items-center gap-2">
-            {scenario.tags.map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
-          </div>
-        </InfoItem>
-      )}
-
-      {scenario.languages.length > 0 && (
-        <InfoItem title={t("languages")} className="opacity-60">
-          <div className="flex items-center gap-2">
-            {scenario.languages.map((language) => (
-              <span key={language}>
-                {LanguageCodeMap[lng]![language as LanguageCodes]}
-              </span>
-            ))}
-          </div>
-        </InfoItem>
-      )}
-
-      <InfoItem title={t("rule")} className="opacity-60">
-        {scenario.moduleRule}
-      </InfoItem>
-
-      <div className="text-sm opacity-60">
-        <Trans
-          i18nKey="publish_at"
-          t={t}
-          shouldUnescape
-          values={{
-            date: dayjs(scenario.releaseDate).format("YYYY/MM/DD"),
-          }}
-        />
-      </div>
-    </>
-  );
 
   const actions = (
     <>
@@ -143,7 +61,7 @@ const ScenarioDetailPage = async ({
           className="relative z-0 h-[280px] w-full bg-cover bg-center bg-no-repeat brightness-75 md:hidden"
           style={{ backgroundImage: `url(${scenario.coverUrl})` }}
         />
-        <Card className="relative mt-[-16px] rounded-t-2xl p-4 md:mt-10 md:flex md:rounded">
+        <Card className="relative mt-[-16px] rounded-t-2xl p-4 md:mt-10 md:flex md:rounded-lg">
           <div
             className="-mt-[40px] mr-[24px] hidden aspect-[3/4] w-32 bg-cover bg-center shadow-2xl md:block"
             style={{ backgroundImage: `url(${scenario.coverUrl})` }}
@@ -152,7 +70,7 @@ const ScenarioDetailPage = async ({
           <div className="flex flex-1 flex-col">
             <div className="mb-2 text-2xl font-bold">{scenario.title}</div>
             <div className="mb-2 text-sm">
-              <span className="opacity-60">[{t("quote_notice")}]</span>
+              <span>[{t("quote_notice")}]</span>
             </div>
 
             <div className="mt-auto hidden w-full gap-2 md:flex">{actions}</div>
@@ -165,7 +83,9 @@ const ScenarioDetailPage = async ({
             info={scenario.rateInfo}
           />
 
-          <div className="mt-2 flex flex-col gap-2 md:hidden">{infos}</div>
+          <div className="mt-2 flex flex-col gap-2 md:hidden">
+            <ScenarioInfo scenario={scenario} lng={lng} />
+          </div>
 
           <div className="ml-4 hidden min-w-40 flex-col gap-2 border-l-[1px] border-solid pl-4 md:flex">
             <div className="capitalize opacity-45">{t("dicecho_rating")}</div>
@@ -208,8 +128,8 @@ const ScenarioDetailPage = async ({
           </div>
         </Card>
 
-        <div className="grid grid-cols-6 gap-4 mt-4">
-          <div className="col-span-6 md:col-span-4 flex flex-col gap-4">
+        <div className="mt-4 grid grid-cols-6 gap-4">
+          <div className="col-span-6 flex flex-col gap-4 md:col-span-4">
             {scenario.imageUrls.length > 0 && (
               <Card className="relative w-full p-4">
                 <Album imageUrls={scenario.imageUrls} />
@@ -224,13 +144,14 @@ const ScenarioDetailPage = async ({
               </Card>
             )}
 
-            <Card className="p-4">
-              <RateList initialData={rates} query={rateQuery} />
-            </Card>
+            <RateList initialData={rates} query={rateQuery} />
           </div>
           <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
+            {scenario.relatedLinks.length > 0 && (
+              <ScenarioRelatedLink relatedLinks={scenario.relatedLinks} />
+            )}
             <Card className="relative flex w-full flex-col gap-4 p-4">
-              {infos}
+              <ScenarioInfo scenario={scenario} lng={lng} />
             </Card>
           </div>
         </div>

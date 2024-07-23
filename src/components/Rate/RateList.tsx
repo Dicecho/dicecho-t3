@@ -32,12 +32,9 @@ export const RateList: FC<RateListProps> = ({
   });
 
   return (
-    <div className={clsx("flex flex-col gap-4", className)} {...props}>
+    <div className={clsx("flex flex-col gap-2", className)} {...props}>
       {data.data.map((rate, i) => (
-        <div key={rate._id}>
-          <RateItem rate={rate} />
-          {i !== data.data.length - 1 && <Separator />}
-        </div>
+        <RateItem rate={rate} key={rate._id} />
       ))}
     </div>
   );

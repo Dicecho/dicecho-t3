@@ -1,5 +1,6 @@
 import clsx from "clsx";
-import { ComponentProps, FC, useId } from "react";
+import { useId } from "react";
+import type { ComponentProps, FC } from "react";
 
 interface RateProps extends Omit<ComponentProps<"div">, "onChange"> {
   value?: number;

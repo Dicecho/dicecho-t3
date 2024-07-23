@@ -1,5 +1,5 @@
 "use client";
-import { Globe } from "lucide-react";
+import { Languages } from "lucide-react";
 import { SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import * as SelectPrimitive from "@radix-ui/react-select";
@@ -33,8 +33,8 @@ export const LanguageChanger = () => {
       onValueChange={(value) => changeLanguage(value)}
     >
       <SelectPrimitive.Trigger asChild>
-        <Button variant="ghost" size="icon">
-          <Globe className="cursor-pointer" size={24} />
+        <Button variant="outline" size="icon">
+          <Languages size={24} />
         </Button>
       </SelectPrimitive.Trigger>
 

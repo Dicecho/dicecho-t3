@@ -8,6 +8,7 @@ import { RichTextPreview } from "@/components/Editor";
 import { Rate } from "@/components/ui/rate";
 import { Trans } from "react-i18next";
 import { useTranslation } from "@/lib/i18n/react";
+import { Card } from "../ui/card";
 
 interface IProps {
   rate: IRateDto;
@@ -38,7 +39,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
   };
 
   return (
-    <div className={"flex flex-col gap-4"}>
+    <Card className={"flex flex-col gap-4 p-4"}>
       <div className={"flex items-center gap-2"}>
         <UserAvatar
           className="rounded-full"
@@ -82,7 +83,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
       </div>
 
       {renderRateContent()}
-    </div>
+    </Card>
   );
 };
 

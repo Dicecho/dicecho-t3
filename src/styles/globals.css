@@ -59,7 +59,8 @@
     --radius-btn: var(--radius);
     --radius-badge: var(--radius);
   
-    --border-box: 1px;
+    --border-w-box: 1px;
+    --border-w-input: var(--border-w-box);
   }
 
   .light {
@@ -90,7 +91,7 @@
   .dark {
     @apply base;
     --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    --foreground: 0 0% 100%;
   
     --primary: 217.2 91.2% 59.8%;
     --primary-foreground: 222.2 47.4% 11.2%;
@@ -126,12 +127,9 @@
   [data-theme='dicecho'] {
     @apply dark;
     --background: 216 20% 25%;
-    --foreground: 210 40% 98%;
     --base-100: 216 24% 21%;
     --base-200: 216 23.81% 20.59%;
     --base-300: 218.82 21.52% 15.49%;
-
-    /* --card:  var(--base-200); */
 
 
     --primary: 238 86% 77%;
@@ -146,7 +144,9 @@
     --input: transparent;
 
     --border: var(--muted-foreground) / 0.2;
-    /* --border-box: 0; */
+
+    --border-w-box: 0;
+    --border-w-input: 1px;
   }
 }
   
