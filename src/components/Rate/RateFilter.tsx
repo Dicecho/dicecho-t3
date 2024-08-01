@@ -305,7 +305,7 @@ export const RateFilter: FC<RateFilterProps> = ({
         </Select>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {remarkLengthRange && (
           <Button
             className="bg-accent"

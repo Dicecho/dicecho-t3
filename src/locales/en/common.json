@@ -61,11 +61,11 @@
     "neutral_comments": "neutral",
     "positive_comments": "positive",
     "negative_comments": "negative",
-    "recommend_rate": "sort by recommend review",
-    "happiest_rate": "sort by happiest review",
-    "longest_rate": "sort by longest review",
-    "latest_rate": "sort by newest review",
-    "oldest_rate": "sort by oldest review",
+    "recommend_rate": "recommend",
+    "happiest_rate": "happiest",
+    "longest_rate": "longest",
+    "latest_rate": "newest",
+    "oldest_rate": "oldest",
     "empty_placeholder_action": "Come leave a review!",
     "text_length": "full text {{count}} words"
   }
