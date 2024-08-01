@@ -1,16 +1,22 @@
 "use client";
-import { RateItem } from "./RateItem";
+import { useState } from "react";
 import clsx from "clsx";
 import { useQuery } from "@tanstack/react-query";
 import { useDicecho } from "@/hooks/useDicecho";
-import { Separator } from "@/components/ui/separator";
+import { ControllablePagination } from "@/components/Pagination";
+import { Empty } from "@/components/Empty";
+import { RateItem } from "./RateItem";
+import { RateItemSkeleton } from "./RateItemSkeleton";
 
 import type { IRateListQuery, IRateListApiResponse } from "@dicecho/types";
 import type { ComponentProps, FC } from "react";
+import { Card } from "../ui/card";
+import { Button } from "../ui/button";
+import { useTranslation } from "@/lib/i18n/react";
 
 interface RateListProps extends ComponentProps<"div"> {
-  initialData: IRateListApiResponse;
-  query?: Partial<IRateListQuery>;
+  initialData?: IRateListApiResponse;
+  query?: Omit<Partial<IRateListQuery>, "page" | "pageSize">;
 }
 
 export const RateList: FC<RateListProps> = ({
@@ -19,12 +25,24 @@ export const RateList: FC<RateListProps> = ({
   className,
   ...props
 }) => {
-  const { api } = useDicecho();
+  const { t } = useTranslation();
+  const [pageParams, setPageParams] = useState<{
+    page: number;
+    pageSize?: number;
+  }>({ page: 1 });
 
-  const { data } = useQuery({
-    queryKey: ["rate", query],
-    queryFn: () => api.rate.list(query),
-    initialData,
+  const { api } = useDicecho();
+  const { data, isLoading, fetchStatus } = useQuery({
+    queryKey: ["rate", "list", query, pageParams],
+    queryFn: () => api.rate.list({ ...query, ...pageParams }),
+    initialData: () => {
+      if (pageParams.page === 1) {
+        return initialData;
+      }
+    },
+    placeholderData: (previousValue) => {
+      return previousValue;
+    },
     staleTime: 3600 * 1000,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -33,9 +51,38 @@ export const RateList: FC<RateListProps> = ({
 
   return (
     <div className={clsx("flex flex-col gap-2", className)} {...props}>
-      {data.data.map((rate, i) => (
-        <RateItem rate={rate} key={rate._id} />
-      ))}
+      {data && data.totalCount > data.pageSize && (
+        <ControllablePagination
+          disabled={isLoading}
+          current={data.page}
+          total={Math.ceil(data.totalCount / data.pageSize)}
+          onChange={(page) => setPageParams((params) => ({ ...params, page }))}
+        />
+      )}
+
+      {!isLoading && data?.data.length === 0 && (
+        <Card className="p-16">
+          <Empty>
+            <Button color='primary'>{t('Rate.empty_placeholder_action')}</Button>
+          </Empty>
+        </Card>
+      )}
+
+      {data?.data.map((rate) =>
+        fetchStatus === "fetching" ? (
+          <RateItemSkeleton key={rate._id} />
+        ) : (
+          <RateItem rate={rate} key={rate._id} />
+        ),
+      )}
+
+      {data && data.totalCount > data.pageSize && (
+        <ControllablePagination
+          current={data.page}
+          total={Math.ceil(data.totalCount / data.pageSize)}
+          onChange={(page) => setPageParams((params) => ({ ...params, page }))}
+        />
+      )}
     </div>
   );
 };

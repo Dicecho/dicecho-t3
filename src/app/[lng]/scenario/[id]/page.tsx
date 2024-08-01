@@ -1,35 +1,26 @@
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
-import { RateSortKey, RateType } from "@dicecho/types";
 import { Button } from "@/components/ui/button";
 import { getDicechoServerApi } from "@/server/dicecho";
 import { RateInfo } from "@/components/Scenario/RateInfo";
 import { ScenarioRelatedLink } from "@/components/Scenario/ScenarioRelatedLink";
-import { RateList } from "@/components/Rate/RateList";
 import { Card } from "@/components/ui/card";
 import { Album } from "@/components/Album";
 import { Trans } from "react-i18next/TransWithoutContext";
 import { StarIcon, HeartIcon, BookmarkPlusIcon, LinkIcon } from "lucide-react";
 import { ScenarioDetailHeader } from "./header";
 import { ScenarioInfo } from "./ScenarioInfo";
-
-import type { IRateListQuery } from "@dicecho/types";
+import { ScenarioRateList } from "./rates";
 
 const ScenarioDetailPage = async ({
   params: { lng, id },
 }: {
   params: { lng: string; id: string };
+  searchParams?: Record<string, string | string[] | undefined>;
 }) => {
   const { t } = await useTranslation(lng);
   const api = await getDicechoServerApi();
   const scenario = await api.module.detail(id);
-  const rateQuery: Partial<IRateListQuery> = {
-    modId: scenario._id,
-    filter: { type: RateType.Rate },
-    sort: { [RateSortKey.RATE_AT]: -1 },
-  };
-  const rates = await api.rate.list(rateQuery);
-
   const actions = (
     <>
       <Button variant="outline" color="primary">
@@ -106,7 +97,7 @@ const ScenarioDetailPage = async ({
             {scenario.rateCount > 0 && (
               <div className="opacity-60">
                 <Trans
-                  i18nKey="ratings"
+                  i18nKey="Rate.ratings"
                   t={t}
                   values={{
                     count: scenario.rateCount,
@@ -117,7 +108,7 @@ const ScenarioDetailPage = async ({
             {scenario.markCount > 0 && (
               <div className="opacity-60">
                 <Trans
-                  i18nKey="marks"
+                  i18nKey="Rate.marks"
                   t={t}
                   values={{
                     count: scenario.markCount,
@@ -144,7 +135,14 @@ const ScenarioDetailPage = async ({
               </Card>
             )}
 
-            <RateList initialData={rates} query={rateQuery} />
+            <RateInfo
+              className="w-full bg-card p-4 max-md:hidden"
+              score={scenario.rateAvg}
+              count={scenario.rateCount}
+              info={scenario.rateInfo}
+            />
+
+            <ScenarioRateList scenarioId={scenario._id} />
           </div>
           <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
             {scenario.relatedLinks.length > 0 && (

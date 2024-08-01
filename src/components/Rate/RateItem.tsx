@@ -24,6 +24,10 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
   };
 
   const renderRateContent = () => {
+    if (rate.remarkLength === 0) {
+      return null;
+    }
+
     if (rate.remarkType === RemarkContentType.Richtext) {
       return (
         <RichTextPreview
@@ -48,14 +52,16 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
           width={24}
           height={24}
         />
-        <div>{rate.user.nickName}</div>
-        <div className="text-sm text-muted-foreground">
-          {rate.type === RateType.Rate
-            ? t("Rate.type_rate")
-            : t("Rate.type_mark")}
-        </div>
-        <div className="ml-auto text-sm text-muted-foreground">
-          {formatDate(new Date(rate.rateAt).getTime())}
+        <div className="flex items-baseline gap-2 flex-1">
+          <div>{rate.user.nickName}</div>
+          <div className="text-sm text-muted-foreground">
+            {rate.type === RateType.Rate
+              ? t("Rate.type_rate")
+              : t("Rate.type_mark")}
+          </div>
+          <div className="ml-auto text-sm text-muted-foreground">
+            {formatDate(new Date(rate.rateAt).getTime())}
+          </div>
         </div>
       </div>
 
@@ -63,24 +69,26 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
         <Rate value={rate.rate} allowHalf readOnly />
       )}
 
-      <div className="flex gap-2">
-        {rate.type === RateType.Rate && (
-          <span className="rounded border px-2 py-1 text-xs">
-            {RATE_VIEW_MAP[rate.view]}
-          </span>
-        )}
-        {rate.remarkLength > 50 && (
-          <span className="rounded border px-2 py-1 text-xs">
-            <Trans
-              i18nKey="Rate.text_length"
-              t={t}
-              values={{
-                count: rate.remarkLength,
-              }}
-            />
-          </span>
-        )}
-      </div>
+      {(rate.type === RateType.Rate || rate.remarkLength > 50) && (
+        <div className="flex gap-2">
+          {rate.type === RateType.Rate && (
+            <span className="rounded border px-2 py-1 text-xs">
+              {RATE_VIEW_MAP[rate.view]}
+            </span>
+          )}
+          {rate.remarkLength > 50 && (
+            <span className="rounded border px-2 py-1 text-xs">
+              <Trans
+                i18nKey="Rate.text_length"
+                t={t}
+                values={{
+                  count: rate.remarkLength,
+                }}
+              />
+            </span>
+          )}
+        </div>
+      )}
 
       {renderRateContent()}
     </Card>

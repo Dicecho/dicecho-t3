@@ -4,21 +4,31 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown, ChevronUp, XCircle } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
+import { useControllableState } from "@/hooks/useControllableState";
 
 const SelectContext = React.createContext<{
-  onValueChange?: (value: string) => void;
+  onValueChange?: (value?: string) => void;
 }>({});
 
 const Select = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>
 >(({ children, onValueChange, value, ...props }, _) => {
-  const [_value, _setValue] = React.useState(value);
-  const _onValueChange = (v: string) => _setValue(v);
+  const [v, setV] = useControllableState<string | undefined>(
+    undefined,
+    value,
+    onValueChange ? (v) => onValueChange(v ?? "") : undefined,
+  );
 
   return (
-    <SelectContext.Provider value={{ onValueChange: onValueChange ?? _onValueChange }}>
-      <SelectPrimitive.Root value={onValueChange ? value : _value} onValueChange={onValueChange ?? _onValueChange} {...props}>
+    <SelectContext.Provider
+      value={{ onValueChange: setV }}
+    >
+      <SelectPrimitive.Root
+        value={v}
+        onValueChange={setV}
+        {...props}
+      >
         {children}
       </SelectPrimitive.Root>
     </SelectContext.Provider>
@@ -34,16 +44,17 @@ const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
     allowClear?: boolean;
+    wrapperClassName?: string;
   }
->(({ className, children, allowClear, ...props }, ref) => {
+>(({ className, wrapperClassName, children, allowClear, ...props }, ref) => {
   const { onValueChange = () => {} } = React.useContext(SelectContext);
 
   return (
-    <div className={cn("w-full", { join: allowClear })}>
+    <div className={cn(wrapperClassName, { join: allowClear })}>
       <SelectPrimitive.Trigger
         ref={ref}
         className={cn(
-          "border-w-input flex h-10 w-full items-center justify-between rounded-md bg-input px-3 py-2 text-start text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground [&>span]:line-clamp-1",
+          "flex h-10 w-full items-center justify-between rounded-md border-w-input bg-input px-3 py-2 text-start text-sm focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground [&>span]:line-clamp-1",
           { "join-item pr-2": allowClear },
           className,
         )}
@@ -58,11 +69,12 @@ const SelectTrigger = React.forwardRef<
       {allowClear && (
         <Button
           type="button"
-          className="join-item border-w-input border-l-0 bg-input text-foreground px-2"
+          className="join-item border-w-input border-l-0 bg-input px-2 text-foreground"
           onClick={(e) => {
+            console.log("on clear");
             e.preventDefault();
             e.stopPropagation();
-            onValueChange('');
+            onValueChange("");
           }}
         >
           <XCircle className="opacity-50" size={16} />
@@ -116,7 +128,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "border-w-box relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-md bg-popover text-popover-foreground shadow-2xl",
+        "relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-md border-w-box bg-popover text-popover-foreground shadow-2xl",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
@@ -182,7 +194,7 @@ const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Separator
     ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    className={cn("-mx-1 my-1 h-px bg-muted-foreground", className)}
     {...props}
   />
 ));

@@ -111,7 +111,7 @@ export function ScenarioFilter({
             <FormItem>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger allowClear>
+                  <SelectTrigger allowClear wrapperClassName="w-full">
                     <SelectValue placeholder={t("select_rule")} />
                   </SelectTrigger>
                 </FormControl>
@@ -134,7 +134,7 @@ export function ScenarioFilter({
             <FormItem>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger allowClear>
+                  <SelectTrigger allowClear wrapperClassName="w-full">
                     <SelectValue placeholder={t("select_languages")} />
                   </SelectTrigger>
                 </FormControl>
@@ -162,7 +162,7 @@ export function ScenarioFilter({
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger className="join-item capitalize">
+                  <SelectTrigger className="join-item capitalize" wrapperClassName="w-full">
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>
