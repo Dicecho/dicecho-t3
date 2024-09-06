@@ -1,18 +1,18 @@
-"use client";
+"use client"; 
 
-import { Plate } from "@udecode/plate-common";
+import { Plate } from "@udecode/plate-common/react";
 import { Editor } from "@/components/plate-ui/editor";
 import { FixedToolbar } from "@/components/plate-ui/fixed-toolbar";
 import { FixedToolbarButtons } from "@/components/plate-ui/fixed-toolbar-buttons";
+import { useMyEditor } from "./plate.config";
 
+import type { WithPlateOptions } from "@udecode/plate-common/react";
 
-import { plugins } from "./plate.config";
+export const RichTextEditor = (props: Omit<WithPlateOptions, 'plugins'>) => {
+  const editor = useMyEditor(props);
 
-import type { PlateProps } from "@udecode/plate-common";
-
-export const RichTextEditor = (props: Omit<PlateProps, "children">) => {
   return (
-    <Plate plugins={plugins} {...props}>
+    <Plate editor={editor}>
       <FixedToolbar className="no-scrollbar">
         <FixedToolbarButtons />
       </FixedToolbar>

@@ -13,7 +13,7 @@ const InfoItem: FC<
   PropsWithChildren<ComponentProps<"div"> & { title: string }>
 > = ({ title, className, children, ...props }) => {
   return (
-    <div className="flex items-center gap-2 " {...props}>
+    <div className="flex items-start gap-2" {...props}>
       <div className="font-bold capitalize text-opacity-highlight">{title}</div>
       <div className={clsx("flex-1", className)}>{children}</div>
     </div>
@@ -68,7 +68,7 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = async ({
 
       {scenario.tags.length > 0 && (
         <InfoItem title={t("tags")}>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {scenario.tags.map((tag) => (
               <span key={tag}>{tag}</span>
             ))}

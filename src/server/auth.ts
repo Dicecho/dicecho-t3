@@ -20,7 +20,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
-    } & DefaultSession["user"] & Token & IUserDto;
+    } & DefaultSession["user"] & Token & IUserDto & JWTRes;
   }
 
   interface Token {
@@ -28,6 +28,12 @@ declare module "next-auth" {
     // role: UserRole;
     accessToken?: string;
     refreshToken?: string;
+  }
+
+  interface JWTRes {
+    iat: number,
+    exp: number,
+    jti: string,
   }
 }
 

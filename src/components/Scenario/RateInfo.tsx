@@ -31,7 +31,6 @@ export const RateInfo: FC<RateInfoProps> = ({
         <div className="flex min-w-20 flex-col items-center justify-center">
           <div>
             <span className="mr-2 text-2xl text-primary">{score}</span>
-            <span className="text-sm opacity-60">{t("Rate.point")}</span>
           </div>
           <div className="text-sm opacity-60">
             <Trans

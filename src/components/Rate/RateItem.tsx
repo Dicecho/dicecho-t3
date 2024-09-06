@@ -37,7 +37,19 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
       );
     }
 
-    // return <MarkdownRender content={rate.remark} />;
+    // if (rate.remarkType === RemarkContentType.Markdown) {
+      // const markdownValue = toSlate(rate.remark)
+      
+      // // (() => {
+      // //   // const splitValue = rate.remark.split(/\r?\n/);
+
+      // //   return splitValue.map((item) => ());
+      // // })();
+
+      // return (
+      //   <RichTextPreview id={`rate-item-${rate._id}`} value={markdownValue} />
+      // );
+    // }
 
     return null;
   };
@@ -52,7 +64,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
           width={24}
           height={24}
         />
-        <div className="flex items-baseline gap-2 flex-1">
+        <div className="flex flex-1 items-baseline gap-2">
           <div>{rate.user.nickName}</div>
           <div className="text-sm text-muted-foreground">
             {rate.type === RateType.Rate

@@ -8,7 +8,7 @@ import {
   useEditorReadOnly,
   useEditorRef,
   usePlateStore,
-} from "@udecode/plate-common";
+} from "@udecode/plate-common/react";
 
 import { Edit, View } from "lucide-react";
 

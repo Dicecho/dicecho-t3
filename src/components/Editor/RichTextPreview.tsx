@@ -1,14 +1,16 @@
 "use client";
 
-import { Plate } from "@udecode/plate-common";
+import { Plate } from "@udecode/plate-common/react";
 import { Editor } from "@/components/plate-ui/editor";
-import { plugins } from './plate.config'
+import { useMyEditor } from "./plate.config";
 
-import type { PlateProps } from "@udecode/plate-common";
+import type { WithPlateOptions } from "@udecode/plate-common/react";
 
-export const RichTextPreview = (props: Omit<PlateProps, "children">) => {
+export const RichTextPreview = (props: Omit<WithPlateOptions, 'plugins'>) => {
+  const editor = useMyEditor(props);
+
   return (
-    <Plate plugins={plugins} {...props}>
+    <Plate editor={editor}>
       <Editor variant={"ghost"} readOnly />
     </Plate>
   );

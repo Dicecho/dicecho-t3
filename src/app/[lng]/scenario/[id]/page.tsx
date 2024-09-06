@@ -55,7 +55,7 @@ const ScenarioDetailPage = async ({
         <Card className="relative mt-[-16px] rounded-t-2xl p-4 md:mt-10 md:flex md:rounded-lg">
           <div
             className="-mt-[40px] mr-[24px] hidden aspect-[3/4] w-32 bg-cover bg-center shadow-2xl md:block"
-            style={{ backgroundImage: `url(${scenario.coverUrl})` }}
+            style={{ backgroundImage: `url(${scenario.coverUrl}?width=300&height=400)` }}
           />
 
           <div className="flex flex-1 flex-col">

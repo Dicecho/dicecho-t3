@@ -1,19 +1,17 @@
 import React from 'react';
-
-import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
-
-import { ELEMENT_BLOCKQUOTE } from '@udecode/plate-block-quote';
+import { BlockquotePlugin } from '@udecode/plate-block-quote/react';
 import {
   collapseSelection,
-  focusEditor,
   getNodeEntries,
   isBlock,
-  toggleNodeType,
+  ParagraphPlugin,
+} from '@udecode/plate-common';
+import {
+  focusEditor,
   useEditorRef,
   useEditorSelector,
-} from '@udecode/plate-common';
-import { ELEMENT_H1, ELEMENT_H2, ELEMENT_H3 } from '@udecode/plate-heading';
-import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph';
+} from '@udecode/plate-common/react';
+import { HEADING_KEYS } from '@udecode/plate-heading';
 
 import { Text, Heading1, Heading2, Heading3, Quote } from 'lucide-react';
 
@@ -28,36 +26,38 @@ import {
 import { useOpenState } from './utils';
 import { ToolbarButton } from '@/components/plate-ui/toolbar';
 
+import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
+
 const items = [
   {
     description: 'Paragraph',
     icon: Text,
     label: 'Paragraph',
-    value: ELEMENT_PARAGRAPH,
+    value: ParagraphPlugin.key,
   },
   {
     description: 'Heading 1',
     icon: Heading1,
     label: 'Heading 1',
-    value: ELEMENT_H1,
+    value: HEADING_KEYS.h1,
   },
   {
     description: 'Heading 2',
     icon: Heading2,
     label: 'Heading 2',
-    value: ELEMENT_H2,
+    value: HEADING_KEYS.h2,
   },
   {
     description: 'Heading 3',
     icon: Heading3,
     label: 'Heading 3',
-    value: ELEMENT_H3,
+    value: HEADING_KEYS.h3,
   },
   {
     description: 'Quote (⌘+⇧+.)',
     icon: Quote,
     label: 'Quote',
-    value: ELEMENT_BLOCKQUOTE,
+    value: BlockquotePlugin.key,
   },
   // {
   //   value: 'ul',
@@ -73,11 +73,11 @@ const items = [
   // },
 ];
 
-const defaultItem = items.find((item) => item.value === ELEMENT_PARAGRAPH)!;
+const defaultItem = items.find((item) => item.value === ParagraphPlugin.key)!;
 
 export function TurnIntoDropdownMenu(props: DropdownMenuProps) {
   const value: string = useEditorSelector((editor) => {
-    let initialNodeType: string = ELEMENT_PARAGRAPH;
+    let initialNodeType: string = ParagraphPlugin.key;
     let allNodesMatchInitialNodeType = false;
     const codeBlockEntries = getNodeEntries(editor, {
       match: (n) => isBlock(editor, n),
@@ -88,13 +88,13 @@ export function TurnIntoDropdownMenu(props: DropdownMenuProps) {
     if (nodes.length > 0) {
       initialNodeType = nodes[0]![0].type as string;
       allNodesMatchInitialNodeType = nodes.every(([node]) => {
-        const type: string = (node?.type as string) || ELEMENT_PARAGRAPH;
+        const type: string = (node?.type as string) || ParagraphPlugin.key;
 
         return type === initialNodeType;
       });
     }
 
-    return allNodesMatchInitialNodeType ? initialNodeType : ELEMENT_PARAGRAPH;
+    return allNodesMatchInitialNodeType ? initialNodeType : ParagraphPlugin.key;
   }, []);
 
   const editor = useEditorRef();
@@ -125,7 +125,7 @@ export function TurnIntoDropdownMenu(props: DropdownMenuProps) {
           className="flex flex-col gap-0.5"
           onValueChange={(type) => {
             // if (type === 'ul' || type === 'ol') {
-            //   if (settingsStore.get.checkedId(KEY_LIST_STYLE_TYPE)) {
+            //   if (settingsStore.get.checkedId(IndentListPlugin.key)) {
             //     toggleIndentList(editor, {
             //       listStyleType: type === 'ul' ? 'disc' : 'decimal',
             //     });
@@ -134,7 +134,7 @@ export function TurnIntoDropdownMenu(props: DropdownMenuProps) {
             //   }
             // } else {
             //   unwrapList(editor);
-            toggleNodeType(editor, { activeType: type });
+            editor.tf.toggle.block({ type });
             // }
 
             collapseSelection(editor);

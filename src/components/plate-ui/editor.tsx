@@ -1,15 +1,14 @@
 import React from 'react';
-
-import type { PlateContentProps } from '@udecode/plate-common';
-import type { VariantProps } from 'class-variance-authority';
-
 import { cn } from '@udecode/cn';
-import { PlateContent } from '@udecode/plate-common';
+import { PlateContent } from '@udecode/plate-common/react';
 import { cva } from 'class-variance-authority';
+
+import type { PlateContentProps } from '@udecode/plate-common/react';
+import type { VariantProps } from 'class-variance-authority';
 
 const editorVariants = cva(
   cn(
-    'relative overflow-x-auto whitespace-pre-wrap break-words',
+    'relative overflow-hidden whitespace-pre-wrap break-words',
     'w-full text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none',
     '[&_[data-slate-placeholder]]:text-muted-foreground [&_[data-slate-placeholder]]:!opacity-100',
     '[&_[data-slate-placeholder]]:top-[auto_!important]',
@@ -38,7 +37,7 @@ const editorVariants = cva(
       },
       variant: {
         ghost: '',
-        outline: 'border border-w-input',
+        outline: 'border border-input',
       },
     },
   }
@@ -75,6 +74,7 @@ const Editor = React.forwardRef<HTMLDivElement, EditorProps>(
             }),
             className
           )}
+          data-plate-selectable
           disableDefaultStyles
           readOnly={disabled ?? readOnly}
           {...props}

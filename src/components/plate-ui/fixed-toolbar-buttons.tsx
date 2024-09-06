@@ -1,15 +1,15 @@
 import React from "react";
 
 import {
-  MARK_BOLD,
-  MARK_CODE,
-  MARK_ITALIC,
-  MARK_STRIKETHROUGH,
-  MARK_UNDERLINE,
-} from "@udecode/plate-basic-marks";
+  BoldPlugin,
+  CodePlugin,
+  ItalicPlugin,
+  StrikethroughPlugin,
+  UnderlinePlugin,
+} from "@udecode/plate-basic-marks/react";
 
-import { MARK_COLOR, MARK_BG_COLOR } from "@udecode/plate-font";
-import { useEditorReadOnly, useEditorState } from "@udecode/plate-common";
+import { FontColorPlugin, FontBackgroundColorPlugin } from "@udecode/plate-font";
+import { useEditorReadOnly, useEditorState } from "@udecode/plate-common/react";
 
 import {
   Bold,
@@ -48,36 +48,36 @@ export function FixedToolbarButtons() {
             </ToolbarGroup>
 
             <ToolbarGroup>
-              <MarkToolbarButton nodeType={MARK_BOLD} tooltip="Bold (⌘+B)">
+              <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
                 <Bold />
               </MarkToolbarButton>
-              <MarkToolbarButton nodeType={MARK_ITALIC} tooltip="Italic (⌘+I)">
+              <MarkToolbarButton nodeType={ItalicPlugin.key} tooltip="Italic (⌘+I)">
                 <Italic />
               </MarkToolbarButton>
               <MarkToolbarButton
-                nodeType={MARK_UNDERLINE}
+                nodeType={UnderlinePlugin.key}
                 tooltip="Underline (⌘+U)"
               >
                 <Underline />
               </MarkToolbarButton>
 
               <MarkToolbarButton
-                nodeType={MARK_STRIKETHROUGH}
+                nodeType={StrikethroughPlugin.key}
                 tooltip="Strikethrough (⌘+⇧+M)"
               >
                 <Strikethrough />
               </MarkToolbarButton>
-              <MarkToolbarButton nodeType={MARK_CODE} tooltip="Code (⌘+E)">
+              <MarkToolbarButton nodeType={CodePlugin.key} tooltip="Code (⌘+E)">
                 <Code />
               </MarkToolbarButton>
 
               <ToolbarGroup>
-                <ColorDropdownMenu nodeType={MARK_COLOR} tooltip="Text Color">
+                <ColorDropdownMenu nodeType={FontColorPlugin.key} tooltip="Text Color">
                   <Brush />
                 </ColorDropdownMenu>
 
                 <ColorDropdownMenu
-                  nodeType={MARK_BG_COLOR}
+                  nodeType={FontBackgroundColorPlugin.key}
                   tooltip="Highlight Color"
                 >
                   <Paintbrush />

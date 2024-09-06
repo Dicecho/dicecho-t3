@@ -1,3 +1,4 @@
+import { AuthErrorCode } from "@dicecho/types";
 import type {
   ModListApiResponse,
   IModListQuery,
@@ -14,6 +15,7 @@ import type {
   IRateListQuery,
   IRateListApiResponse,
   IRateDto,
+  Error as DicechoServerError,
 } from "@dicecho/types";
 import {
   APIClient,
@@ -22,6 +24,20 @@ import {
 } from "./apiClient";
 import { jwtDecode } from "jwt-decode";
 import * as qs from "qs";
+
+function isBackendError(err: unknown): err is { body: DicechoServerError } {
+  if (!err) {
+    return false;
+  }
+
+  const body = (err as { body: DicechoServerError }).body;
+
+  if (body === undefined) {
+    return false;
+  }
+
+  return body.success !== undefined && body.code !== undefined;
+}
 
 type Empty = Record<string, never>;
 
@@ -66,13 +82,29 @@ export class DicechoApi extends APIClient {
 
       if (decode.exp && decode.exp * 1000 < Date.now()) {
         this.clearAuthorization();
-        const res = await this.auth.refreshToken(this.refreshToken);
-        this.setToken(res);
+        await this.auth
+          .refreshToken(this.refreshToken)
+          .then((res) => {
+            this.setToken(res);
+          })
+          .catch(() => {
+            this.setToken({});
+          });
         return requestFn;
       }
     }
 
-    return requestFn;
+    return requestFn.catch(async (err: Error) => {
+      if (isBackendError(err)) {
+        if (err.body.code === AuthErrorCode.REFRESH_TOKEN_DISABLES) {
+          this.clearAuthorization();
+          return super
+            .request<P, Response<R>>(endpoint, method, params)
+            .then((res) => res.data);
+        }
+      }
+      throw err;
+    });
   }
 
   auth = {
@@ -189,11 +221,8 @@ export class DicechoApi extends APIClient {
         "GET",
       ),
     detail: (id: string) =>
-      this.request<Empty, IRateDto>(
-        `/api/rate/${id}`,
-        "GET",
-      ),
-  }
+      this.request<Empty, IRateDto>(`/api/rate/${id}`, "GET"),
+  };
 }
 
 export type { APIClientOptions };

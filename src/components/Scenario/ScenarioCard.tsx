@@ -21,7 +21,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
           className={clsx(
             "absolute w-full h-full bg-cover bg-center bg-no-repeat transition-all group-hover:scale-125 group-hover:brightness-75"
           )}
-          style={{ backgroundImage: `url(${scenario.coverUrl})` }}
+          style={{ backgroundImage: `url(${scenario.coverUrl}?width=300&height=400)` }}
         />
       </div>
       <p className="text-nowrap truncate">{scenario.title}</p>

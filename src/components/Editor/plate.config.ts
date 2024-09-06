@@ -1,53 +1,56 @@
-import { createBasicElementsPlugin } from "@udecode/plate-basic-elements";
+import { BasicElementsPlugin } from "@udecode/plate-basic-elements/react";
 import { withProps } from "@udecode/cn";
-import { createPlugins, PlateLeaf } from "@udecode/plate-common";
+import { usePlateEditor, PlateLeaf } from "@udecode/plate-common/react";
 import { CodeLeaf } from "@/components/plate-ui/code-leaf";
 import { HeadingElement } from "@/components/plate-ui/heading-element";
 import {
-  createFontBackgroundColorPlugin,
-  createFontColorPlugin,
-  createFontSizePlugin,
+  FontBackgroundColorPlugin,
+  FontColorPlugin,
+  FontSizePlugin,
 } from "@udecode/plate-font";
 import {
-  ELEMENT_H1,
-  ELEMENT_H2,
-  ELEMENT_H3,
-  ELEMENT_H4,
-  ELEMENT_H5,
-  ELEMENT_H6,
+  HEADING_KEYS
 } from "@udecode/plate-heading";
 import {
-  createBasicMarksPlugin,
-  MARK_BOLD,
-  MARK_CODE,
-  MARK_ITALIC,
-  MARK_STRIKETHROUGH,
-  MARK_SUBSCRIPT,
-  MARK_SUPERSCRIPT,
-  MARK_UNDERLINE,
-} from "@udecode/plate-basic-marks";
+  BoldPlugin,
+  CodePlugin,
+  ItalicPlugin,
+  StrikethroughPlugin,
+  SubscriptPlugin,
+  SuperscriptPlugin,
+  UnderlinePlugin,
+} from "@udecode/plate-basic-marks/react";
+import type { WithPlateOptions } from "@udecode/plate-common/react";
 
-export const plugins = createPlugins(
-  [
-    createBasicElementsPlugin(),
-    createBasicMarksPlugin(),
-    createFontColorPlugin(),
-    createFontBackgroundColorPlugin(),
-    createFontSizePlugin(),
-  ],
-  {
-    components: {
+
+export const useMyEditor = (options: Omit<WithPlateOptions, 'plugins'>) => {
+  return usePlateEditor({
+    plugins: [
+      BasicElementsPlugin,
+      BoldPlugin,
+      CodePlugin,
+      ItalicPlugin,
+      StrikethroughPlugin,
+      SubscriptPlugin,
+      SuperscriptPlugin,
+      UnderlinePlugin,
+      FontBackgroundColorPlugin,
+      FontColorPlugin,
+      FontSizePlugin,
+    ],
+    override: {
+      components: {
       // [ELEMENT_BLOCKQUOTE]: BlockquoteElement,
       // [ELEMENT_CODE_BLOCK]: CodeBlockElement,
       // [ELEMENT_CODE_LINE]: CodeLineElement,
       // [ELEMENT_CODE_SYNTAX]: CodeSyntaxLeaf,
       // [ELEMENT_HR]: HrElement,
-      [ELEMENT_H1]: withProps(HeadingElement, { variant: "h1" }),
-      [ELEMENT_H2]: withProps(HeadingElement, { variant: "h2" }),
-      [ELEMENT_H3]: withProps(HeadingElement, { variant: "h3" }),
-      [ELEMENT_H4]: withProps(HeadingElement, { variant: "h4" }),
-      [ELEMENT_H5]: withProps(HeadingElement, { variant: "h5" }),
-      [ELEMENT_H6]: withProps(HeadingElement, { variant: "h6" }),
+      [HEADING_KEYS.h1]: withProps(HeadingElement, { variant: "h1" }),
+      [HEADING_KEYS.h2]: withProps(HeadingElement, { variant: "h2" }),
+      [HEADING_KEYS.h3]: withProps(HeadingElement, { variant: "h3" }),
+      [HEADING_KEYS.h4]: withProps(HeadingElement, { variant: "h4" }),
+      [HEADING_KEYS.h5]: withProps(HeadingElement, { variant: "h5" }),
+      [HEADING_KEYS.h6]: withProps(HeadingElement, { variant: "h6" }),
       // [ELEMENT_IMAGE]: ImageElement,
       // [ELEMENT_LI]: withProps(PlateElement, { as: "li" }),
       // [ELEMENT_LINK]: LinkElement,
@@ -63,13 +66,15 @@ export const plugins = createPlugins(
       // [ELEMENT_TODO_LI]: TodoListElement,
       // [ELEMENT_TR]: TableRowElement,
       // [ELEMENT_EXCALIDRAW]: ExcalidrawElement,
-      [MARK_BOLD]: withProps(PlateLeaf, { as: "strong" }),
-      [MARK_CODE]: CodeLeaf,
-      [MARK_ITALIC]: withProps(PlateLeaf, { as: "em" }),
-      [MARK_STRIKETHROUGH]: withProps(PlateLeaf, { as: "s" }),
-      [MARK_SUBSCRIPT]: withProps(PlateLeaf, { as: "sub" }),
-      [MARK_SUPERSCRIPT]: withProps(PlateLeaf, { as: "sup" }),
-      [MARK_UNDERLINE]: withProps(PlateLeaf, { as: "u" }),
+      [BoldPlugin.key]: withProps(PlateLeaf, { as: "strong" }),
+      [CodePlugin.key]: CodeLeaf,
+      [ItalicPlugin.key]: withProps(PlateLeaf, { as: "em" }),
+      [StrikethroughPlugin.key]: withProps(PlateLeaf, { as: "s" }),
+      [SubscriptPlugin.key]: withProps(PlateLeaf, { as: "sub" }),
+      [SuperscriptPlugin.key]: withProps(PlateLeaf, { as: "sup" }),
+      [UnderlinePlugin.key]: withProps(PlateLeaf, { as: "u" }),
+      }
     },
-  },
-);
+    ...options,
+  });
+}
