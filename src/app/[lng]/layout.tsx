@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Layout as AppLayout } from "@/components/Layout";
 import { languages } from "@/lib/i18n/settings";
 import { getTheme } from "@/lib/theme/server";
+import { DARK_THEMES, THEMES } from "@/lib/theme/constants";
 
 // TODO: support i18n
 export const metadata = {
@@ -38,8 +39,9 @@ export default async function RootLayout(
   } = props;
 
   const theme = await getTheme();
+  const isDarkTheme = DARK_THEMES.some((t) => t === theme);
   return (
-    <html lang={lng} dir={dir(lng)} data-theme={theme} className={`${GeistSans.variable}`}>
+    <html lang={lng} dir={dir(lng)} data-theme={theme} className={`${GeistSans.variable} ${isDarkTheme ? "dark" : "light"}`}>
       <TRPCReactProvider>
         <AppLayout>
           <body className="bg-custom-gradient min-h-screen bg-no-repeat">

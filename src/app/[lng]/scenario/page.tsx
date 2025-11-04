@@ -98,7 +98,7 @@ const ScenarioPage = async (
           <ScenarioList initialData={scenarios} query={query} />
         </div>
         <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
-          <Button className="capitalize" variant="outline" color="primary">
+          <Button className="capitalize" variant="outline">
             <Upload size={16} />
             {t("scenario_publish")}
           </Button>

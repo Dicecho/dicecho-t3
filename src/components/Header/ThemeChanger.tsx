@@ -1,21 +1,25 @@
 "use client";
 
-import { useTheme } from "@/lib/theme/react";
 import { Sun, Moon } from "lucide-react";
 import { Select, SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import * as SelectPrimitive from "@radix-ui/react-select";
+import { DARK_THEMES, THEMES } from "@/lib/theme/constants";
 
-const LIGHT_THEMES = ["light"];
-const DARK_THEMES = ["dark", "dicecho"];
-
-const THEMES = [...LIGHT_THEMES, ...DARK_THEMES];
-
-export const ThemeChanger = (props: { initialTheme: string }) => {
-  const { theme, setTheme } = useTheme(props.initialTheme);
-
+export const ThemeChanger = ({
+  theme,
+  setTheme,
+}: {
+  theme: string;
+  setTheme: (theme: string) => void;
+}) => {
   return (
-    <Select defaultValue={theme} onValueChange={(t) => setTheme(t)}>
+    <Select
+      defaultValue={theme}
+      onValueChange={(t) => {
+        setTheme(t);
+      }}
+    >
       <SelectPrimitive.Trigger asChild>
         <Button variant="outline" size="icon">
           {DARK_THEMES.some((t) => t === theme) ? <Moon /> : <Sun />}
@@ -33,10 +37,10 @@ export const ThemeChanger = (props: { initialTheme: string }) => {
             >
               <div className="flex h-full w-full items-center gap-1">
                 <div className="mr-auto">{theme}</div>
-                <div className="h-4 w-2 rounded bg-primary" />
-                <div className="h-4 w-2 rounded bg-secondary" />
-                <div className="h-4 w-2 rounded bg-accent" />
-                <div className="h-4 w-2 rounded bg-muted" />
+                <div className="bg-primary h-4 w-2 rounded" />
+                <div className="bg-secondary h-4 w-2 rounded" />
+                <div className="bg-accent h-4 w-2 rounded" />
+                <div className="bg-muted h-4 w-2 rounded" />
               </div>
             </SelectItem>
           ))}

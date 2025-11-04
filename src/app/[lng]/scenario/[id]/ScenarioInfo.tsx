@@ -1,6 +1,8 @@
+"use client";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
+import { useTranslation } from "@/lib/i18n/react";
 import { LanguageCodeMap } from "@/utils/language";
 import { UserAvatar } from "@/components/User/Avatar";
 

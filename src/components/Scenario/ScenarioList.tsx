@@ -70,19 +70,19 @@ export const ScenarioList: FC<ScenarioListProps> = ({
           }}
           components={{
             loading: isLoading ? (
-              <span className="loading loading-spinner loading-xs" />
+              <span key="loading" className="loading loading-spinner loading-xs" />
             ) : (
-              <></>
+              <span key="loading" />
             ),
           }}
         />
       </div>
-      <div className="divider !mt-0" />
+      <div className="divider mt-0!" />
       <div
         className={clsx("grid grid-cols-2 gap-8 md:grid-cols-4", className)}
         {...props}
       >
-        {data?.pages.map((page) =>
+        {data?.pages.flatMap((page) =>
           page.data.map((scenario) => (
             <Link
               href={`/${i18n.language}/scenario/${scenario._id}`}
@@ -90,7 +90,7 @@ export const ScenarioList: FC<ScenarioListProps> = ({
             >
               <ScenarioCard scenario={scenario} />
             </Link>
-          )),
+          ))
         )}
       </div>
 
