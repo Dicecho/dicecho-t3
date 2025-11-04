@@ -43,7 +43,6 @@ type Empty = Record<string, never>;
 
 export class DicechoApi extends APIClient {
   private refreshToken?: string;
-  private expiredAt?: number;
 
   constructor(opts: APIClientOptions) {
     super(opts);

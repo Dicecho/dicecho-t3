@@ -4,7 +4,7 @@ import { api } from "@/trpc/server";
 import { MobileFooter } from "@/components/Footer";
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
-import { useTranslation } from "@/lib/i18n";
+import { getTranslation } from "@/lib/i18n";
 
 export default async function Home({
   params: { lng },
@@ -12,7 +12,7 @@ export default async function Home({
   params: { lng: string };
 }) {
   const hello = await api.post.hello({ text: "from tRPC" });
-  const { t } = await useTranslation(lng);
+  const { t } = await getTranslation(lng);
   const session = await getServerAuthSession();
 
   return (

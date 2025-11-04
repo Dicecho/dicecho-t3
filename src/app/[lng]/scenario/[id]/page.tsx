@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useTranslation } from "@/lib/i18n";
+import { getTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { getDicechoServerApi } from "@/server/dicecho";
 import { RateInfo } from "@/components/Scenario/RateInfo";
@@ -18,7 +18,7 @@ const ScenarioDetailPage = async ({
   params: { lng: string; id: string };
   searchParams?: Record<string, string | string[] | undefined>;
 }) => {
-  const { t } = await useTranslation(lng);
+  const { t } = await getTranslation(lng);
   const api = await getDicechoServerApi();
   const scenario = await api.module.detail(id);
   const actions = (

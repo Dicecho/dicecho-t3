@@ -24,7 +24,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/Auth/AuthDialog";
 import { getServerAuthSession } from "@/server/auth";
-import { useTranslation } from "@/lib/i18n";
+import { getTranslation } from "@/lib/i18n";
 
 export type HeaderProps = ComponentProps<"div"> & {
   lng: string;
@@ -33,7 +33,7 @@ export type HeaderProps = ComponentProps<"div"> & {
 
 export const Header: FC<HeaderProps> = async ({ lng, theme, ...props }) => {
   const session = await getServerAuthSession();
-  const { t } = await useTranslation(lng);
+  const { t } = await getTranslation(lng);
 
   const menus = [
     {

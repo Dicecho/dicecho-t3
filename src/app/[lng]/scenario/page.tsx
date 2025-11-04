@@ -1,6 +1,6 @@
 import type { IModListQuery } from "@dicecho/types";
 import { Upload, Plus, Search } from "lucide-react";
-import { useTranslation } from "@/lib/i18n";
+import { getTranslation } from "@/lib/i18n";
 import { queryToFormData } from "@/components/Scenario/utils";
 import { MobileFooter } from "@/components/Footer";
 import { MobileHeader } from "@/components/Header/MobileHeader";
@@ -39,7 +39,7 @@ const ScenarioPage = async ({
   const query = searchParams
     ? urlToQuery(qs.stringify(searchParams))
     : DEFAULT_QUERY;
-  const { t } = await useTranslation(lng);
+  const { t } = await getTranslation(lng);
   const api = await getDicechoServerApi();
   const config = await api.module.config();
   const scenarios = await api.module.list(query);

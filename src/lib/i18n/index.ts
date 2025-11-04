@@ -17,7 +17,7 @@ const initI18next = async (lng: string, ns: string | string[]) => {
   return i18nInstance;
 };
 
-export async function useTranslation(
+export async function getTranslation(
   lng: string,
   ns: string | string[] = defaultNS,
   options: ReactOptions = {},

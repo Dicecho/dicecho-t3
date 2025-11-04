@@ -11,7 +11,7 @@ export const MobileHeader: FC<MobileHeaderProps> = ({
   return (
     <div
       className={cn(
-        "container sticky left-0 right-0 top-0 z-10 flex gap-4 bg-base-200 py-4 shadow-xl md:hidden",
+        "container sticky left-0 right-0 top-0 z-10 flex gap-4 bg-base-200 py-4 shadow-xl md:static md:hidden",
         className,
       )}
       {...props}
