@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { Trans } from "react-i18next/TransWithoutContext";
-import { getTranslation } from "@/lib/i18n";
+import { Trans, useTranslation } from "react-i18next";
 import { LanguageCodeMap } from "@/utils/language";
 import { UserAvatar } from "@/components/User/Avatar";
 
@@ -25,14 +24,14 @@ interface ScenarioInfoProps extends ComponentProps<"div"> {
   lng: string;
 }
 
-export const ScenarioInfo: FC<ScenarioInfoProps> = async ({
+export const ScenarioInfo: FC<ScenarioInfoProps> = ({
   scenario,
   lng,
   className,
   ref,
   ...props
 }) => {
-  const { t } = await getTranslation(lng);
+  const { t } = useTranslation(lng);
 
   return (
     <>

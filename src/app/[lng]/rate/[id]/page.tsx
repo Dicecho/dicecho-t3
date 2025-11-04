@@ -1,11 +1,17 @@
 import { RateItem } from "@/components/Rate/RateItem";
 import { getDicechoServerApi } from "@/server/dicecho";
 
-const RateDetailPage = async ({
-  params: { id },
-}: {
-  params: { id: string };
-}) => {
+const RateDetailPage = async (
+  props: {
+    params: Promise<{ id: string }>;
+  }
+) => {
+  const params = await props.params;
+
+  const {
+    id
+  } = params;
+
   const api = await getDicechoServerApi();
   const rate = await api.rate.detail(id);
 

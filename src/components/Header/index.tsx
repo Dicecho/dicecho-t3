@@ -1,5 +1,6 @@
+"use server";
 import clsx from "clsx";
-import { type ComponentProps, type FC } from "react";
+import { type ComponentProps } from "react";
 import { BookOpenText } from "lucide-react";
 import Link from "next/link";
 import DicechoLogo from "./dicecho.svg";
@@ -31,7 +32,7 @@ export type HeaderProps = ComponentProps<"div"> & {
   theme: string;
 };
 
-export const Header: FC<HeaderProps> = async ({ lng, theme, ...props }) => {
+export const Header = async ({ lng, theme, ...props }: HeaderProps) => {
   const session = await getServerAuthSession();
   const { t } = await getTranslation(lng);
 
@@ -54,7 +55,7 @@ export const Header: FC<HeaderProps> = async ({ lng, theme, ...props }) => {
     <div
       {...props}
       className={clsx(
-        "sticky left-0 right-0 top-0 z-10 bg-base-200 shadow-xl max-md:hidden",
+        "bg-base-200 sticky left-0 right-0 top-0 z-10 shadow-xl max-md:hidden",
       )}
     >
       <div className="container mx-auto">
@@ -74,17 +75,16 @@ export const Header: FC<HeaderProps> = async ({ lng, theme, ...props }) => {
               <NavigationMenuList>
                 {menus.map((menu) => (
                   <NavigationMenuItem key={menu.link}>
-                    <Link href={`/${lng}${menu.link}`} legacyBehavior passHref>
-                      <NavigationMenuLink
-                        className={clsx(
-                          navigationMenuTriggerStyle(),
-                          "capitalize",
-                        )}
-                      >
-                        <BookOpenText size={16} />
-                        {menu.title}
-                      </NavigationMenuLink>
-                    </Link>
+                    <NavigationMenuLink
+                      href={`/${lng}${menu.link}`}
+                      className={clsx(
+                        navigationMenuTriggerStyle(),
+                        "capitalize",
+                      )}
+                    >
+                      <BookOpenText size={16} />
+                      {menu.title}
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                 ))}
               </NavigationMenuList>
@@ -100,13 +100,13 @@ export const Header: FC<HeaderProps> = async ({ lng, theme, ...props }) => {
             {session ? (
               <Popover>
                 <PopoverTrigger>
-                    <UserAvatar
-                      user={session.user}
-                      alt="avatar"
-                      width={40}
-                      height={40}
-                      className="object-cover w-10 h-10 rounded-full border cursor-pointer"
-                    />
+                  <UserAvatar
+                    user={session.user}
+                    alt="avatar"
+                    width={40}
+                    height={40}
+                    className="h-10 w-10 cursor-pointer rounded-full border object-cover"
+                  />
                 </PopoverTrigger>
                 <PopoverContent align="end">
                   <UserBox

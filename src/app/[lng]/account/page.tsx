@@ -5,11 +5,17 @@ import { HeaderMenu } from "@/components/Header/HeaderMenu";
 import { redirect } from "next/navigation";
 import { SignIn } from "./SignIn";
 
-export default async function AccountPage({
-  params: { lng },
-}: {
-  params: { lng: string };
-}) {
+export default async function AccountPage(
+  props: {
+    params: Promise<{ lng: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    lng
+  } = params;
+
   const session = await getServerAuthSession();
   if (session?.user) {
     redirect(`/${lng}/account/${session.user.id}`);

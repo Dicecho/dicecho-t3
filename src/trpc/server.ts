@@ -7,7 +7,6 @@ import { createCaller } from "@/server/api/root";
 import { createTRPCContext } from "@/server/api/trpc";
 import { env } from "@/env";
 
-
 if (env.PROXY_AGENT_URL) {
   setGlobalDispatcher(new ProxyAgent(env.PROXY_AGENT_URL));
 }
@@ -16,8 +15,8 @@ if (env.PROXY_AGENT_URL) {
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a tRPC call from a React Server Component.
  */
-const createContext = cache(() => {
-  const heads = new Headers(headers());
+const createContext = cache(async () => {
+  const heads = new Headers(await headers());
   heads.set("x-trpc-source", "rsc");
 
   return createTRPCContext({

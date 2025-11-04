@@ -29,13 +29,19 @@ function queryToUrl(query: Partial<IModListQuery>): string {
   return qs.stringify(query);
 }
 
-const ScenarioPage = async ({
-  params: { lng },
-  searchParams,
-}: {
-  params: { lng: string };
-  searchParams?: Record<string, string | string[] | undefined>;
-}) => {
+const ScenarioPage = async (
+  props: {
+    params: Promise<{ lng: string }>;
+    searchParams?: Promise<Record<string, string | string[] | undefined>>;
+  }
+) => {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const {
+    lng
+  } = params;
+
   const query = searchParams
     ? urlToQuery(qs.stringify(searchParams))
     : DEFAULT_QUERY;

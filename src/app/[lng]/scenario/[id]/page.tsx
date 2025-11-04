@@ -6,18 +6,25 @@ import { RateInfo } from "@/components/Scenario/RateInfo";
 import { ScenarioRelatedLink } from "@/components/Scenario/ScenarioRelatedLink";
 import { Card } from "@/components/ui/card";
 import { Album } from "@/components/Album";
-import { Trans } from "react-i18next/TransWithoutContext";
+import { Trans } from "react-i18next";
 import { StarIcon, HeartIcon, BookmarkPlusIcon, LinkIcon } from "lucide-react";
 import { ScenarioDetailHeader } from "./header";
 import { ScenarioInfo } from "./ScenarioInfo";
 import { ScenarioRateList } from "./rates";
 
-const ScenarioDetailPage = async ({
-  params: { lng, id },
-}: {
-  params: { lng: string; id: string };
-  searchParams?: Record<string, string | string[] | undefined>;
-}) => {
+const ScenarioDetailPage = async (
+  props: {
+    params: Promise<{ lng: string; id: string }>;
+    searchParams?: Promise<Record<string, string | string[] | undefined>>;
+  }
+) => {
+  const params = await props.params;
+
+  const {
+    lng,
+    id
+  } = params;
+
   const { t } = await getTranslation(lng);
   const api = await getDicechoServerApi();
   const scenario = await api.module.detail(id);

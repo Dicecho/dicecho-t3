@@ -1,17 +1,17 @@
 "use client";
 
-import { Plate } from "@udecode/plate-common/react";
-import { Editor } from "@/components/plate-ui/editor";
-import { useMyEditor } from "./plate.config";
+import { Plate, WithPlateOptions, usePlateEditor } from "platejs/react";
 
-import type { WithPlateOptions } from "@udecode/plate-common/react";
+import { Editor, EditorContainer } from "@/components/ui/editor";
 
 export const RichTextPreview = (props: Omit<WithPlateOptions, 'plugins'>) => {
-  const editor = useMyEditor(props);
+  const editor = usePlateEditor(props);
 
   return (
     <Plate editor={editor}>
-      <Editor variant={"ghost"} readOnly />
+      <EditorContainer>
+        <Editor placeholder="Type your amazing content here..." />
+      </EditorContainer>
     </Plate>
   );
-};
+}

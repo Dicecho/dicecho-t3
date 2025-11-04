@@ -1,11 +1,18 @@
 import { getServerAuthSession } from "@/server/auth";
 import { MobileFooter } from "@/components/Footer";
 
-export default async function AccountDetailPage({
-  params: { lng, id },
-}: {
-  params: { lng: string; id: string };
-}) {
+export default async function AccountDetailPage(
+  props: {
+    params: Promise<{ lng: string; id: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    lng,
+    id
+  } = params;
+
   const session = await getServerAuthSession();
   const isMe = session?.user._id === id
 

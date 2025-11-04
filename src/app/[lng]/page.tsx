@@ -6,11 +6,17 @@ import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
 import { getTranslation } from "@/lib/i18n";
 
-export default async function Home({
-  params: { lng },
-}: {
-  params: { lng: string };
-}) {
+export default async function Home(
+  props: {
+    params: Promise<{ lng: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    lng
+  } = params;
+
   const hello = await api.post.hello({ text: "from tRPC" });
   const { t } = await getTranslation(lng);
   const session = await getServerAuthSession();

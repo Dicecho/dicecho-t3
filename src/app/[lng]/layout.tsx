@@ -21,19 +21,28 @@ export async function generateStaticParams() {
   return languages.map((lng) => ({ lng }));
 }
 
-export default function RootLayout({
-  children,
-  params: { lng },
-}: {
-  children: React.ReactNode;
-  params: { lng: string };
-}) {
-  const theme = getTheme();
+export default async function RootLayout(
+  props: {
+    children: React.ReactNode;
+    params: Promise<{ lng: string }>;
+  }
+) {
+  const params = await props.params;
+
+  const {
+    lng
+  } = params;
+
+  const {
+    children
+  } = props;
+
+  const theme = await getTheme();
   return (
     <html lang={lng} dir={dir(lng)} data-theme={theme} className={`${GeistSans.variable}`}>
       <TRPCReactProvider>
         <AppLayout>
-          <body className="bg-custom-gradient min-h-[100vh] bg-no-repeat">
+          <body className="bg-custom-gradient min-h-screen bg-no-repeat">
             <Header lng={lng} theme={theme} />
             {children}
             <Toaster />
