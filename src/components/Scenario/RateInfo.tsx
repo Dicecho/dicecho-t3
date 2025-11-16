@@ -54,8 +54,9 @@ export const RateInfo: FC<RateInfoProps> = ({
                 />
                 <Progress
                   size="sm"
+                  className="flex-1"
                   value={(info[key]! / count) * 100}
-                  color="warning"
+                  color="yellow"
                 />
               </div>
             ))}

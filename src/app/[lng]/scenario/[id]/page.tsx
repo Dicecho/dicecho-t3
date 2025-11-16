@@ -149,7 +149,7 @@ const ScenarioDetailPage = async (
               info={scenario.rateInfo}
             />
 
-            <ScenarioRateList scenarioId={scenario._id} />
+            <ScenarioRateList rateCount={scenario.rateCount} markCount={scenario.markCount} scenarioId={scenario._id} />
           </div>
           <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
             {scenario.relatedLinks.length > 0 && (

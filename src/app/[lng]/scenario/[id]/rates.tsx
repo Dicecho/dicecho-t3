@@ -11,7 +11,7 @@ const DEFAULT_QUERY: Partial<IRateListQuery> = {
   sort: { [RateSortKey.RATE_AT]: -1 },
 };
 
-export const ScenarioRateList = ({ scenarioId }: { scenarioId: string }) => {
+export const ScenarioRateList = ({ scenarioId, rateCount = 0, markCount = 0 }: { scenarioId: string, rateCount?: number, markCount?: number }) => {
   const [query, setQuery] = useLocalStorage<
     Pick<Partial<IRateListQuery>, "filter" | "sort">
   >("@rateListQuery", DEFAULT_QUERY);
@@ -24,7 +24,7 @@ export const ScenarioRateList = ({ scenarioId }: { scenarioId: string }) => {
 
   return (
     <>
-      <RateFilter query={query} onChange={(query) => setQuery(query)} />
+      <RateFilter rateCount={rateCount} markCount={markCount} query={query} onChange={(query) => setQuery(query)} />
       <RateList query={rateQuery} />
     </>
   );

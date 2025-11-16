@@ -7,13 +7,13 @@ import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
 
 const progressVariants = cva(
-  "relative w-full overflow-hidden rounded-full bg-opacity-20",
+  "relative h-2 w-full overflow-hidden rounded-full",
   {
     variants: {
       color: {
-        primary: "bg-primary",
-        destructive: "bg-destructive",
-        warning: "bg-warning",
+        primary: "bg-primary/20",
+        secondary: "bg-secondary/20",
+        yellow: "bg-yellow-500/20",
       },
       size: {
         default: "h-4",
@@ -22,18 +22,18 @@ const progressVariants = cva(
       },
     },
     defaultVariants: {
-      color: 'primary',
+      color: "primary",
       size: "default",
     },
-  }
+  },
 );
 
 const progressIndicatorVariants = cva("h-full w-full flex-1 transition-all", {
   variants: {
     color: {
       primary: "bg-primary",
-      destructive: "bg-destructive",
-      warning: "bg-warning",
+      secondary: "bg-secondary",
+      yellow: "bg-yellow-500",
     },
   },
   defaultVariants: {
@@ -41,23 +41,26 @@ const progressIndicatorVariants = cva("h-full w-full flex-1 transition-all", {
   },
 });
 
-const Progress = React.forwardRef<
-  React.ElementRef<typeof ProgressPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> &
-    VariantProps<typeof progressIndicatorVariants> &
-    VariantProps<typeof progressVariants>
->(({ className, value, color, size, ...props }, ref) => (
-  <ProgressPrimitive.Root
-    ref={ref}
-    className={cn(progressVariants({ color, size, className }))}
-    {...props}
-  >
-    <ProgressPrimitive.Indicator
-      className={cn(progressIndicatorVariants({ color }))}
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-    />
-  </ProgressPrimitive.Root>
-));
-Progress.displayName = ProgressPrimitive.Root.displayName;
+interface ProgressProps
+  extends React.ComponentProps<typeof ProgressPrimitive.Root> {
+  color?: "primary" | "secondary" | "yellow";
+  size?: "default" | "large" | "sm";
+}
+
+function Progress({ className, color, size, value, ...props }: ProgressProps) {
+  return (
+    <ProgressPrimitive.Root
+      data-slot="progress"
+      className={cn(progressVariants({ color, size }), className)}
+      {...props}
+    >
+      <ProgressPrimitive.Indicator
+        data-slot="progress-indicator"
+        className={cn(progressIndicatorVariants({ color }))}
+        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+      />
+    </ProgressPrimitive.Root>
+  );
+}
 
 export { Progress };

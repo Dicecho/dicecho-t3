@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { SortOrder } from "@dicecho/types";
 import { FilterIcon, ArrowDownWideNarrowIcon, XIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -94,12 +95,16 @@ const RateSortOptionMap: Record<RateSortOption, IRateListQuery["sort"]> = {
 };
 
 interface RateFilterProps extends Omit<ComponentProps<"div">, "onChange"> {
+  rateCount?: number;
+  markCount?: number;
   query: Pick<Partial<IRateListQuery>, "sort" | "filter">;
   onChange: (query: Pick<Partial<IRateListQuery>, "sort" | "filter">) => void;
 }
 
 export const RateFilter: FC<RateFilterProps> = ({
   query = {},
+  rateCount = 0,
+  markCount = 0,
   onChange = () => {},
   className,
   ...props
@@ -191,9 +196,11 @@ export const RateFilter: FC<RateFilterProps> = ({
           <TabsList>
             <TabsTrigger value="0" className="capitalize">
               {t("Rate.type_rate")}
+              {rateCount > 0 && <Badge className="ml-1" variant="secondary">{rateCount}</Badge>}
             </TabsTrigger>
             <TabsTrigger value="1" className="capitalize">
               {t("Rate.type_mark")}
+              {markCount > 0 && <Badge className="ml-1" variant="secondary">{markCount}</Badge>}
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -305,7 +312,7 @@ export const RateFilter: FC<RateFilterProps> = ({
         </Select>
       </div>
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex flex-wrap gap-2">
         {remarkLengthRange && (
           <Button
             onClick={() => {
