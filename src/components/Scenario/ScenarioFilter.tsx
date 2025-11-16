@@ -2,8 +2,9 @@
 import React, { useEffect } from "react";
 import { ModSortKey, SortOrder, type ModFilterConfig } from "@dicecho/types";
 import { type LanguageCodes, LanguageCodeMap } from "@/utils/language";
-import { ArrowUpNarrowWide, ArrowDownNarrowWide } from "lucide-react";
+import { ArrowUpNarrowWide, ArrowDownNarrowWide, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Select,
   SelectContent,
@@ -109,20 +110,25 @@ export function ScenarioFilter({
           name="rule"
           render={({ field }) => (
             <FormItem>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger allowClear wrapperClassName="w-full">
-                    <SelectValue placeholder={t("select_rule")} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {config?.rules.map((rule) => (
-                    <SelectItem key={rule._id} value={rule._id}>
-                      {rule._id}({rule.count})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ButtonGroup orientation="horizontal" className="w-full">
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={t("select_rule")} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {config?.rules.map((rule) => (
+                      <SelectItem key={rule._id} value={rule._id}>
+                        {rule._id}({rule.count})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button onClick={() => field.onChange("")}>
+                  <XCircle />
+                </Button>
+              </ButtonGroup>
               <FormMessage />
             </FormItem>
           )}
@@ -132,37 +138,43 @@ export function ScenarioFilter({
           name="language"
           render={({ field }) => (
             <FormItem>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger allowClear wrapperClassName="w-full">
-                    <SelectValue placeholder={t("select_languages")} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {config?.languages.map((language) => (
-                    <SelectItem key={language._id} value={language._id}>
-                      {
-                        LanguageCodeMap[i18n.language]![
-                          language._id as LanguageCodes
-                        ]
-                      }
-                      ({language.count})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ButtonGroup orientation="horizontal" className="w-full">
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={t("select_languages")} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {config?.languages.map((language) => (
+                      <SelectItem key={language._id} value={language._id}>
+                        {
+                          LanguageCodeMap[i18n.language]![
+                            language._id as LanguageCodes
+                          ]
+                        }
+                        ({language.count})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button onClick={() => field.onChange("")}>
+                  <XCircle />
+                </Button>
+              </ButtonGroup>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div className="join w-full">
+
+        <ButtonGroup orientation="horizontal" className="w-full">
           <FormField
             control={form.control}
             name="sortKey"
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger className="join-item capitalize" wrapperClassName="w-full">
+                  <SelectTrigger className="capitalize w-full">
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>
@@ -182,7 +194,6 @@ export function ScenarioFilter({
             name="sortOrder"
             render={({ field }) => (
               <Button
-                className="join-item border-w-input px-2 bg-input"
                 type="button"
                 onClick={() => {
                   field.onChange(
@@ -200,7 +211,7 @@ export function ScenarioFilter({
               </Button>
             )}
           />
-        </div>
+        </ButtonGroup>
         <Button
           className="w-full capitalize"
           color="destructive"

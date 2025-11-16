@@ -62,7 +62,7 @@ export const Header = async ({ lng, theme, ...props }: HeaderProps) => {
           <div className="w-1/2 justify-start">
             <Link href={`/${lng}`} passHref>
               <DicechoLogo
-                className="w-8 text-[#9396f7]"
+                className="w-8 text-primary"
                 width={32}
                 height={32}
               />
