@@ -110,10 +110,10 @@ export function ScenarioFilter({
           name="rule"
           render={({ field }) => (
             <FormItem>
-              <ButtonGroup orientation="horizontal" className="w-full">
+              <ButtonGroup orientation="horizontal" className="w-full min-w-0">
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="flex-1 min-w-0">
                       <SelectValue placeholder={t("select_rule")} />
                     </SelectTrigger>
                   </FormControl>
@@ -125,7 +125,7 @@ export function ScenarioFilter({
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={() => field.onChange("")}>
+                <Button onClick={() => field.onChange("")} className="shrink-0">
                   <XCircle />
                 </Button>
               </ButtonGroup>
@@ -138,10 +138,10 @@ export function ScenarioFilter({
           name="language"
           render={({ field }) => (
             <FormItem>
-              <ButtonGroup orientation="horizontal" className="w-full">
+              <ButtonGroup orientation="horizontal" className="w-full min-w-0">
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="flex-1 min-w-0">
                       <SelectValue placeholder={t("select_languages")} />
                     </SelectTrigger>
                   </FormControl>
@@ -158,7 +158,7 @@ export function ScenarioFilter({
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={() => field.onChange("")}>
+                <Button onClick={() => field.onChange("")} className="shrink-0">
                   <XCircle />
                 </Button>
               </ButtonGroup>
@@ -167,14 +167,14 @@ export function ScenarioFilter({
           )}
         />
 
-        <ButtonGroup orientation="horizontal" className="w-full">
+        <ButtonGroup orientation="horizontal" className="w-full min-w-0">
           <FormField
             control={form.control}
             name="sortKey"
             render={({ field }) => (
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger className="capitalize w-full">
+                  <SelectTrigger className="capitalize flex-1 min-w-0">
                     <SelectValue />
                   </SelectTrigger>
                 </FormControl>
@@ -194,6 +194,7 @@ export function ScenarioFilter({
             name="sortOrder"
             render={({ field }) => (
               <Button
+                className="shrink-0"
                 type="button"
                 onClick={() => {
                   field.onChange(

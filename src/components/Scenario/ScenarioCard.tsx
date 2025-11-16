@@ -42,23 +42,23 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
             )}
           </div>
         </div>
-        <span className="text-nowrap truncate text-sm opacity-60">
+        <span className="text-nowrap truncate text-sm text-muted-foreground">
           {scenario.author.nickName}
         </span>
       </div>
 
       <div className="w-full flex items-center">
         {scenario.rateAvg === 0 ? (
-          <div className="text-sm opacity-60">{t('no_review_yet')}</div>
+          <div className="text-sm text-muted-foreground">{t('no_review_yet')}</div>
         ) : (
           <>
-            <Rate value={scenario.rateAvg} size="sm" allowHalf readOnly />
+            <Rate className="gap-0" value={scenario.rateAvg / 2} size="sm" allowHalf readOnly />
 
             <div className="ml-auto">
               <span className="text-base text-warning mr-1">
                 {scenario.rateAvg}
               </span>
-              <span className="text-sm opacity-60">({scenario.rateCount})</span>
+              <span className="text-sm text-muted-foreground">({scenario.rateCount})</span>
             </div>
           </>
         )}

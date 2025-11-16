@@ -54,20 +54,20 @@ const ScenarioDetailPage = async (
   return (
     <>
       <ScenarioDetailHeader title={scenario.title} />
-      <div className="md:container">
+      <div className="md:container mx-auto">
         <div
           className="relative z-0 h-[280px] w-full bg-cover bg-center bg-no-repeat brightness-75 md:hidden"
           style={{ backgroundImage: `url(${scenario.coverUrl})` }}
         />
-        <Card className="relative mt-[-16px] rounded-t-2xl p-4 md:mt-10 md:flex md:rounded-lg">
+        <Card className="relative mt-[-16px] rounded-t-2xl p-4 md:mt-10 md:flex md:flex-row ">
           <div
-            className="-mt-[40px] mr-[24px] hidden aspect-3/4 w-32 bg-cover bg-center shadow-2xl md:block"
+            className="-mt-[40px] mr-[24px] hidden aspect-3/4 w-32 bg-cover bg-center rounded-md shadow-2xl md:block"
             style={{ backgroundImage: `url(${scenario.coverUrl}?width=300&height=400)` }}
           />
 
           <div className="flex flex-1 flex-col">
             <div className="mb-2 text-2xl font-bold">{scenario.title}</div>
-            <div className="mb-2 text-sm">
+            <div className="mb-2 text-sm text-muted-foreground">
               <span>[{t("quote_notice")}]</span>
             </div>
 
@@ -86,23 +86,23 @@ const ScenarioDetailPage = async (
           </div>
 
           <div className="ml-4 hidden min-w-40 flex-col gap-2 border-l border-solid pl-4 md:flex">
-            <div className="capitalize opacity-45">{t("dicecho_rating")}</div>
+            <div className="capitalize text-muted-foreground">{t("dicecho_rating")}</div>
             {scenario.rateAvg > 0 ? (
               <div>
                 <span className="text-4xl font-bold text-primary">
                   {scenario.rateAvg}
                 </span>
-                <span className="opacity-45"> / 10</span>
+                <span className="text-muted-foreground"> / 10</span>
               </div>
             ) : (
-              <div className="opacity-60">
+              <div className="text-muted-foreground">
                 {scenario.rateCount === 0
                   ? t("no_rating")
                   : t("too_few_ratings")}
               </div>
             )}
             {scenario.rateCount > 0 && (
-              <div className="opacity-60">
+              <div className="text-muted-foreground">
                 <Trans
                   i18nKey="Rate.ratings"
                   t={t}
@@ -113,7 +113,7 @@ const ScenarioDetailPage = async (
               </div>
             )}
             {scenario.markCount > 0 && (
-              <div className="opacity-60">
+              <div className="text-muted-foreground">
                 <Trans
                   i18nKey="Rate.marks"
                   t={t}

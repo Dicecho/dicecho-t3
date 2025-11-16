@@ -1,6 +1,7 @@
-import clsx from "clsx";
-import { useId } from "react";
+import { Star } from "lucide-react";
 import type { ComponentProps, FC } from "react";
+
+import { cn } from "@/lib/utils"
 
 interface RateProps extends Omit<ComponentProps<"div">, "onChange"> {
   value?: number;
@@ -12,58 +13,80 @@ interface RateProps extends Omit<ComponentProps<"div">, "onChange"> {
   allowClear?: boolean;
 }
 
+const SIZE_MAP = {
+  xs: 12,
+  sm: 16,
+  md: 20,
+  lg: 24,
+} as const;
+
 export const Rate: FC<RateProps> = ({
   value = 0,
   onChange,
   allowHalf = false,
   readOnly = onChange === undefined,
   size = "md",
-  allowClear = value === 0,
+  allowClear = true,
   className,
   ...props
 }) => {
-  const name = useId();
-  const itemCount = allowHalf ? 10 : 5;
-  const score = Math.floor(Math.min(Math.max(value, 0), itemCount));
+  const starCount = 5;
+  const iconSize = SIZE_MAP[size];
+
+  const handleClick = (index: number, isHalf: boolean) => {
+    if (readOnly || !onChange) return;
+    const newValue = index + (isHalf && allowHalf ? 0.5 : 1);
+
+    // Allow clearing by clicking the same value
+    if (allowClear && newValue === value) {
+      onChange(0);
+    } else {
+      onChange(newValue);
+    }
+  };
+
+  const renderStar = (index: number) => {
+    const starValue = index + 1;
+    const isFullyFilled = value >= starValue;
+    const isHalfFilled = allowHalf && value >= starValue - 0.5 && value < starValue;
+
+    return (
+      <div
+        key={index}
+        className={cn("relative inline-flex", {
+          "cursor-pointer": !readOnly,
+          "cursor-default": readOnly,
+        })}
+      >
+        {/* Background star (empty) */}
+        <Star
+          size={iconSize}
+          strokeWidth={0}
+          className="fill-accent"
+          onClick={() => !readOnly && handleClick(index, false)}
+        />
+
+        {/* Filled overlay */}
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{
+            width: isFullyFilled ? "100%" : isHalfFilled ? "50%" : "0%",
+          }}
+        >
+          <Star
+            size={iconSize}
+            strokeWidth={0}
+            className="fill-yellow-500"
+            onClick={() => !readOnly && handleClick(index, true)}
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div
-      className={clsx(className, "rating", {
-        "rating-half": allowHalf,
-        "rating-xs": size === "xs",
-        "rating-lg": size === "lg",
-        "rating-sm": size === "sm",
-        "rating-md": size === "md",
-        "rating-read-only": readOnly,
-      })}
-      {...props}
-    >
-      {allowClear && (
-        <input
-          readOnly
-          disabled={readOnly}
-          type="radio"
-          name={name}
-          className="rating-hidden hidden"
-          checked={score === 0}
-        />
-      )}
-      {new Array(itemCount).fill("").map((_, index) => (
-        <input
-          key={index}
-          disabled={readOnly}
-          readOnly={readOnly}
-          checked={score === index + 1}
-          type="radio"
-          name={name}
-          className={clsx(
-            "mask mask-star",
-            `bg-warning`,
-            { "mask-half-1": index % 2 === 0 && allowHalf },
-            { "mask-half-2": index % 2 === 1 && allowHalf }
-          )}
-        />
-      ))}
+    <div className={cn("inline-flex gap-1", className)} {...props}>
+      {Array.from({ length: starCount }, (_, i) => renderStar(i))}
     </div>
   );
 };

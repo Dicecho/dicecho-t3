@@ -32,7 +32,7 @@ export const RateInfo: FC<RateInfoProps> = ({
           <div>
             <span className="mr-2 text-2xl text-primary">{score}</span>
           </div>
-          <div className="text-sm opacity-60">
+          <div className="text-sm text-muted-foreground">
             <Trans
               i18nKey="Rate.ratings"
               t={t}

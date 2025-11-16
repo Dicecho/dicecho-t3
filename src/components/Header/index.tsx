@@ -54,7 +54,7 @@ export const Header = async ({ lng, theme, ...props }: HeaderProps) => {
     <div
       {...props}
       className={clsx(
-        "bg-background/60 sticky left-0 right-0 top-0 z-10 shadow-xl max-md:hidden",
+        "bg-background sticky left-0 right-0 top-0 z-10 shadow-xl max-md:hidden",
       )}
     >
       <div className="container mx-auto">
@@ -73,7 +73,7 @@ export const Header = async ({ lng, theme, ...props }: HeaderProps) => {
             <NavigationMenu>
               <NavigationMenuList>
                 {menus.map((menu) => (
-                  <NavigationMenuItem key={menu.link}>
+                  <NavigationMenuItem className="flex items-center" key={menu.link}>
                     <NavigationMenuLink
                       href={`/${lng}${menu.link}`}
                       className={clsx(

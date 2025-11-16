@@ -9,6 +9,7 @@ import { Trans } from "react-i18next";
 import { useTranslation } from "@/lib/i18n/react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useDicecho } from "@/hooks/useDicecho";
+import { Separator } from "@/components/ui/separator";
 
 import type { IModListQuery, ModListApiResponse } from "@dicecho/types";
 import type { ComponentProps, FC } from "react";
@@ -61,7 +62,7 @@ export const ScenarioList: FC<ScenarioListProps> = ({
 
   return (
     <>
-      <div className="mt-2 flex items-center gap-2 text-sm opacity-60">
+      <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
         <Trans
           i18nKey="search_result"
           t={t}
@@ -77,7 +78,7 @@ export const ScenarioList: FC<ScenarioListProps> = ({
           }}
         />
       </div>
-      <div className="divider mt-0!" />
+      <Separator className="mt-2 mb-4" />
       <div
         className={clsx("grid grid-cols-2 gap-8 md:grid-cols-4", className)}
         {...props}

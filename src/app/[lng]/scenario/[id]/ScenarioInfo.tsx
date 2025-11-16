@@ -93,7 +93,7 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
         {scenario.moduleRule}
       </InfoItem>
 
-      <div className="text-sm text-opacity-downplay">
+      <div className="text-sm text-muted-foreground">
         <Trans
           i18nKey="publish_at"
           t={t}

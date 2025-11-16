@@ -9,6 +9,7 @@ import { Rate } from "@/components/ui/rate";
 import { Trans } from "react-i18next";
 import { useTranslation } from "@/lib/i18n/react";
 import { Card } from "../ui/card";
+import { Badge } from "../ui/badge";
 
 interface IProps {
   rate: IRateDto;
@@ -78,18 +79,18 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
       </div>
 
       {rate.type === RateType.Rate && rate.rate > 0 && (
-        <Rate value={rate.rate} allowHalf readOnly />
+        <Rate value={rate.rate / 2} allowHalf readOnly />
       )}
 
       {(rate.type === RateType.Rate || rate.remarkLength > 50) && (
         <div className="flex gap-2">
           {rate.type === RateType.Rate && (
-            <span className="rounded border px-2 py-1 text-xs">
+            <Badge variant="secondary">
               {RATE_VIEW_MAP[rate.view]}
-            </span>
+            </Badge>
           )}
           {rate.remarkLength > 50 && (
-            <span className="rounded border px-2 py-1 text-xs">
+            <Badge variant="outline">
               <Trans
                 i18nKey="Rate.text_length"
                 t={t}
@@ -97,7 +98,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
                   count: rate.remarkLength,
                 }}
               />
-            </span>
+            </Badge>
           )}
         </div>
       )}

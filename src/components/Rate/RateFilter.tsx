@@ -244,7 +244,7 @@ export const RateFilter: FC<RateFilterProps> = ({
           value={""}
         >
           <SelectPrimitive.Trigger asChild>
-            <Button className="ml-auto bg-accent" size="icon">
+            <Button variant="outline" className="ml-auto" size="icon">
               <FilterIcon width={16} />
             </Button>
           </SelectPrimitive.Trigger>
@@ -290,7 +290,7 @@ export const RateFilter: FC<RateFilterProps> = ({
           value={sort ?? ""}
         >
           <SelectPrimitive.Trigger asChild>
-            <Button className="bg-accent">
+            <Button variant="outline">
               <ArrowDownWideNarrowIcon width={16} />
               <SelectValue />
             </Button>
@@ -308,7 +308,6 @@ export const RateFilter: FC<RateFilterProps> = ({
       <div className="flex gap-2 flex-wrap">
         {remarkLengthRange && (
           <Button
-            className="bg-accent"
             onClick={() => {
               onChange({
                 ...query,
@@ -325,7 +324,6 @@ export const RateFilter: FC<RateFilterProps> = ({
         )}
         {rateAttitude && (
           <Button
-            className="bg-accent"
             onClick={() => {
               onChange({
                 ...query,
@@ -342,7 +340,7 @@ export const RateFilter: FC<RateFilterProps> = ({
         )}
         {rateView && (
           <Button
-            className="bg-accent"
+            variant="outline"
             onClick={() => {
               onChange({
                 ...query,
