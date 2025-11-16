@@ -68,5 +68,11 @@
     "oldest_rate": "oldest",
     "empty_placeholder_action": "Come leave a review!",
     "text_length": "full text {{count}} words"
-  }
+  },
+  "sign_in_failed": "Sign in failed",
+  "login_error_default": "Sign in failed, please check your email and password",
+  "login_error_retry": "Sign in failed, please try again later",
+  "copied": "Copied",
+  "error_copied_to_clipboard": "Error message copied to clipboard",
+  "copy_error": "Copy error message"
 }

@@ -68,5 +68,11 @@
     "oldest_rate": "最早评价",
     "empty_placeholder_action": "来留下一篇评价吧！",
     "text_length": "全文 {{count}} 字"
-  }
+  },
+  "sign_in_failed": "登录失败",
+  "login_error_default": "登录失败，请检查账号密码",
+  "login_error_retry": "登录失败，请稍后重试",
+  "copied": "已复制",
+  "error_copied_to_clipboard": "错误信息已复制到剪贴板",
+  "copy_error": "复制错误信息"
 }

@@ -23,7 +23,7 @@ export type FormData = z.infer<typeof formSchema>;
 
 interface SigninFormProps
   extends Omit<PropsWithChildren<UseFormProps<FormData>>, "resolver"> {
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData) => Promise<void> | void;
 }
 
 export function SigninForm({ onSubmit, children, ...props }: SigninFormProps) {
@@ -33,9 +33,18 @@ export function SigninForm({ onSubmit, children, ...props }: SigninFormProps) {
     ...props,
   });
 
+  const handleSubmit = async (data: FormData) => {
+    try {
+      await onSubmit(data);
+    } catch (error) {
+      // 错误由 onSubmit 处理
+      console.error("Sign in error:", error);
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"

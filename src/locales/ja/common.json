@@ -68,5 +68,11 @@
     "oldest_rate": "古さ順",
     "empty_placeholder_action": "レビューを書いてください！",
     "text_length": "全文 {{count}} ワード"
-  }
+  },
+  "sign_in_failed": "サインインに失敗しました",
+  "login_error_default": "サインインに失敗しました。メールアドレスとパスワードを確認してください",
+  "login_error_retry": "サインインに失敗しました。後でもう一度お試しください",
+  "copied": "コピーしました",
+  "error_copied_to_clipboard": "エラーメッセージをクリップボードにコピーしました",
+  "copy_error": "エラーメッセージをコピー"
 }

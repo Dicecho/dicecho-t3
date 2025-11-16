@@ -25,7 +25,7 @@ import {
 import { jwtDecode } from "jwt-decode";
 import * as qs from "qs";
 
-function isBackendError(err: unknown): err is { body: DicechoServerError } {
+export function isBackendError(err: unknown): err is { body: DicechoServerError } {
   if (!err) {
     return false;
   }
