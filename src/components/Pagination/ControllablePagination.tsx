@@ -7,8 +7,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { useControllableState } from "@/hooks/useControllableState";
 
-import type { ButtonProps } from "@/components/ui/button";
 import type { ComponentProps, FC } from "react";
+
+type ButtonProps = ComponentProps<typeof Button>;
 
 interface ControllablePaginationProps
   extends Omit<ComponentProps<"div">, "onChange"> {
