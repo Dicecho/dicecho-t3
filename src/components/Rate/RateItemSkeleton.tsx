@@ -14,7 +14,7 @@ export const RateItemSkeleton: React.FC = () => {
         <Skeleton className="ml-auto h-6 w-24 rounded-sm" />
       </div>
 
-      <div className="rating">
+      <div className="flex gap-1">
         {Array.from({ length: 5 }).map((_, index) => (
           <Skeleton key={index} className="mask mask-star h-6 w-6" />
         ))}

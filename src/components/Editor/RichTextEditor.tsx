@@ -3,9 +3,13 @@
 import { Plate, WithPlateOptions, usePlateEditor } from "platejs/react";
 
 import { Editor, EditorContainer } from "@/components/ui/editor";
+import { editorPlugins } from "./plugins";
 
 export const RichTextEditor = (props: Omit<WithPlateOptions, 'plugins'>) => {
-  const editor = usePlateEditor(props);
+  const editor = usePlateEditor({
+    ...props,
+    plugins: editorPlugins,
+  });
 
   return (
     <Plate editor={editor}>
