@@ -50,7 +50,7 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
   return (
     <div
       className={clsx(
-        "md:hidden container fixed bottom-0 flex justify-between bg-base-200 py-4 shadow-[0_-20px_25px_-5px_rgba(0,0,0,0.1)]",
+        "md:hidden container fixed bottom-0 flex justify-between bg-background py-4 px-4 shadow-[0_-20px_25px_-5px_rgba(0,0,0,0.1)]",
         className,
       )}
       {...props}

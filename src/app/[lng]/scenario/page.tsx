@@ -73,13 +73,12 @@ const ScenarioPage = async (props: {
       <MobileHeader>
         <HeaderMenu />
       </MobileHeader>
-      <div className="container mx-auto pt-4">
+      <div className="container mx-auto pt-4 max-md:px-4">
         <div className="grid grid-cols-6 gap-8">
           <div className="col-span-6 md:col-span-4">
             <form action={handleSearch} className="flex w-full items-center">
               <ButtonGroup orientation="horizontal" className="w-full">
                 <Input
-                  className="rounded-md"
                   placeholder={t("scenario_search_placeholder", {
                     ns: "scenario",
                   })}

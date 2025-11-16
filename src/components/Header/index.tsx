@@ -3,10 +3,10 @@ import { type ComponentProps } from "react";
 import { BookOpenText } from "lucide-react";
 import Link from "next/link";
 import DicechoLogo from "./dicecho.svg";
-import { ThemeChanger } from "./ThemeChanger";
 import { LanguageChanger } from "./LanguageChanger";
 import { UserBox } from "./UserBox";
 import { UserAvatar } from "@/components/User/Avatar";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
 import {
   NavigationMenu,
@@ -24,14 +24,13 @@ import { AuthDialog } from "@/components/Auth/AuthDialog";
 import { getServerAuthSession } from "@/server/auth";
 import { getTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { setThemeCookie } from "@/lib/theme/actions";
+import { ColorModeSwitcher } from "../color-mode-switcher";
 
 export type HeaderProps = ComponentProps<"div"> & {
   lng: string;
-  theme: string;
 };
 
-export const Header = async ({ lng, theme, ...props }: HeaderProps) => {
+export const Header = async ({ lng, ...props }: HeaderProps) => {
   const authSession = await getServerAuthSession();
   const { t } = await getTranslation(lng);
 
@@ -95,7 +94,8 @@ export const Header = async ({ lng, theme, ...props }: HeaderProps) => {
         </div> */}
           <div className="flex w-1/2 items-center justify-end gap-2 capitalize">
             <LanguageChanger />
-            <ThemeChanger theme={theme} setTheme={setThemeCookie} />
+            <ColorModeSwitcher />
+            <ThemeSwitcher />
             {authSession ? (
               <Popover>
                 <PopoverTrigger>

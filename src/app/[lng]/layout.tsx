@@ -3,13 +3,13 @@ import "@/styles/components.css";
 
 import { GeistSans } from "geist/font/sans";
 import { dir } from "i18next";
+import { ThemeProvider } from "next-themes";
 import { TRPCReactProvider } from "@/trpc/react";
 import { Header } from "@/components/Header";
 import { Toaster } from "@/components/ui/toaster";
 import { Layout as AppLayout } from "@/components/Layout";
 import { languages } from "@/lib/i18n/settings";
-import { getTheme } from "@/lib/theme/server";
-import { DARK_THEMES, THEMES } from "@/lib/theme/constants";
+import { ThemeScript } from "@/components/theme-script";
 
 // TODO: support i18n
 export const metadata = {
@@ -38,19 +38,22 @@ export default async function RootLayout(
     children
   } = props;
 
-  const theme = await getTheme();
-  const isDarkTheme = DARK_THEMES.some((t) => t === theme);
   return (
-    <html lang={lng} dir={dir(lng)} data-theme={theme} className={`${GeistSans.variable} ${isDarkTheme ? "dark" : "light"}`}>
-      <TRPCReactProvider>
-        <AppLayout>
-          <body className="bg-custom-gradient min-h-screen bg-no-repeat">
-            <Header lng={lng} theme={theme} />
-            {children}
-            <Toaster />
-          </body>
-        </AppLayout>
-      </TRPCReactProvider>
+    <html lang={lng} dir={dir(lng)} className={GeistSans.variable} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
+      <body className="bg-custom-gradient min-h-screen bg-no-repeat">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <TRPCReactProvider>
+            <AppLayout>
+              <Header lng={lng} />
+              {children}
+              <Toaster />
+            </AppLayout>
+          </TRPCReactProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
