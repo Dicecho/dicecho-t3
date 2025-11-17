@@ -36,7 +36,7 @@ export const UserAvatar: FC<UserAvatarProps & ComponentProps<'img'>> = ({
   return (
     <MinidenticonImg
       username={user.nickName}
-      className={cn("bg-[#f0f0f0]", className)}
+      className={cn("bg-muted text-muted-foreground", className)}
       {...props}
     />
   )

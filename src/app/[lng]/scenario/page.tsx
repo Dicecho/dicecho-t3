@@ -17,6 +17,7 @@ import { ButtonGroup } from "@/components/ui/button-group";
 
 const DEFAULT_QUERY: Partial<IModListQuery> = {
   sort: { lastRateAt: -1 },
+  pageSize: 12,
 };
 
 function urlToQuery(searchQuery: string): Partial<IModListQuery> {
@@ -94,7 +95,7 @@ const ScenarioPage = async (props: {
             <ScenarioList initialData={scenarios} query={query} />
           </div>
           <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
-            <Button className="capitalize" variant="outline">
+            <Button className="capitalize">
               <Upload size={16} />
               {t("scenario_publish")}
             </Button>

@@ -13,7 +13,9 @@ const progressVariants = cva(
       color: {
         primary: "bg-primary/20",
         secondary: "bg-secondary/20",
+        accent: "bg-accent/20",
         yellow: "bg-yellow-500/20",
+        destructive: "bg-destructive/20",
       },
       size: {
         default: "h-4",
@@ -33,7 +35,9 @@ const progressIndicatorVariants = cva("h-full w-full flex-1 transition-all", {
     color: {
       primary: "bg-primary",
       secondary: "bg-secondary",
+      accent: "bg-accent",
       yellow: "bg-yellow-500",
+      destructive: "bg-destructive",
     },
   },
   defaultVariants: {
@@ -41,9 +45,16 @@ const progressIndicatorVariants = cva("h-full w-full flex-1 transition-all", {
   },
 });
 
+type ProgressColor =
+  | "primary"
+  | "secondary"
+  | "accent"
+  | "yellow"
+  | "destructive";
+
 interface ProgressProps
   extends React.ComponentProps<typeof ProgressPrimitive.Root> {
-  color?: "primary" | "secondary" | "yellow";
+  color?: ProgressColor;
   size?: "default" | "large" | "sm";
 }
 

@@ -14,7 +14,7 @@ export const ScenarioDetailHeader = ({ title }: { title: string }) => {
   return (
     <MobileHeader
       className={clsx("fixed items-center justify-center", {
-        ["bg-transparent text-white shadow-none"]: y < 160,
+        ["bg-transparent text-primary-foreground shadow-none"]: y < 160,
       })}
     >
       <HeaderBack className="absolute left-4" fallback={`/${lng}/scenario`}/>

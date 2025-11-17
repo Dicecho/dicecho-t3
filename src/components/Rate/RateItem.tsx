@@ -85,7 +85,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
       {(rate.type === RateType.Rate || rate.remarkLength > 50) && (
         <div className="flex gap-2">
           {rate.type === RateType.Rate && (
-            <Badge variant="secondary">
+            <Badge variant="muted">
               {RATE_VIEW_MAP[rate.view]}
             </Badge>
           )}

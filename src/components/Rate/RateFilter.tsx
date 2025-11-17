@@ -196,11 +196,11 @@ export const RateFilter: FC<RateFilterProps> = ({
           <TabsList>
             <TabsTrigger value="0" className="capitalize">
               {t("Rate.type_rate")}
-              {rateCount > 0 && <Badge className="ml-1" variant="secondary">{rateCount}</Badge>}
+              {rateCount > 0 && <Badge className="ml-1" variant="accent">{rateCount}</Badge>}
             </TabsTrigger>
             <TabsTrigger value="1" className="capitalize">
               {t("Rate.type_mark")}
-              {markCount > 0 && <Badge className="ml-1" variant="secondary">{markCount}</Badge>}
+              {markCount > 0 && <Badge className="ml-1" variant="accent">{markCount}</Badge>}
             </TabsTrigger>
           </TabsList>
         </Tabs>

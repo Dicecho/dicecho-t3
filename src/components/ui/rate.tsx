@@ -3,12 +3,21 @@ import type { ComponentProps, FC } from "react";
 
 import { cn } from "@/lib/utils"
 
+type RateColor = "accent" | "primary" | "yellow" | "destructive";
+
+const STAR_COLOR_MAP: Record<RateColor, string> = {
+  accent: "text-accent",
+  primary: "text-primary",
+  yellow: "text-yellow-500",
+  destructive: "text-destructive",
+};
+
 interface RateProps extends Omit<ComponentProps<"div">, "onChange"> {
   value?: number;
   onChange?: (value: number) => void;
   allowHalf?: boolean;
   readOnly?: boolean;
-  color?: string;
+  color?: RateColor;
   size?: "lg" | "md" | "sm" | "xs";
   allowClear?: boolean;
 }
@@ -27,6 +36,7 @@ export const Rate: FC<RateProps> = ({
   readOnly = onChange === undefined,
   size = "md",
   allowClear = true,
+  color = "yellow",
   className,
   ...props
 }) => {
@@ -62,7 +72,7 @@ export const Rate: FC<RateProps> = ({
         <Star
           size={iconSize}
           strokeWidth={0}
-          className="fill-accent"
+          className="fill-muted"
           onClick={() => !readOnly && handleClick(index, false)}
         />
 
@@ -76,7 +86,7 @@ export const Rate: FC<RateProps> = ({
           <Star
             size={iconSize}
             strokeWidth={0}
-            className="fill-yellow-500"
+            className={cn("fill-current transition-colors", STAR_COLOR_MAP[color])}
             onClick={() => !readOnly && handleClick(index, true)}
           />
         </div>

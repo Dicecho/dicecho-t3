@@ -48,7 +48,7 @@ export const RateInfo: FC<RateInfoProps> = ({
             .map((key) => (
               <div key={key} className="flex items-center gap-2">
                 <Rate
-                  className="[&>input]:h-3 [&>input]:w-3"
+                  className="gap-0.5"
                   value={parseInt(key)}
                   size="sm"
                 />

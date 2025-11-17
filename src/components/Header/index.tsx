@@ -72,7 +72,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
             <NavigationMenu>
               <NavigationMenuList>
                 {menus.map((menu) => (
-                  <NavigationMenuItem className="flex items-center" key={menu.link}>
+                  <NavigationMenuItem key={menu.link}>
                     <NavigationMenuLink
                       href={`/${lng}${menu.link}`}
                       className={clsx(
@@ -80,7 +80,6 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
                         "capitalize",
                       )}
                     >
-                      <BookOpenText size={16} />
                       {menu.title}
                     </NavigationMenuLink>
                   </NavigationMenuItem>

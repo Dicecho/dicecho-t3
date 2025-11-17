@@ -125,7 +125,7 @@ export function ScenarioFilter({
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={() => field.onChange("")} className="shrink-0">
+                <Button variant="outline" onClick={() => field.onChange("")} className="shrink-0">
                   <XCircle />
                 </Button>
               </ButtonGroup>
@@ -158,7 +158,7 @@ export function ScenarioFilter({
                     ))}
                   </SelectContent>
                 </Select>
-                <Button onClick={() => field.onChange("")} className="shrink-0">
+                <Button variant="outline" onClick={() => field.onChange("")} className="shrink-0">
                   <XCircle />
                 </Button>
               </ButtonGroup>
@@ -195,6 +195,7 @@ export function ScenarioFilter({
             render={({ field }) => (
               <Button
                 className="shrink-0"
+                variant="outline"
                 type="button"
                 onClick={() => {
                   field.onChange(
@@ -215,7 +216,6 @@ export function ScenarioFilter({
         </ButtonGroup>
         <Button
           className="w-full capitalize"
-          color="destructive"
           type="button"
           variant="outline"
           onClick={() =>

@@ -13,9 +13,10 @@ import { Separator } from "@/components/ui/separator";
 
 import type { IModListQuery, ModListApiResponse } from "@dicecho/types";
 import type { ComponentProps, FC } from "react";
+import { ScenarioCardSkeleton } from "./ScenarioCardSkeleton";
 
 interface ScenarioListProps extends ComponentProps<"div"> {
-  initialData: ModListApiResponse
+  initialData: ModListApiResponse;
   query?: Partial<IModListQuery>;
 }
 
@@ -33,7 +34,7 @@ export const ScenarioList: FC<ScenarioListProps> = ({
     initialPageParam: 1,
     initialData: {
       pageParams: [],
-      pages: [initialData]
+      pages: [initialData],
     },
     queryKey: [`scenarios`, omit(query, "page")],
     queryFn: ({ pageParam }) => {
@@ -62,16 +63,19 @@ export const ScenarioList: FC<ScenarioListProps> = ({
 
   return (
     <>
-      <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="text-muted-foreground mt-2 flex items-center gap-2 text-sm">
         <Trans
           i18nKey="search_result"
           t={t}
           values={{
-            count: isLoading ? "" : data?.pages[0]?.totalCount ?? 0,
+            count: isLoading ? "" : (data?.pages[0]?.totalCount ?? 0),
           }}
           components={{
             loading: isLoading ? (
-              <span key="loading" className="loading loading-spinner loading-xs" />
+              <span
+                key="loading"
+                className="loading loading-spinner loading-xs"
+              />
             ) : (
               <span key="loading" />
             ),
@@ -80,7 +84,10 @@ export const ScenarioList: FC<ScenarioListProps> = ({
       </div>
       <Separator className="mt-2 mb-4" />
       <div
-        className={clsx("grid grid-cols-2 gap-8 md:grid-cols-4", className)}
+        className={clsx(
+          "grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4",
+          className,
+        )}
         {...props}
       >
         {data?.pages.flatMap((page) =>
@@ -91,12 +98,13 @@ export const ScenarioList: FC<ScenarioListProps> = ({
             >
               <ScenarioCard scenario={scenario} />
             </Link>
-          ))
+          )),
         )}
       </div>
-
-      <div className="capitalize" ref={ref}>
-        {t("load_more")}
+      <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 mt-8" ref={ref}>
+        {new Array(query.pageSize ?? 4).fill(0).map((_, index) => (
+          <ScenarioCardSkeleton key={index} />
+        ))}
       </div>
     </>
   );

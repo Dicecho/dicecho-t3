@@ -3,6 +3,7 @@ import React from "react";
 import type { IModDto } from "@dicecho/types";
 import { MinidenticonImg } from '@/components/MinidenticonImg'
 import { Rate } from "@/components/ui/rate";
+import { Card } from "@/components/ui/card";
 import clsx from "clsx";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n/react";
@@ -55,7 +56,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
             <Rate className="gap-0" value={scenario.rateAvg / 2} size="sm" allowHalf readOnly />
 
             <div className="ml-auto">
-              <span className="text-base text-warning mr-1">
+              <span className="text-base text-yellow-500 mr-1">
                 {scenario.rateAvg}
               </span>
               <span className="text-sm text-muted-foreground">({scenario.rateCount})</span>

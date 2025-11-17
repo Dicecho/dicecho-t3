@@ -19,7 +19,8 @@ import type { ThemePresetId } from "@/types/theme";
 
 export function ThemeSwitcher() {
   const { theme: userTheme, updateTheme, presets, presetOrder } = useUserTheme();
-
+  const { theme, resolvedTheme } = useTheme();
+  const themeMode = (resolvedTheme ?? theme) === 'dark' ? 'dark' : 'light';
   const handlePresetSelect = (presetId: ThemePresetId) => {
     const preset = presets[presetId];
     if (!preset) {
@@ -51,10 +52,10 @@ export function ThemeSwitcher() {
               className="flex items-center"
             >
               <div className="flex gap-0.5">
-                <div className="border-muted h-3 w-3 rounded-sm border" style={{ backgroundColor: preset.tokens.light.primary }} />
-                <div className="border-muted h-3 w-3 rounded-sm border" style={{ backgroundColor: preset.tokens.light.accent }} />
-                <div className="border-muted h-3 w-3 rounded-sm border" style={{ backgroundColor: preset.tokens.light.secondary }} />
-                <div className="border-muted h-3 w-3 rounded-sm border" style={{ backgroundColor: preset.tokens.light.border }} />
+                <div className="border-muted h-3 w-3 rounded-sm border" style={{ backgroundColor: preset.tokens[themeMode].primary }} />
+                <div className="border-muted h-3 w-3 rounded-sm border" style={{ backgroundColor: preset.tokens[themeMode].accent }} />
+                <div className="border-muted h-3 w-3 rounded-sm border" style={{ backgroundColor: preset.tokens[themeMode].secondary }} />
+                <div className="border-muted h-3 w-3 rounded-sm border" style={{ backgroundColor: preset.tokens[themeMode].border }} />
               </div>
               <span>{preset.name}</span>
               {isActive ? <Check className="h-4 w-4 ml-auto" /> : null}
