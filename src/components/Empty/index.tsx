@@ -1,5 +1,5 @@
 import Image from "next/image";
-import NotAuthSvgUrl from "./notAuth.svg?url";
+import NotAuthSvgUrl from "./notAuth.url.svg";
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps, FunctionComponent, PropsWithChildren } from "react";
@@ -12,7 +12,7 @@ interface IProps extends ComponentProps<"div"> {
 export const Empty: FunctionComponent<
   PropsWithChildren<IProps>
 > = ({
-  emptyImageUrl = NotAuthSvgUrl as string,
+  emptyImageUrl = NotAuthSvgUrl as unknown as string,
   emptyText,
   className,
   ...props

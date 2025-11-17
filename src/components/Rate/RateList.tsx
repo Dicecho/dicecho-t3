@@ -51,30 +51,22 @@ export const RateList: FC<RateListProps> = ({
 
   return (
     <div className={clsx("flex flex-col gap-2", className)} {...props}>
-      {data && data.totalCount > data.pageSize && (
-        <ControllablePagination
-          disabled={isLoading}
-          current={data.page}
-          total={Math.ceil(data.totalCount / data.pageSize)}
-          onChange={(page) => setPageParams((params) => ({ ...params, page }))}
-        />
-      )}
 
       {!isLoading && data?.data.length === 0 && (
         <Card className="p-16">
           <Empty>
-            <Button color='primary'>{t('Rate.empty_placeholder_action')}</Button>
+            <Button color="primary">
+              {t("Rate.empty_placeholder_action")}
+            </Button>
           </Empty>
         </Card>
       )}
 
-      {data?.data.map((rate) =>
-        fetchStatus === "fetching" ? (
-          <RateItemSkeleton key={rate._id} />
-        ) : (
-          <RateItem rate={rate} key={rate._id} />
-        ),
-      )}
+      {fetchStatus === "fetching"
+        ? new Array(data?.pageSize ?? 10)
+            .fill(0)
+            .map((_, index) => <RateItemSkeleton key={index} />)
+        : data?.data.map((rate) => <RateItem rate={rate} key={rate._id} />)}
 
       {data && data.totalCount > data.pageSize && (
         <ControllablePagination

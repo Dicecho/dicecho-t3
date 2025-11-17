@@ -22,6 +22,12 @@ const config = {
   turbopack: {
     rules: {
       "*.svg": {
+        condition: {
+          all: [
+            { not: { path: '*.url.svg' } }, // Exclude files ending with .svg?url
+            { not: 'foreign' },
+          ],
+        },
         loaders: ["@svgr/webpack"],
         as: "*.js",
       },
