@@ -1,31 +1,31 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { MonitorCog, MoonStar, SunMedium, Check } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { MonitorCog, MoonStar, SunMedium } from "lucide-react";
 import { useTheme } from "next-themes";
-
-import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-const modeOptions = [
-  { label: "Light", value: "light" },
-  { label: "Dark", value: "dark" },
-  { label: "System", value: "system" },
-];
+  ThemeToggleButton,
+  useThemeTransition,
+} from "@/components/ui/shadcn-io/theme-toggle-button";
 
 export function ColorModeSwitcher() {
   const { theme, resolvedTheme, setTheme } = useTheme();
+  const { startTransition } = useThemeTransition();
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   const activeMode = mounted ? (resolvedTheme ?? theme) : "system";
+  const currentTheme = activeMode === 'system' ? 'light' : activeMode as 'light' | 'dark'
+
+
+  const handleThemeToggle = useCallback(() => {
+    const newMode: "dark" | "light" = activeMode === "dark" ? "light" : "dark";
+
+    startTransition(() => {
+      setTheme(newMode);
+    });
+  }, [activeMode, setTheme, startTransition]);
 
   const dropdownTriggerIcon = useMemo(() => {
     if (activeMode === "dark") {
@@ -38,30 +38,13 @@ export function ColorModeSwitcher() {
   }, [activeMode]);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          {dropdownTriggerIcon}
-          <span className="sr-only">Change color mode</span>
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent align="end" className="w-64 space-y-2">
-        <DropdownMenuLabel>Color mode</DropdownMenuLabel>
-        {modeOptions.map((option) => {
-          const isActive = activeMode === option.value;
-          return (
-            <DropdownMenuItem
-              key={option.value}
-              onClick={() => setTheme(option.value)}
-              className="flex items-center justify-between"
-            >
-              <span>{option.label}</span>
-              {isActive ? <Check className="ml-auto h-4 w-4" /> : null}
-            </DropdownMenuItem>
-          );
-        })}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <ThemeToggleButton
+        theme={currentTheme}
+        onClick={handleThemeToggle}
+        variant="circle-blur"
+        start="top-right"
+      />
+    </>
   );
 }
