@@ -1,13 +1,12 @@
 import { getServerAuthSession } from "@/server/auth";
 import { getDicechoServerApi } from "@/server/dicecho";
-import { getTranslation } from "@/lib/i18n";
 import { AccountHeader } from "@/components/Account/AccountHeader";
 import { AccountTabs } from "@/components/Account/AccountTabs";
-import { AccountHome } from "@/components/Account/AccountHome";
 import { MobileFooter } from "@/components/Footer";
-import { notFound } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { redirect, notFound } from "next/navigation";
 
-export default async function AccountDetailPage(
+export default async function AccountSettingPage(
   props: {
     params: Promise<{ lng: string; id: string }>;
   }
@@ -18,6 +17,11 @@ export default async function AccountDetailPage(
   const session = await getServerAuthSession();
   const api = await getDicechoServerApi();
 
+  // Only allow users to access their own settings
+  if (!session || session.user._id !== id) {
+    redirect(`/${lng}/account/${id}`);
+  }
+
   try {
     const user = await api.user.profile(id);
 
@@ -26,7 +30,11 @@ export default async function AccountDetailPage(
         <AccountHeader user={user} lng={lng} />
         <AccountTabs user={user} lng={lng} userId={id} />
         <div className="container mx-auto py-4">
-          <AccountHome user={user} />
+          <Card>
+            <CardContent className="p-8 text-center text-muted-foreground">
+              设置功能开发中...
+            </CardContent>
+          </Card>
         </div>
         <MobileFooter />
       </>
@@ -35,3 +43,4 @@ export default async function AccountDetailPage(
     notFound();
   }
 }
+

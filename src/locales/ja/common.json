@@ -74,5 +74,16 @@
   "login_error_retry": "サインインに失敗しました。後でもう一度お試しください",
   "copied": "コピーしました",
   "error_copied_to_clipboard": "エラーメッセージをクリップボードにコピーしました",
-  "copy_error": "エラーメッセージをコピー"
+  "copy_error": "エラーメッセージをコピー",
+  "home": "ホーム",
+  "topics": "トピック",
+  "followers": "フォロワー",
+  "following": "フォロー中",
+  "liked": "いいね",
+  "edit_profile": "プロフィール編集",
+  "follow": "フォロー",
+  "unfollow": "フォロー解除",
+  "follow_success": "フォローしました",
+  "unfollow_success": "フォロー解除しました",
+  "submit_now": "今すぐ投稿"
 }

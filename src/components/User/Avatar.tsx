@@ -26,7 +26,7 @@ export const UserAvatar: FC<UserAvatarProps & ComponentProps<'img'>> = ({
       <Image
         // @ts-expect-error - Type guard ensures avatarUrl is string, but TypeScript can't infer it
         src={avatarUrl}
-        className={className}
+        className={(cn("object-cover", className))}
         {...props}
         alt={props.alt}
       />

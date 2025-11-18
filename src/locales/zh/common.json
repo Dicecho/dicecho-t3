@@ -74,5 +74,16 @@
   "login_error_retry": "登录失败，请稍后重试",
   "copied": "已复制",
   "error_copied_to_clipboard": "错误信息已复制到剪贴板",
-  "copy_error": "复制错误信息"
+  "copy_error": "复制错误信息",
+  "home": "主页",
+  "topics": "帖子",
+  "followers": "粉丝",
+  "following": "关注",
+  "liked": "获赞",
+  "edit_profile": "编辑资料",
+  "follow": "关注",
+  "unfollow": "取消关注",
+  "follow_success": "关注成功",
+  "unfollow_success": "取消关注成功",
+  "submit_now": "立刻投稿"
 }

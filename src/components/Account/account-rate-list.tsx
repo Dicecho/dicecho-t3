@@ -5,43 +5,44 @@ import { RateFilter } from "@/components/Rate/RateFilter";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 import type { IRateListQuery } from "@dicecho/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Empty } from "@/components/Empty";
 
 const DEFAULT_QUERY: Partial<IRateListQuery> = {
   filter: { type: RateType.Rate },
   sort: { [RateSortKey.RATE_AT]: -1 },
 };
 
-export const ScenarioRateList = ({
-  scenarioId,
-  rateCount = 0,
-  markCount = 0,
+export const AccountRateList = ({
+  userId,
 }: {
-  scenarioId: string;
-  rateCount?: number;
-  markCount?: number;
+  userId: string;
 }) => {
   const [query, setQuery] = useLocalStorage<
     Pick<Partial<IRateListQuery>, "filter" | "sort">
-  >("@rateListQuery", DEFAULT_QUERY);
+  >("@userRateListQuery", DEFAULT_QUERY);
 
   const rateQuery: Partial<IRateListQuery> = {
     ...query,
-    modId: scenarioId,
+    userId,
   };
 
   return (
     <Card>
       <CardHeader>
         <RateFilter
-          rateCount={rateCount}
-          markCount={markCount}
           query={query}
           onChange={(query) => setQuery(query)}
         />
       </CardHeader>
       <CardContent>
-        <RateList query={rateQuery} />
+        <RateList query={rateQuery} emptyPlaceholder={(
+          <Empty>
+            <div className="text-muted-foreground">
+              {query.filter?.type === RateType.Mark ? "暂无想玩" : "暂无评价"}
+            </div>
+          </Empty>
+        )} />
       </CardContent>
     </Card>
   );

@@ -74,5 +74,16 @@
   "login_error_retry": "Sign in failed, please try again later",
   "copied": "Copied",
   "error_copied_to_clipboard": "Error message copied to clipboard",
-  "copy_error": "Copy error message"
+  "copy_error": "Copy error message",
+  "home": "Home",
+  "topics": "Topics",
+  "followers": "Followers",
+  "following": "Following",
+  "liked": "Liked",
+  "edit_profile": "Edit Profile",
+  "follow": "Follow",
+  "unfollow": "Unfollow",
+  "follow_success": "Followed successfully",
+  "unfollow_success": "Unfollowed successfully",
+  "submit_now": "Submit Now"
 }

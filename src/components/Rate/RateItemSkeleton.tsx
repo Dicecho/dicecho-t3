@@ -1,11 +1,10 @@
 "use client";
 import React from "react";
-import { Card } from "../ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const RateItemSkeleton: React.FC = () => {
   return (
-    <Card className={"flex flex-col gap-4 p-4"}>
+    <div className={"flex flex-col gap-4"}>
       <div className={"flex items-baseline gap-2"}>
         <Skeleton className="h-6 w-6 rounded-full" />
         <Skeleton className="h-6 w-16 rounded-sm" />
@@ -32,6 +31,6 @@ export const RateItemSkeleton: React.FC = () => {
         <Skeleton className="h-[20px] w-full rounded-sm" />
         <Skeleton className="h-[20px] w-1/3 rounded-sm" />
       </div>
-    </Card>
+    </div>
   );
 };

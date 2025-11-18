@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { type ComponentProps } from "react";
-import { BookOpenText } from "lucide-react";
 import Link from "next/link";
 import DicechoLogo from "./dicecho.svg";
 import { LanguageChanger } from "./LanguageChanger";
@@ -53,7 +52,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
     <div
       {...props}
       className={clsx(
-        "bg-background sticky left-0 right-0 top-0 z-10 shadow-xl max-md:hidden",
+        "bg-background sticky top-0 right-0 left-0 z-10 shadow-xl max-md:hidden",
       )}
     >
       <div className="container mx-auto">
@@ -61,7 +60,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
           <div className="w-1/2 justify-start">
             <Link href={`/${lng}`} passHref>
               <DicechoLogo
-                className="w-8 text-primary"
+                className="text-primary w-8"
                 width={32}
                 height={32}
               />
@@ -98,13 +97,15 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
             {authSession ? (
               <Popover>
                 <PopoverTrigger>
-                  <UserAvatar
-                    user={authSession.user}
-                    alt="avatar"
-                    width={40}
-                    height={40}
-                    className="h-10 w-10 cursor-pointer rounded-full border object-cover"
-                  />
+                  <Link href={`/${lng}/account/${authSession.user._id}`}>
+                    <UserAvatar
+                      user={authSession.user}
+                      alt="avatar"
+                      width={40}
+                      height={40}
+                      className="h-10 w-10 cursor-pointer rounded-full border object-cover"
+                    />
+                  </Link>
                 </PopoverTrigger>
                 <PopoverContent align="end">
                   <UserBox
