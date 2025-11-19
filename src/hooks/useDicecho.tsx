@@ -5,6 +5,7 @@ import { DicechoApi } from "@/utils/api";
 
 type Dicecho = {
   api: DicechoApi;
+  initialized: boolean;
 };
 
 const DicechoContext = createContext<Dicecho | undefined>(undefined);
@@ -23,7 +24,7 @@ export const DicechoProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [api] = useState(
     new DicechoApi({ origin: env.NEXT_PUBLIC_DICECHO_API_ENDPOINT }),
   );
@@ -33,7 +34,7 @@ export const DicechoProvider = ({
   }, [session?.user, api])
 
   return (
-    <DicechoContext.Provider value={{ api }}>
+    <DicechoContext.Provider value={{ api, initialized: status !== 'loading' }}>
       {children}
     </DicechoContext.Provider>
   );

@@ -1,9 +1,8 @@
-import { getServerAuthSession } from "@/server/auth";
 import { getDicechoServerApi } from "@/server/dicecho";
 import { AccountHeader } from "@/components/Account/AccountHeader";
 import { AccountTabs } from "@/components/Account/AccountTabs";
+import { AccountFollowList } from "@/components/Account/AccountFollowList";
 import { MobileFooter } from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
 import { notFound } from "next/navigation";
 
 export default async function AccountFollowersPage(
@@ -14,7 +13,6 @@ export default async function AccountFollowersPage(
   const params = await props.params;
   const { lng, id } = params;
 
-  const session = await getServerAuthSession();
   const api = await getDicechoServerApi();
 
   try {
@@ -25,11 +23,7 @@ export default async function AccountFollowersPage(
         <AccountHeader user={user} lng={lng} />
         <AccountTabs user={user} lng={lng} userId={id} />
         <div className="container mx-auto py-4">
-          <Card>
-            <CardContent className="p-8 text-center text-muted-foreground">
-              粉丝列表功能开发中...
-            </CardContent>
-          </Card>
+          <AccountFollowList userId={id} type="followers" />
         </div>
         <MobileFooter />
       </>

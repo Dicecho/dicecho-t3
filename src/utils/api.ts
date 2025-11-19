@@ -16,6 +16,7 @@ import type {
   IRateListApiResponse,
   IRateDto,
   Error as DicechoServerError,
+  IModDto,
 } from "@dicecho/types";
 import {
   APIClient,
@@ -24,8 +25,16 @@ import {
 } from "./apiClient";
 import { jwtDecode } from "jwt-decode";
 import * as qs from "qs";
+import type {
+  CollectionDto,
+  CollectionItemsResponse,
+  CollectionListQuery,
+  CollectionListResponse,
+} from "@/types/collection";
 
-export function isBackendError(err: unknown): err is { body: DicechoServerError } {
+export function isBackendError(
+  err: unknown,
+): err is { body: DicechoServerError } {
   if (!err) {
     return false;
   }
@@ -40,6 +49,28 @@ export function isBackendError(err: unknown): err is { body: DicechoServerError 
 }
 
 type Empty = Record<string, never>;
+
+type UpdateProfileDto = Partial<{
+  nickName: string;
+  avatarUrl: string;
+  backgroundUrl: string;
+  note: string;
+  notice: string;
+}>;
+
+type ChangePasswordDto = {
+  oldPassword: string;
+  newPassword: string;
+};
+
+type CreateCollectionDto = {
+  name: string;
+  description?: string;
+};
+
+type UpdateCollectionDto = Partial<
+  Pick<CollectionDto, "name" | "description" | "coverUrl" | "accessLevel">
+>;
 
 export class DicechoApi extends APIClient {
   private refreshToken?: string;
@@ -69,14 +100,12 @@ export class DicechoApi extends APIClient {
     endpoint: string,
     method: FetchLikeInit["method"],
     params: P = {} as P,
+    { withToken = true }: { withToken?: boolean } = {},
   ): Promise<R> {
-    const requestFn = super
-      .request<P, Response<R>>(endpoint, method, params)
-      .then((res) => res.data);
 
     const accessToken = this.header.Authorization?.split(" ")[1];
 
-    if (this.refreshToken && accessToken) {
+    if (this.refreshToken && accessToken && withToken) {
       const decode = jwtDecode(accessToken);
 
       if (decode.exp && decode.exp * 1000 < Date.now()) {
@@ -89,21 +118,26 @@ export class DicechoApi extends APIClient {
           .catch(() => {
             this.setToken({});
           });
-        return requestFn;
+        return super
+          .request<P, Response<R>>(endpoint, method, params)
+          .then((res) => res.data);
       }
     }
 
-    return requestFn.catch(async (err: Error) => {
-      if (isBackendError(err)) {
-        if (err.body.code === AuthErrorCode.REFRESH_TOKEN_DISABLES) {
-          this.clearAuthorization();
-          return super
-            .request<P, Response<R>>(endpoint, method, params)
-            .then((res) => res.data);
+    return super
+      .request<P, Response<R>>(endpoint, method, params)
+      .then((res) => res.data)
+      .catch(async (err: Error) => {
+        if (isBackendError(err)) {
+          if (err.body.code === AuthErrorCode.REFRESH_TOKEN_DISABLES) {
+            this.clearAuthorization();
+            return super
+              .request<P, Response<R>>(endpoint, method, params)
+              .then((res) => res.data);
+          }
         }
-      }
-      throw err;
-    });
+        throw err;
+      });
   }
 
   auth = {
@@ -112,6 +146,7 @@ export class DicechoApi extends APIClient {
         "/api/auth/local/",
         "POST",
         params,
+        { withToken: false },
       ),
 
     signup: (data: IEmailRegisterUserDto) =>
@@ -124,6 +159,7 @@ export class DicechoApi extends APIClient {
         {
           refreshToken,
         },
+        { withToken: false },
       ),
 
     forget: (data: { email: string }) =>
@@ -171,6 +207,22 @@ export class DicechoApi extends APIClient {
       );
     },
 
+    updateProfile: (dto: UpdateProfileDto) => {
+      return this.request<UpdateProfileDto, IUserDto>(
+        `/api/user/profile`,
+        "PUT",
+        dto,
+      );
+    },
+
+    changePassword: (dto: ChangePasswordDto) => {
+      return this.request<ChangePasswordDto, Empty>(
+        `/api/user/password`,
+        "PUT",
+        dto,
+      );
+    },
+
     followers: (uuid: string, query: Partial<PageableQuery> = {}) => {
       return this.request<Empty, PaginatedResponse<IUserDto>>(
         `/api/user/${uuid}/followers?${qs.stringify(query)}`,
@@ -211,6 +263,37 @@ export class DicechoApi extends APIClient {
     //   this.post<TokenCreateData, ServerTransaction>('/token', data),
     // update: (typeId: string, data: TokenUpdateData) =>
     //   this.put<TokenUpdateData, Token>(`/token/${typeId}`, data),
+  };
+
+  collection = {
+    mine: () =>
+      this.request<Empty, Array<CollectionDto>>(`/api/collection/mine`, "GET"),
+    list: (params: Partial<CollectionListQuery> = {}) => {
+      const query = qs.stringify(params);
+      const endpoint = query ? `/api/collection?${query}` : `/api/collection`;
+      return this.request<Empty, CollectionListResponse>(endpoint, "GET");
+    },
+    detail: (uuid: string) =>
+      this.request<Empty, CollectionDto>(`/api/collection/${uuid}`, "GET"),
+    items: (uuid: string) =>
+      this.request<Empty, CollectionItemsResponse>(
+        `/api/collection/${uuid}/items`,
+        "GET",
+      ),
+    create: (payload: CreateCollectionDto) =>
+      this.request<CreateCollectionDto, CollectionDto>(
+        `/api/collection/`,
+        "POST",
+        payload,
+      ),
+    update: (uuid: string, dto: UpdateCollectionDto) =>
+      this.request<UpdateCollectionDto, CollectionDto>(
+        `/api/collection/${uuid}`,
+        "PUT",
+        dto,
+      ),
+    delete: (uuid: string) =>
+      this.request<Empty, Empty>(`/api/collection/${uuid}`, "DELETE"),
   };
 
   rate = {

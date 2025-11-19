@@ -2,7 +2,6 @@
 
 import { UserAvatar } from "@/components/User/Avatar";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { LinkWithLng } from "@/components/Link/LinkWithLng";
 import { useAccount } from "@/hooks/useAccount";
 import { useDicecho } from "@/hooks/useDicecho";
@@ -45,68 +44,90 @@ export const AccountHeader = ({ user, lng }: AccountHeaderProps) => {
     },
   });
 
+  const stats = [
+    {
+      label: t("followers"),
+      value: user.followerCount,
+      href: `/${lng}/account/${user._id}/followers`,
+    },
+    {
+      label: t("following"),
+      value: user.followingCount,
+      href: `/${lng}/account/${user._id}/followings`,
+    },
+    {
+      label: t("liked"),
+      value: user.likedCount,
+    },
+  ];
+
   return (
-    <div className="relative min-h-[400px] flex flex-col items-center justify-center">
-      {/* Background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${user.backgroundUrl || ""})` }}
-      >
-        <div className="absolute inset-0 bg-linear-to-b from-transparent to-background" />
+    <section className="relative isolate w-full overflow-hidden">
+      <div className="absolute inset-0 h-[240px] bg-muted md:h-[380px]">
+        <div
+          className="h-full w-full bg-cover bg-center"
+          style={{ backgroundImage: `url(${user.backgroundUrl || ""})` }}
+        >
+          <div className="h-full w-full bg-linear-to-b from-black/20 via-black/40 to-background" />
+        </div>
       </div>
-
-      {/* Content */}
-      <div className="relative flex flex-col items-center gap-4">
-        <div className="relative w-[120px] h-[120px]">
-          <UserAvatar
-            user={user}
-            alt={user.nickName}
-            width={120}
-            height={120}
-            className="rounded-full shadow-lg object-cover w-[120px] h-[120px]"
-          />
-        </div>
-        <div className="text-2xl font-bold">{user.nickName}</div>
-        {user.note && (
-          <div className="text-muted-foreground text-center max-w-md">
-            {user.note}
+      <div className="relative container mx-auto flex flex-col gap-6 pb-10 pt-16 md:pt-28">
+        <div className="flex md:flex-col md:items-center gap-4 md:text-center flex-row items-end md:gap-8 text-left">
+          <div className="relative h-32 w-32 rounded-full border-4 border-background/70 bg-background shadow-2xl">
+            <UserAvatar
+              user={user}
+              alt={user.nickName}
+              width={128}
+              height={128}
+              className="h-full w-full rounded-full object-cover"
+            />
           </div>
-        )}
-
-        {/* Stats */}
-        <div className="flex gap-6">
-          <LinkWithLng href={`/${lng}/account/${user._id}/followers`}>
-            <div className="flex flex-col items-center cursor-pointer hover:text-primary transition-colors">
-              <span className="text-lg font-bold">{user.followerCount}</span>
-              <span className="text-sm text-muted-foreground">{t("followers")}</span>
+          <div>
+            <div className="text-2xl font-light tracking-tight text-white md:text-4xl">
+              {user.nickName}
             </div>
-          </LinkWithLng>
-          <LinkWithLng href={`/${lng}/account/${user._id}/followings`}>
-            <div className="flex flex-col items-center cursor-pointer hover:text-primary transition-colors">
-              <span className="text-lg font-bold">{user.followingCount}</span>
-              <span className="text-sm text-muted-foreground">{t("following")}</span>
-            </div>
-          </LinkWithLng>
-          <div className="flex flex-col items-center">
-            <span className="text-lg font-bold">{user.likedCount}</span>
-            <span className="text-sm text-muted-foreground">{t("liked")}</span>
+            {user.note && (
+              <p className="mt-2 text-base text-white/80 md:max-w-2xl">{user.note}</p>
+            )}
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-2">
-          {isSelf ? (
-            <LinkWithLng href={`/${lng}/account/${user._id}/setting`}>
-              <Button variant="outline">
-                <Settings size={16} />
-                {t("edit_profile")}
-              </Button>
-            </LinkWithLng>
-          ) : (
-            <>
-              {user.isFollowed ? (
+        <div className="w-full rounded-3xl border border-white/10 bg-background/90 p-5 text-foreground shadow-2xl backdrop-blur">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="grid w-full gap-4 text-center text-xs uppercase tracking-wide text-muted-foreground sm:grid-cols-3">
+              {stats.map((stat) => {
+                const content = (
+                  <div className="flex h-full flex-col items-center justify-center gap-1 rounded-2xl border border-transparent py-2 transition-colors hover:border-primary/60">
+                    <span className="text-2xl font-semibold text-foreground">
+                      {stat.value}
+                    </span>
+                    <span>{stat.label}</span>
+                  </div>
+                );
+
+                return stat.href ? (
+                  <LinkWithLng key={stat.label} href={stat.href}>
+                    {content}
+                  </LinkWithLng>
+                ) : (
+                  <div key={stat.label}>{content}</div>
+                );
+              })}
+            </div>
+
+            <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-end">
+              {isSelf ? (
+                <LinkWithLng href={`/${lng}/account/${user._id}/setting`}>
+                  <Button variant="outline" size="sm" className="min-w-[140px]">
+                    <Settings size={16} />
+                    {t("edit_profile")}
+                  </Button>
+                </LinkWithLng>
+              ) : user.isFollowed ? (
                 <Button
                   variant="outline"
+                  size="sm"
+                  className="min-w-[140px]"
                   onClick={() => unfollowMutation.mutate()}
                   disabled={unfollowMutation.isPending}
                 >
@@ -116,6 +137,8 @@ export const AccountHeader = ({ user, lng }: AccountHeaderProps) => {
               ) : (
                 <Button
                   variant="default"
+                  size="sm"
+                  className="min-w-[140px]"
                   onClick={() => followMutation.mutate()}
                   disabled={followMutation.isPending}
                 >
@@ -123,11 +146,11 @@ export const AccountHeader = ({ user, lng }: AccountHeaderProps) => {
                   {t("follow")}
                 </Button>
               )}
-            </>
-          )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

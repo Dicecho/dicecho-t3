@@ -1,4 +1,3 @@
-import { getServerAuthSession } from "@/server/auth";
 import { getDicechoServerApi } from "@/server/dicecho";
 import { AccountHeader } from "@/components/Account/AccountHeader";
 import { AccountTabs } from "@/components/Account/AccountTabs";
@@ -14,7 +13,6 @@ export default async function AccountRatePage(
   const params = await props.params;
   const { lng, id } = params;
 
-  const session = await getServerAuthSession();
   const api = await getDicechoServerApi();
 
   try {

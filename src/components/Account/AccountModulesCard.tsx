@@ -84,13 +84,13 @@ export const AccountModulesCard = ({ user }: AccountModulesCardProps) => {
               key={module._id}
               href={`/scenario/${module._id}`}
             >
-              <div className="group relative aspect-3/4 overflow-hidden rounded-lg bg-muted">
+                <div className="group relative aspect-3/4 overflow-hidden rounded-lg bg-muted">
                 <img
                   src={module.coverUrl}
                   alt={module.title}
                   className="h-full w-full object-cover transition-transform group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-2">
                   <div className="line-clamp-2 text-sm font-medium text-white">
                     {module.title}

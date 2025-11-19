@@ -1,6 +1,4 @@
-import { getServerAuthSession } from "@/server/auth";
 import { getDicechoServerApi } from "@/server/dicecho";
-import { getTranslation } from "@/lib/i18n";
 import { AccountHeader } from "@/components/Account/AccountHeader";
 import { AccountTabs } from "@/components/Account/AccountTabs";
 import { AccountHome } from "@/components/Account/AccountHome";
@@ -15,7 +13,6 @@ export default async function AccountDetailPage(
   const params = await props.params;
   const { lng, id } = params;
 
-  const session = await getServerAuthSession();
   const api = await getDicechoServerApi();
 
   try {

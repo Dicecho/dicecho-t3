@@ -5,6 +5,7 @@ import { AccountModulesCard } from "./AccountModulesCard";
 import { AccountRateList } from "./account-rate-list";
 import type { IUserDto } from "@dicecho/types";
 import { useAccount } from "@/hooks/useAccount";
+import { useTranslation } from "@/lib/i18n/react";
 
 interface AccountHomeProps {
   user: IUserDto;
@@ -12,45 +13,37 @@ interface AccountHomeProps {
 
 export const AccountHome = ({ user }: AccountHomeProps) => {
   const { account, isAuthenticated } = useAccount();
+  const { t } = useTranslation();
   const isSelf = isAuthenticated && account._id === user._id;
 
+  const renderNotice = () =>
+    user.notice ? (
+      user.notice
+    ) : (
+      <div className="text-muted-foreground">{t("profile_notice_empty")}</div>
+    );
+
   return (
-    <div className="container mx-auto grid grid-cols-1 gap-4 md:grid-cols-3">
-      <div className="col-span-1 flex flex-col gap-4 md:col-span-2">
-        {/* Mobile: Show notice */}
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+      <div className="flex flex-col gap-4">
         <Card className="md:hidden">
           <CardHeader>
-            <CardTitle>简介</CardTitle>
+            <CardTitle>{t("profile_about")}</CardTitle>
           </CardHeader>
-          <CardContent>
-            {user.notice ? (
-              user.notice
-            ) : (
-              <div className="text-muted-foreground">暂无简介</div>
-            )}
-          </CardContent>
+          <CardContent>{renderNotice()}</CardContent>
         </Card>
 
-        {/* Modules Card - only show for self */}
         {isSelf && <AccountModulesCard user={user} />}
 
-        {/* Rate Card */}
-        <AccountRateList userId={user._id} />
+        <AccountRateList userId={user._id} rateCount={user.rateCount} />
       </div>
 
-      {/* Desktop: Sidebar with notice */}
-      <div className="hidden md:col-span-1 md:block">
+      <div className="hidden md:block">
         <Card>
           <CardHeader>
-            <CardTitle>简介</CardTitle>
+            <CardTitle>{t("profile_about")}</CardTitle>
           </CardHeader>
-          <CardContent>
-            {user.notice ? (
-              user.notice
-            ) : (
-              <div className="text-muted-foreground">暂无简介</div>
-            )}
-          </CardContent>
+          <CardContent>{renderNotice()}</CardContent>
         </Card>
       </div>
     </div>

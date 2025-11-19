@@ -2,8 +2,8 @@ import { getServerAuthSession } from "@/server/auth";
 import { getDicechoServerApi } from "@/server/dicecho";
 import { AccountHeader } from "@/components/Account/AccountHeader";
 import { AccountTabs } from "@/components/Account/AccountTabs";
+import { AccountSettings } from "@/components/Account/AccountSettings";
 import { MobileFooter } from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
 import { redirect, notFound } from "next/navigation";
 
 export default async function AccountSettingPage(
@@ -30,11 +30,7 @@ export default async function AccountSettingPage(
         <AccountHeader user={user} lng={lng} />
         <AccountTabs user={user} lng={lng} userId={id} />
         <div className="container mx-auto py-4">
-          <Card>
-            <CardContent className="p-8 text-center text-muted-foreground">
-              设置功能开发中...
-            </CardContent>
-          </Card>
+          <AccountSettings user={user} />
         </div>
         <MobileFooter />
       </>

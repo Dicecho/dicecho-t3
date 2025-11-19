@@ -25,9 +25,10 @@ export const AccountTabs = ({ user, lng, userId }: AccountTabsProps) => {
   const getActiveTab = () => {
     if (pathname === basePath) return "home";
     if (pathname?.startsWith(`${basePath}/rate`)) return "rate";
-    if (pathname?.startsWith(`${basePath}/mark`)) return "mark";
     if (pathname?.startsWith(`${basePath}/topic`)) return "topic";
     if (pathname?.startsWith(`${basePath}/collection`)) return "collection";
+    if (pathname?.startsWith(`${basePath}/followers`)) return "followers";
+    if (pathname?.startsWith(`${basePath}/followings`)) return "followings";
     if (pathname?.startsWith(`${basePath}/setting`)) return "setting";
     return "home";
   };
@@ -36,9 +37,10 @@ export const AccountTabs = ({ user, lng, userId }: AccountTabsProps) => {
     const routes: Record<string, string> = {
       home: basePath,
       rate: `${basePath}/rate`,
-      mark: `${basePath}/mark`,
       topic: `${basePath}/topic`,
       collection: `${basePath}/collection`,
+      followers: `${basePath}/followers`,
+      followings: `${basePath}/followings`,
       setting: `${basePath}/setting`,
     };
     const route = routes[value];
@@ -47,17 +49,50 @@ export const AccountTabs = ({ user, lng, userId }: AccountTabsProps) => {
     }
   };
 
+  const tabItems = [
+    {
+      label: t("home"),
+      value: "home",
+      },
+    {
+      label: t("topics"),
+      value: "topic",
+    },
+    {
+      label: t("collection"),
+      value: "collection",
+    },
+    {
+      label: t("followers"),
+      value: "followers",
+    },
+    {
+      label: t("following"),
+      value: "followings",
+    },
+    {
+      label: t("settings"),
+      value: "setting",
+    },
+  ].filter((tab) => isSelf || tab.value !== "setting");
+
   return (
-    <div className="container mx-auto">
-    <Tabs value={getActiveTab()} onValueChange={handleTabChange}>
-      <TabsList>
-        <TabsTrigger value="home">{t("home")}</TabsTrigger>
-        <TabsTrigger value="rate">{t("Rate.type_rate")}</TabsTrigger>
-        <TabsTrigger value="topic">{t("topics")}</TabsTrigger>
-        <TabsTrigger value="collection">{t("collection")}</TabsTrigger>
-        {isSelf && <TabsTrigger value="setting">{t("settings")}</TabsTrigger>}
-      </TabsList>
-    </Tabs>
+    <div className="sticky top-14 md:top-16 z-10 border-b border-border/60 bg-background/95 px-4 backdrop-blur supports-backdrop-filter:bg-background/70">
+      <div className="container mx-auto px-0">
+        <Tabs value={getActiveTab()} onValueChange={handleTabChange}>
+          <TabsList className="flex h-12 w-full justify-start gap-2 overflow-x-auto rounded-none border-0 bg-transparent p-0">
+            {tabItems.map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="rounded-none border-b-2 border-transparent px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      </div>
     </div>
   );
 };
