@@ -24,6 +24,7 @@ import { getServerAuthSession } from "@/server/auth";
 import { getTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { ColorModeSwitcher } from "../color-mode-switcher";
+import { SearchInput } from "@/components/Search/SearchInput";
 
 export type HeaderProps = ComponentProps<"div"> & {
   lng: string;
@@ -56,8 +57,8 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
       )}
     >
       <div className="container mx-auto">
-        <div className="flex min-h-16 items-center">
-          <div className="w-1/2 justify-start">
+        <div className="flex min-h-16 items-center gap-4">
+          <div className="flex shrink-0 items-center">
             <Link href={`/${lng}`} passHref>
               <DicechoLogo
                 className="text-primary w-8"
@@ -87,10 +88,11 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
             </NavigationMenu>
           </div>
 
-          {/* 
-        <div className="navbar-center">
-        </div> */}
-          <div className="flex w-1/2 items-center justify-end gap-2 capitalize">
+          <div className="hidden flex-1 md:flex">
+            <SearchInput lng={lng} placeholder={t("search_placeholder")} className="max-w-md" />
+          </div>
+
+          <div className="ml-auto flex items-center gap-2 capitalize">
             <LanguageChanger />
             <ColorModeSwitcher />
             <ThemeSwitcher />

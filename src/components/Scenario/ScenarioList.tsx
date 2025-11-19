@@ -14,9 +14,10 @@ import { Separator } from "@/components/ui/separator";
 import type { IModListQuery, ModListApiResponse } from "@dicecho/types";
 import type { ComponentProps, FC } from "react";
 import { ScenarioCardSkeleton } from "./ScenarioCardSkeleton";
+import { Loader2 } from "lucide-react";
 
 interface ScenarioListProps extends ComponentProps<"div"> {
-  initialData: ModListApiResponse;
+  initialData?: ModListApiResponse;
   query?: Partial<IModListQuery>;
 }
 
@@ -32,10 +33,12 @@ export const ScenarioList: FC<ScenarioListProps> = ({
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 1,
-    initialData: {
-      pageParams: [],
-      pages: [initialData],
-    },
+    initialData: initialData
+      ? {
+          pageParams: [],
+          pages: [initialData],
+        }
+      : undefined,
     queryKey: [`scenarios`, omit(query, "page")],
     queryFn: ({ pageParam }) => {
       return api.module.list({ ...query, page: pageParam });
@@ -72,13 +75,8 @@ export const ScenarioList: FC<ScenarioListProps> = ({
           }}
           components={{
             loading: isLoading ? (
-              <span
-                key="loading"
-                className="loading loading-spinner loading-xs"
-              />
-            ) : (
-              <span key="loading" />
-            ),
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : <></>,
           }}
         />
       </div>
@@ -90,22 +88,31 @@ export const ScenarioList: FC<ScenarioListProps> = ({
         )}
         {...props}
       >
-        {data?.pages.flatMap((page) =>
-          page.data.map((scenario) => (
-            <Link
-              href={`/${i18n.language}/scenario/${scenario._id}`}
-              key={scenario._id}
-            >
-              <ScenarioCard scenario={scenario} />
-            </Link>
-          )),
-        )}
+        {isLoading
+          ? new Array(query.pageSize ?? 12)
+              .fill(0)
+              .map((_, index) => <ScenarioCardSkeleton key={index} />)
+          : data?.pages.flatMap((page) =>
+              page.data.map((scenario) => (
+                <Link
+                  href={`/${i18n.language}/scenario/${scenario._id}`}
+                  key={scenario._id}
+                >
+                  <ScenarioCard scenario={scenario} />
+                </Link>
+              )),
+            )}
       </div>
-      <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4 mt-8" ref={ref}>
-        {new Array(query.pageSize ?? 4).fill(0).map((_, index) => (
-          <ScenarioCardSkeleton key={index} />
-        ))}
-      </div>
+      {hasNextPage && (
+        <div
+          className="mt-8 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4"
+          ref={ref}
+        >
+          {new Array(query.pageSize ?? 4).fill(0).map((_, index) => (
+            <ScenarioCardSkeleton key={index} />
+          ))}
+        </div>
+      )}
     </>
   );
 };

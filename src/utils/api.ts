@@ -31,6 +31,8 @@ import type {
   CollectionListQuery,
   CollectionListResponse,
 } from "@/types/collection";
+import type { ITag, TagQuery } from "@/types/tag";
+import type { ITopicDto, TopicListQuery } from "@/types/topic";
 
 export function isBackendError(
   err: unknown,
@@ -304,6 +306,24 @@ export class DicechoApi extends APIClient {
       ),
     detail: (id: string) =>
       this.request<Empty, IRateDto>(`/api/rate/${id}`, "GET"),
+  };
+
+  search = {
+    tag: (params: Partial<TagQuery> = {}) =>
+      this.request<Empty, PaginatedResponse<ITag>>(
+        `/api/tag?${qs.stringify(params)}`,
+        "GET",
+      ),
+    topic: (params: Partial<TopicListQuery> = {}) =>
+      this.request<Empty, PaginatedResponse<ITopicDto>>(
+        `/api/topic/search?${qs.stringify(params)}`,
+        "GET",
+      ),
+    user: (params: Partial<PageableQuery & { keyword?: string }> = {}) =>
+      this.request<Empty, PaginatedResponse<IUserDto>>(
+        `/api/user/search?${qs.stringify(params)}`,
+        "GET",
+      ),
   };
 }
 
