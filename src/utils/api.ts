@@ -74,6 +74,15 @@ type UpdateCollectionDto = Partial<
   Pick<CollectionDto, "name" | "description" | "coverUrl" | "accessLevel">
 >;
 
+export interface BannerDto {
+  priority: number;
+  action: string;
+  imageUrl: string;
+  link: string;
+  eventName?: string;
+  giftCode?: string;
+}
+
 export class DicechoApi extends APIClient {
   private refreshToken?: string;
 
@@ -261,10 +270,8 @@ export class DicechoApi extends APIClient {
         `/api/mod/random?${qs.stringify(params)}`,
         "GET",
       ),
-    // create: (data: TokenCreateData) =>
-    //   this.post<TokenCreateData, ServerTransaction>('/token', data),
-    // update: (typeId: string, data: TokenUpdateData) =>
-    //   this.put<TokenUpdateData, Token>(`/token/${typeId}`, data),
+    hot: () =>
+      this.request<Empty, PaginatedResponse<IModDto>>(`/api/mod/hot`, "GET"),
   };
 
   collection = {
@@ -324,6 +331,11 @@ export class DicechoApi extends APIClient {
         `/api/user/search?${qs.stringify(params)}`,
         "GET",
       ),
+  };
+
+  config = {
+    banner: () =>
+      this.request<Empty, BannerDto[]>(`/api/config/banner`, "GET"),
   };
 }
 

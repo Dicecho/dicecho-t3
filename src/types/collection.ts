@@ -1,4 +1,4 @@
-import type { PaginatedResponse, IModDto } from "@dicecho/types";
+import type { PaginatedResponse, IModDto, SortOrder } from "@dicecho/types";
 
 export type CollectionAccessLevel = "public" | "private";
 
@@ -27,11 +27,24 @@ export interface CollectionDto {
   items: Array<CollectionItem>;
 }
 
+export enum CollectionSortKey {
+  CREATED_AT = 'createdAt',
+  FAVORITE_COUNT = 'favoriteCount',
+}
+
+export interface CollectionFilter {
+  isRecommend: boolean;
+}
+
+
 export interface CollectionListQuery {
-  pageSize?: number;
-  page?: number;
-  creatorId?: string;
+  readonly pageSize: number;
+  readonly page: number;
+  readonly sort?: Partial<Record<CollectionSortKey, SortOrder>>;
+  readonly targetName?: string;
   targetId?: string;
+  creatorId?: string;
+  readonly filter?: Partial<CollectionFilter>;
 }
 
 export type CollectionListResponse = PaginatedResponse<CollectionDto>;

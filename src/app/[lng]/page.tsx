@@ -1,50 +1,233 @@
 import Link from "next/link";
 import { getServerAuthSession } from "@/server/auth";
-import { api } from "@/trpc/server";
+import { getDicechoServerApi } from "@/server/dicecho";
 import { MobileFooter } from "@/components/Footer";
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
 import { getTranslation } from "@/lib/i18n";
+import { BannerCarousel } from "@/components/Home/BannerCarousel";
+import { ScenarioCardGrid } from "@/components/Home/ScenarioCardGrid";
+import { CollectionCard } from "@/components/Home/CollectionCard";
+import { HomepageProfile } from "@/components/Home/HomepageProfile";
+import { HomepageActions } from "@/components/Home/HomepageActions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ModSortKey } from "@dicecho/types";
+import type { BannerDto } from "@/utils/api";
 
-export default async function Home(
-  props: {
-    params: Promise<{ lng: string }>;
-  }
-) {
+const DEFAULT_BANNER: BannerDto = {
+  priority: 0,
+  action: "",
+  imageUrl: "https://file.dicecho.com/mod/600af94a44f096001d6e49df/2021033103382254.png",
+  link: "",
+};
+
+export default async function Home(props: {
+  params: Promise<{ lng: string }>;
+}) {
   const params = await props.params;
+  const { lng } = params;
 
-  const {
-    lng
-  } = params;
-
-  const hello = await api.post.hello({ text: "from tRPC" });
   const { t } = await getTranslation(lng);
   const session = await getServerAuthSession();
+  const api = await getDicechoServerApi({ withToken: true });
+
+  // Fetch all home page data in parallel
+  const [bannersData, hotModsData, recentModsData, foreignModsData, collectionsData] = 
+    await Promise.all([
+      api.config.banner().catch(() => [DEFAULT_BANNER]),
+      api.module.hot().catch(() => ({ data: [] })),
+      api.module
+        .list({
+          pageSize: 8,
+          filter: { isForeign: false },
+          sort: { [ModSortKey.CREATED_AT]: -1 },
+        })
+        .catch(() => ({ data: [] })),
+      api.module
+        .list({
+          pageSize: 8,
+          filter: { isForeign: true },
+          sort: { [ModSortKey.CREATED_AT]: -1 },
+        })
+        .catch(() => ({ data: [] })),
+      api.collection
+        .list({
+          pageSize: 6,
+          filter: { isRecommend: true },
+          sort: { createdAt: -1 },
+        })
+        .catch(() => ({ data: [] })),
+    ]);
+
+  const banners = bannersData.length > 0 ? bannersData : [DEFAULT_BANNER];
+  const hotMods = hotModsData.data || [];
+  const recentMods = recentModsData.data || [];
+  const foreignMods = foreignModsData.data || [];
+  const collections = collectionsData.data || [];
 
   return (
     <>
       <MobileHeader>
         <HeaderMenu />
       </MobileHeader>
-      <main className="flex min-h-screen items-center justify-center w-full">
-        <div className="container flex flex-col items-center gap-2">
-          <p className="text-2xl text-white">
-            {hello ? hello.greeting : "Loading tRPC query..."}
-          </p>
 
-          <div className="flex flex-col items-center justify-center gap-4">
-            <p className="text-center text-2xl text-white">
-              {session && <span>Logged in as {session.user.nickName}</span>}
-            </p>
-            <Link
-              href={session ? "/api/auth/signout" : "/api/auth/signin"}
-              className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
+      <main className="container mx-auto py-6">
+        {/* Desktop Layout */}
+        <div className="hidden md:grid md:grid-cols-12 md:gap-6">
+          {/* Main Content - Left Side (2/3) */}
+          <div className="md:col-span-8">
+            {/* Banner */}
+            <BannerCarousel banners={banners} className="mb-6" />
+
+            {/* Recommended Collections */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>推荐合集</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {collections.map((collection) => (
+                    <CollectionCard
+                      key={collection._id}
+                      collection={collection}
+                      lng={lng}
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Submissions */}
+            <Card className="mb-6">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>最新投稿</CardTitle>
+                <Link href={`/${lng}/scenario?filter[isForeign]=false&sort[createdAt]=-1`}>
+                  <Button variant="link" size="sm">
+                    查看更多 &gt;&gt;
+                  </Button>
+                </Link>
+              </CardHeader>
+              <CardContent>
+                <ScenarioCardGrid scenarios={recentMods} lng={lng} />
+              </CardContent>
+            </Card>
+
+            {/* Hot Scenarios */}
+            <Card className="mb-6">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>一周热门模组</CardTitle>
+                <Link href={`/${lng}/scenario`}>
+                  <Button variant="link" size="sm">
+                    查看更多 &gt;&gt;
+                  </Button>
+                </Link>
+              </CardHeader>
+              <CardContent>
+                <ScenarioCardGrid scenarios={hotMods} lng={lng} />
+              </CardContent>
+            </Card>
+
+            {/* Foreign Mods */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>新增词条</CardTitle>
+                <Link href={`/${lng}/scenario?filter[isForeign]=true&sort[createdAt]=-1`}>
+                  <Button variant="link" size="sm">
+                    查看更多 &gt;&gt;
+                  </Button>
+                </Link>
+              </CardHeader>
+              <CardContent>
+                <ScenarioCardGrid scenarios={foreignMods} lng={lng} />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar - Right Side (1/3) */}
+          <div className="md:col-span-4">
+            {session?.user && (
+              <Card className="mb-4">
+                <CardContent className="pt-6">
+                  <HomepageProfile user={session.user} lng={lng} />
+                  <div className="mt-6">
+                    <HomepageActions lng={lng} />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Button
+              asChild
+              className="w-full mb-4"
             >
-              {session ? t("sign_out") : t("sign_in")}
-            </Link>
+              <a href="https://discord.gg/geEpSKFUzG" target="_blank" rel="noopener noreferrer">
+                Join us Discord server
+              </a>
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Layout */}
+        <div className="md:hidden space-y-4">
+          {/* Banner */}
+          <BannerCarousel banners={banners} />
+
+          {/* Recommended Collections */}
+          <div>
+            <h2 className="text-xl font-semibold mb-3">推荐合集</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {collections.slice(0, 4).map((collection) => (
+                <CollectionCard
+                  key={collection._id}
+                  collection={collection}
+                  lng={lng}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Recent Submissions */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xl font-semibold">最新投稿</h2>
+              <Link href={`/${lng}/scenario?filter[isForeign]=false&sort[createdAt]=-1`}>
+                <Button variant="link" size="sm" className="px-0">
+                  查看更多 &gt;&gt;
+                </Button>
+              </Link>
+            </div>
+            <ScenarioCardGrid scenarios={recentMods.slice(0, 6)} lng={lng} />
+          </div>
+
+          {/* Hot Scenarios */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xl font-semibold">一周热门模组</h2>
+              <Link href={`/${lng}/scenario`}>
+                <Button variant="link" size="sm" className="px-0">
+                  查看更多 &gt;&gt;
+                </Button>
+              </Link>
+            </div>
+            <ScenarioCardGrid scenarios={hotMods.slice(0, 6)} lng={lng} />
+          </div>
+
+          {/* Foreign Mods */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xl font-semibold">新增词条</h2>
+              <Link href={`/${lng}/scenario?filter[isForeign]=true&sort[createdAt]=-1`}>
+                <Button variant="link" size="sm" className="px-0">
+                  查看更多 &gt;&gt;
+                </Button>
+              </Link>
+            </div>
+            <ScenarioCardGrid scenarios={foreignMods.slice(0, 6)} lng={lng} />
           </div>
         </div>
       </main>
+
       <MobileFooter />
     </>
   );
