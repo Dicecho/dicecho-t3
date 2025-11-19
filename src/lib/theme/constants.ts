@@ -249,7 +249,7 @@ const formatPresetName = (id: string, preset: ThemePreset) => {
 const createThemeFromPreset = (id: ThemePresetId, preset: ThemePreset): UserTheme => ({
   id,
   name: formatPresetName(id, preset),
-  mode: "light",
+  mode: "dark",
   tokens: {
     light: applyPresetStyles(preset.styles.light, baseLightValues),
     dark: applyPresetStyles(preset.styles.dark, baseDarkValues),
@@ -268,7 +268,7 @@ export const presetThemes = Object.fromEntries(presetEntries) as Record<
   UserTheme
 >;
 
-const defaultPresetId = "modern-minimal" satisfies ThemePresetId;
+const defaultPresetId = "dicecho" satisfies ThemePresetId;
 
 export const themePresetOrder: ThemePresetId[] = presetEntries.map(
   ([id]) => id as ThemePresetId
