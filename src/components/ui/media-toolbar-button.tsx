@@ -87,8 +87,12 @@ export function MediaToolbarButton({
   const [open, setOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
+  if (!currentConfig) {
+    return null;
+  }
+
   const { openFilePicker } = useFilePicker({
-    accept: currentConfig.accept,
+    accept: currentConfig?.accept || '*',
     multiple: true,
     onFilesSelected: ({ plainFiles: updatedFiles }) => {
       editor.getTransforms(PlaceholderPlugin).insert.media(updatedFiles);

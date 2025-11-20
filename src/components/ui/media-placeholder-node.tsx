@@ -67,7 +67,7 @@ export const PlaceholderElement = withHOC(
     const imageRef = React.useRef<HTMLImageElement>(null);
 
     const { openFilePicker } = useFilePicker({
-      accept: currentContent.accept,
+      accept: currentContent?.accept || '*',
       multiple: true,
       onFilesSelected: ({ plainFiles: updatedFiles }) => {
         const firstFile = updatedFiles[0];
@@ -147,11 +147,11 @@ export const PlaceholderElement = withHOC(
             contentEditable={false}
           >
             <div className="relative mr-3 flex text-muted-foreground/80 [&_svg]:size-6">
-              {currentContent.icon}
+              {currentContent?.icon}
             </div>
             <div className="text-sm whitespace-nowrap text-muted-foreground">
               <div>
-                {loading ? uploadingFile?.name : currentContent.content}
+                {loading ? uploadingFile?.name : currentContent?.content}
               </div>
 
               {loading && !isImage && (

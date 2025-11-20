@@ -37,19 +37,11 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
       );
     }
 
-    // if (rate.remarkType === RemarkContentType.Markdown) {
-      // const markdownValue = toSlate(rate.remark)
-      
-      // // (() => {
-      // //   // const splitValue = rate.remark.split(/\r?\n/);
-
-      // //   return splitValue.map((item) => ());
-      // // })();
-
-      // return (
-      //   <RichTextPreview id={`rate-item-${rate._id}`} value={markdownValue} />
-      // );
-    // }
+    if (rate.remarkType === RemarkContentType.Markdown) {
+      return (
+        <RichTextPreview id={`rate-item-${rate._id}`} markdown={rate.remark} />
+      );
+    }
 
     return null;
   };

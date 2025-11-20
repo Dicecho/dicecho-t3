@@ -28,7 +28,7 @@ export function ImageElementStatic(
             alt={(props.attributes as any).alt}
             src={url}
           />
-          {caption && (
+          {caption && caption[0] && (
             <figcaption className="mx-auto mt-2 h-[24px] max-w-full">
               {NodeApi.string(caption[0])}
             </figcaption>
