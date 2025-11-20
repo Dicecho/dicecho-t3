@@ -56,7 +56,7 @@
   "collect": "collect",
   "collection_mine": "My collections",
   "collection_theirs": "Their collections",
-  "collection_total": "{{count}} collections",
+  "collection_total": "<loading></loading>{{count}} collections",
   "collection_empty_self": "You haven't created any collections yet",
   "collection_empty_other": "This user has no public collections",
   "collection_access_public": "Public",

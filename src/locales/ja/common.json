@@ -56,7 +56,7 @@
   "collect": "集める",
   "collection_mine": "私のコレクション",
   "collection_theirs": "このユーザーのコレクション",
-  "collection_total": "全 {{count}} 件のコレクション",
+  "collection_total": "全 <loading></loading>{{count}} 件のコレクション",
   "collection_empty_self": "まだコレクションを作成していません",
   "collection_empty_other": "公開コレクションはありません",
   "collection_access_public": "公開",
