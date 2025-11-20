@@ -32,7 +32,7 @@ export const RichTextPreview = ({ markdown, ...props }: RichTextPreviewProps) =>
   return (
     <Plate editor={editor}>
       <EditorContainer>
-        <Editor placeholder="Type your amazing content here..." />
+        <Editor />
       </EditorContainer>
     </Plate>
   );

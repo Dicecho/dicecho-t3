@@ -6,6 +6,7 @@ import { AccountRateList } from "./account-rate-list";
 import type { IUserDto } from "@dicecho/types";
 import { useAccount } from "@/hooks/useAccount";
 import { useTranslation } from "@/lib/i18n/react";
+import { RichTextPreview } from "@/components/Editor";
 
 interface AccountHomeProps {
   user: IUserDto;
@@ -18,7 +19,7 @@ export const AccountHome = ({ user }: AccountHomeProps) => {
 
   const renderNotice = () =>
     user.notice ? (
-      user.notice
+      <RichTextPreview markdown={user.notice} />
     ) : (
       <div className="text-muted-foreground">{t("profile_notice_empty")}</div>
     );
