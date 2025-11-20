@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, HTMLAttributes } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Sortable, SortableItem, SortableItemHandle } from "@/components/ui/sortable";
+import {
+  Sortable,
+  SortableItem,
+  SortableItemHandle,
+} from "@/components/ui/sortable";
 import { useDicecho } from "@/hooks/useDicecho";
 import { toast } from "@/components/ui/use-toast";
 import { useTranslation } from "@/lib/i18n/react";
@@ -11,6 +15,7 @@ import type { IModDto } from "@dicecho/types";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface CollectionItemsListProps {
   collectionId: string;
@@ -18,6 +23,51 @@ interface CollectionItemsListProps {
   canEdit: boolean;
   isEditMode: boolean;
 }
+
+const CollectionItem = ({ item, className, ...props }: HTMLAttributes<HTMLDivElement> & { item: IModDto }) => {
+  const { t } = useTranslation();
+
+  return (
+    <div className={cn("flex gap-4 rounded-sm p-3 transition-colors", className)} {...props}>
+      {/* Cover Image */}
+      <div className="relative h-32 w-24 flex-none overflow-hidden rounded-md">
+        {item.coverUrl ? (
+          <Image
+            src={item.coverUrl}
+            alt={item.title}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="text-muted-foreground flex h-full w-full items-center justify-center">
+            No Cover
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="min-w-0 flex-1 space-y-1">
+        <h3 className="line-clamp-1 text-base font-medium">{item.title}</h3>
+
+        {/* Rating */}
+        {item.rateAvg !== 0 && (
+          <div className="text-muted-foreground flex items-center gap-1 text-sm">
+            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            <span>{item.rateAvg.toFixed(1)}</span>
+            {item.rateCount && (
+              <span className="text-xs">({item.rateCount})</span>
+            )}
+          </div>
+        )}
+
+        {/* Description */}
+        <p className="text-muted-foreground line-clamp-2 text-sm">
+          {item.description || t("no_description")}
+        </p>
+      </div>
+    </div>
+  );
+};
 
 export const CollectionItemsList = ({
   collectionId,
@@ -41,7 +91,9 @@ export const CollectionItemsList = ({
         targetName: "Mod",
         targetId: item._id,
       }));
-      return api.collection.update(collectionId, { items: orderedItems } as any);
+      return api.collection.update(collectionId, {
+        items: orderedItems,
+      } as any);
     },
     onSuccess: () => {
       toast({ title: t("collection_order_updated") });
@@ -71,7 +123,9 @@ export const CollectionItemsList = ({
           targetName: "Mod",
           targetId: item._id,
         }));
-      return api.collection.update(collectionId, { items: remainingItems } as any);
+      return api.collection.update(collectionId, {
+        items: remainingItems,
+      } as any);
     },
     onSuccess: () => {
       toast({ title: t("collection_item_removed") });
@@ -105,51 +159,13 @@ export const CollectionItemsList = ({
   if (!canEdit || !isEditMode) {
     // Non-editable: simple vertical list
     return (
-      <div className="space-y-3">
+      <div className="flex flex-col gap-4">
         {localItems.map((mod) => (
           <Link
             key={mod._id}
             href={`/scenario/${mod._id}`}
-            className="flex gap-4 p-3 bg-muted rounded-lg hover:bg-muted/50 transition-colors"
           >
-            {/* Cover Image */}
-            <div className="flex-none w-24 h-32 relative rounded-md overflow-hidden bg-muted">
-              {mod.coverUrl ? (
-                <Image
-                  src={mod.coverUrl}
-                  alt={mod.title}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                  No Cover
-                </div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0 space-y-1">
-              <h3 className="font-medium text-base line-clamp-1">
-                {mod.title}
-              </h3>
-
-              {/* Rating */}
-              {mod.rateAvg !== 0 && (
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span>{mod.rateAvg.toFixed(1)}</span>
-                  {mod.rateCount && (
-                    <span className="text-xs">({mod.rateCount})</span>
-                  )}
-                </div>
-              )}
-
-              {/* Description */}
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {mod.description || t("no_description")}
-              </p>
-            </div>
+            <CollectionItem item={mod} className="bg-muted hover:bg-muted/50" />
           </Link>
         ))}
       </div>
@@ -168,64 +184,16 @@ export const CollectionItemsList = ({
         <SortableItem
           key={mod._id}
           value={mod._id}
-          className="flex gap-4 p-3 border rounded-lg bg-card"
+          className="flex gap-4 cursor-grab bg-muted hover:bg-muted/50"
         >
           {/* Drag Handle */}
-          <SortableItemHandle className="flex-none flex items-start pt-2">
-            <div className="cursor-grab active:cursor-grabbing p-1 hover:bg-accent rounded">
-              <GripVertical className="h-5 w-5 text-muted-foreground" />
-            </div>
+          <SortableItemHandle className="flex flex-1 items-start pt-2">
+            <CollectionItem item={mod} className="flex-1 cursor-grab" />
           </SortableItemHandle>
 
-          {/* Cover Image */}
-          <Link
-            href={`/scenario/${mod._id}`}
-            className="flex-none w-24 h-32 relative rounded-md overflow-hidden bg-muted hover:opacity-80 transition-opacity"
-          >
-            {mod.coverUrl ? (
-              <Image
-                src={mod.coverUrl}
-                alt={mod.title}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                No Cover
-              </div>
-            )}
-          </Link>
-
-          {/* Content */}
-          <div className="flex-1 min-w-0 space-y-1">
-            <Link
-              href={`/scenario/${mod._id}`}
-              className="block hover:underline"
-            >
-              <h3 className="font-medium text-base line-clamp-1">
-                {mod.title}
-              </h3>
-            </Link>
-
-            {/* Rating */}
-            {mod.rateAvg && (
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span>{mod.rateAvg.toFixed(1)}</span>
-                {mod.rateCount && (
-                  <span className="text-xs">({mod.rateCount})</span>
-                )}
-              </div>
-            )}
-
-            {/* Description */}
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {mod.description || t("no_description")}
-            </p>
-          </div>
 
           {/* Remove Button */}
-          <div className="flex-none flex items-start pt-2">
+          <div className="flex flex-none items-start pt-2">
             <Button
               variant="ghost"
               size="sm"

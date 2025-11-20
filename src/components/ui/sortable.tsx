@@ -125,7 +125,7 @@ function Kanban<T>({ value, onValueChange, getItemValue, children, className, on
   const findContainer = React.useCallback(
     (id: UniqueIdentifier) => {
       if (isColumn(id)) return id as string;
-      return columnIds.find((key) => columns[key].some((item) => getItemValue(item) === id));
+      return columnIds.find((key) => columns[key]?.some((item) => getItemValue(item) === id));
     },
     [columns, columnIds, getItemValue, isColumn],
   );
@@ -153,8 +153,8 @@ function Kanban<T>({ value, onValueChange, getItemValue, children, className, on
         return;
       }
 
-      const activeItems = columns[activeContainer];
-      const overItems = columns[overContainer];
+      const activeItems = columns[activeContainer]!;
+      const overItems = columns[overContainer]!;
 
       const activeIndex = activeItems.findIndex((item: T) => getItemValue(item) === active.id);
       let overIndex = overItems.findIndex((item: T) => getItemValue(item) === over.id);
@@ -166,7 +166,7 @@ function Kanban<T>({ value, onValueChange, getItemValue, children, className, on
 
       const newOverItems = [...overItems];
       const [movedItem] = activeItems.splice(activeIndex, 1);
-      newOverItems.splice(overIndex, 0, movedItem);
+      newOverItems.splice(overIndex, 0, movedItem!);
 
       setColumns({
         ...columns,
@@ -190,10 +190,10 @@ function Kanban<T>({ value, onValueChange, getItemValue, children, className, on
         const overContainer = findContainer(over.id);
 
         if (activeContainer && overContainer) {
-          const activeIndex = columns[activeContainer].findIndex((item: T) => getItemValue(item) === active.id);
+          const activeIndex = columns[activeContainer]!.findIndex((item: T) => getItemValue(item) === active.id);
           const overIndex = isColumn(over.id)
-            ? columns[overContainer].length
-            : columns[overContainer].findIndex((item: T) => getItemValue(item) === over.id);
+            ? columns[overContainer]!.length
+            : columns[overContainer]!.findIndex((item: T) => getItemValue(item) === over.id);
 
           onMove({
             event,
@@ -214,7 +214,7 @@ function Kanban<T>({ value, onValueChange, getItemValue, children, className, on
           const newOrder = arrayMove(Object.keys(columns), activeIndex, overIndex);
           const newColumns: Record<string, T[]> = {};
           newOrder.forEach((key) => {
-            newColumns[key] = columns[key];
+            newColumns[key] = columns[key]!;
           });
           setColumns(newColumns);
         }
@@ -227,13 +227,13 @@ function Kanban<T>({ value, onValueChange, getItemValue, children, className, on
       // Handle item reordering within the same column
       if (activeContainer && overContainer && activeContainer === overContainer) {
         const container = activeContainer;
-        const activeIndex = columns[container].findIndex((item: T) => getItemValue(item) === active.id);
-        const overIndex = columns[container].findIndex((item: T) => getItemValue(item) === over.id);
+        const activeIndex = columns[container]!.findIndex((item: T) => getItemValue(item) === active.id);
+        const overIndex = columns[container]!.findIndex((item: T) => getItemValue(item) === over.id);
 
         if (activeIndex !== overIndex) {
           setColumns({
             ...columns,
-            [container]: arrayMove(columns[container], activeIndex, overIndex),
+            [container]: arrayMove(columns[container]!, activeIndex, overIndex),
           });
         }
       }
@@ -446,7 +446,7 @@ export interface KanbanColumnContentProps {
 function KanbanColumnContent({ value, className, children }: KanbanColumnContentProps) {
   const { columns, getItemId } = React.useContext(KanbanContext);
 
-  const itemIds = React.useMemo(() => columns[value].map(getItemId), [columns, getItemId, value]);
+  const itemIds = React.useMemo(() => columns[value]!.map(getItemId), [columns, getItemId, value]);
 
   return (
     <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>

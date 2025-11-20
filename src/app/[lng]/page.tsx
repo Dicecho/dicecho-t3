@@ -91,7 +91,6 @@ export default async function Home(props: {
                     <CollectionCard
                       key={collection._id}
                       collection={collection}
-                      lng={lng}
                     />
                   ))}
                 </div>
@@ -181,7 +180,6 @@ export default async function Home(props: {
                 <CollectionCard
                   key={collection._id}
                   collection={collection}
-                  lng={lng}
                 />
               ))}
             </div>
