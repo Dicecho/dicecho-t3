@@ -21,7 +21,7 @@ export const AccountCollection = ({ userId, isSelf }: AccountCollectionProps) =>
   const [activeId, setActiveId] = useState<string>();
 
   const { data: collections, isLoading } = useQuery({
-    queryKey: ["collection", isSelf ? "mine" : userId],
+    queryKey: ["collection", "user", userId],
     queryFn: async () => {
       if (isSelf) {
         return api.collection.mine();
@@ -29,6 +29,9 @@ export const AccountCollection = ({ userId, isSelf }: AccountCollectionProps) =>
       const res = await api.collection.list({ creatorId: userId, pageSize: 100 });
       return res.data;
     },
+    staleTime: 3600 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
   useEffect(() => {

@@ -1,23 +1,21 @@
 "use client";
 import { FC } from "react";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import type { CollectionDto } from "@/types/collection";
 import { cn } from "@/lib/utils";
+import { LinkWithLng } from "../Link";
 
 interface CollectionCardProps {
   collection: CollectionDto;
-  lng: string;
   className?: string;
 }
 
 export const CollectionCard: FC<CollectionCardProps> = ({
   collection,
-  lng,
   className,
 }) => {
   return (
-    <Link href={`/${lng}/account/${collection.user._id}/collection`}>
+    <LinkWithLng href={`/collection/${collection._id}`}>
       <Card className={cn("overflow-hidden hover:shadow-lg transition-shadow", className)}>
         <div
           className="aspect-video w-full bg-cover bg-center"
@@ -32,7 +30,7 @@ export const CollectionCard: FC<CollectionCardProps> = ({
           </div>
         </CardContent>
       </Card>
-    </Link>
+    </LinkWithLng>
   );
 };
 

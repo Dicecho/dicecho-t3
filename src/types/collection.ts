@@ -27,6 +27,20 @@ export interface CollectionDto {
   items: Array<CollectionItem>;
 }
 
+export interface CreateCollectionDto {
+  name: string;
+  description?: string;
+  accessLevel?: CollectionAccessLevel;
+}
+
+export interface UpdateCollectionDto {
+  name?: string;
+  description?: string;
+  coverUrl?: string;
+  accessLevel?: CollectionAccessLevel;
+  items?: Array<CollectionItem>;
+}
+
 export enum CollectionSortKey {
   CREATED_AT = 'createdAt',
   FAVORITE_COUNT = 'favoriteCount',

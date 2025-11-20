@@ -74,6 +74,20 @@ type UpdateCollectionDto = Partial<
   Pick<CollectionDto, "name" | "description" | "coverUrl" | "accessLevel">
 >;
 
+export interface OSSCredentials {
+  AccessKeyId: string;
+  SecretAccessKey: string;
+  SessionToken: string;
+  Expiration: string;
+  Endpoint: string;
+  Domain: string;
+  Path: string;
+  Secure: boolean;
+  Bucket: string;
+  Region: string;
+  Cname?: string;
+}
+
 export interface BannerDto {
   priority: number;
   action: string;
@@ -303,6 +317,16 @@ export class DicechoApi extends APIClient {
       ),
     delete: (uuid: string) =>
       this.request<Empty, Empty>(`/api/collection/${uuid}`, "DELETE"),
+    favorite: (id: string) =>
+      this.request<Empty, CollectionDto>(
+        `/api/collection/${id}/favorite`,
+        "PUT",
+      ),
+    cancelFavorite: (id: string) =>
+      this.request<Empty, CollectionDto>(
+        `/api/collection/${id}/cancelFavorite`,
+        "PUT",
+      ),
   };
 
   rate = {
@@ -336,6 +360,17 @@ export class DicechoApi extends APIClient {
   config = {
     banner: () =>
       this.request<Empty, BannerDto[]>(`/api/config/banner`, "GET"),
+  };
+
+  file = {
+    assume: () =>
+      this.request<Empty, OSSCredentials>(`/api/file/assume`, "GET"),
+    uploadFromUrl: (url: string) =>
+      this.request<{ url: string }, { url: string }>(
+        `/api/file/upload_from_url`,
+        "POST",
+        { url },
+      ),
   };
 }
 
