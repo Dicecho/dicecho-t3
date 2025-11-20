@@ -42,13 +42,14 @@ export function DetailsElement(props: PlateElementProps) {
         element={element}
         as="details"
         className={cn(
-          'rounded overflow-hidden border border-border/50',
+          'rounded overflow-hidden border border-border/50 mb-1',
           'bg-muted/30 dark:bg-muted/20',
           attributes.className
         )}
       >
         <summary 
           className={cn(
+            'min-h-10',
             'px-4 py-2 cursor-pointer',
             'font-medium text-foreground',
             'bg-[linear-gradient(45deg,rgba(234,192,69,0.3)_25%,transparent_25%,transparent_50%,rgba(234,192,69,0.3)_50%,rgba(234,192,69,0.3)_75%,transparent_75%,transparent)]',
