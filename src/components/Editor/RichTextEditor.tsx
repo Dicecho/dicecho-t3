@@ -6,6 +6,7 @@ import { Editor, EditorContainer } from "@/components/ui/editor";
 import { editorPlugins } from "./plugins";
 import { MarkdownPlugin } from "@platejs/markdown";
 import { preprocessMarkdownDetails } from "./utils/markdown-preprocessor";
+import { FixedToolbarKit } from './plugins/fixed-toolbar-kit';
 
 interface RichTextEditorProps extends Omit<PlateProps, 'editor' | 'children'> {
   options?: Omit<WithPlateOptions, 'plugins'>;
@@ -20,7 +21,7 @@ interface RichTextEditorProps extends Omit<PlateProps, 'editor' | 'children'> {
 export const RichTextEditor = ({ markdown, options, onMarkdownChange, ...props }: RichTextEditorProps) => {
   const editor = usePlateEditor({
     ...options,
-    plugins: editorPlugins,
+    plugins: [...editorPlugins, ...FixedToolbarKit],
     // 如果提供了 markdown,预处理后使用 deserialize 转换为节点
     value: markdown
       ? (editor) => {

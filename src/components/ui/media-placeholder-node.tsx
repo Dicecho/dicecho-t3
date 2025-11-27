@@ -13,10 +13,11 @@ import {
 import { AudioLines, FileUp, Film, ImageIcon, Loader2Icon } from 'lucide-react';
 import { KEYS } from 'platejs';
 import { PlateElement, useEditorPlugin, withHOC } from 'platejs/react';
-import { useFilePicker } from 'use-file-picker';
+import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
-import { useUploadFile } from '@/hooks/use-upload-file';
+import { useFileUpload } from '@/hooks/use-file-upload';
+import { useUploadOSS } from '@/hooks/use-uploader-assume';
 
 const CONTENT: Record<
   string,
@@ -55,38 +56,105 @@ export const PlaceholderElement = withHOC(
 
     const { api } = useEditorPlugin(PlaceholderPlugin);
 
-    const { isUploading, progress, uploadedFile, uploadFile, uploadingFile } =
-      useUploadFile();
+    const [uploadedFile, setUploadedFile] = React.useState<{
+      name?: string;
+      url: string;
+    } | null>(null);
+    const [uploadingFile, setUploadingFile] = React.useState<File | null>(null);
+    const { upload, isUploading, progress } = useUploadOSS();
 
-    const loading = isUploading && uploadingFile;
+    const loading = isUploading && Boolean(uploadingFile);
 
-    const currentContent = CONTENT[element.mediaType];
+    const currentContent = CONTENT[element.mediaType] ?? CONTENT[KEYS.file];
+
+    const accept = React.useMemo(() => {
+      const accepts = currentContent?.accept;
+
+      return Array.isArray(accepts) ? accepts.join(',') : '*';
+    }, [currentContent?.accept]);
 
     const isImage = element.mediaType === KEYS.img;
 
     const imageRef = React.useRef<HTMLImageElement>(null);
 
-    const { openFilePicker } = useFilePicker({
-      accept: currentContent?.accept || '*',
+    const [
+      { isDragging },
+      {
+        handleDragEnter,
+        handleDragLeave,
+        handleDragOver,
+        handleDrop,
+        openFileDialog,
+        getInputProps,
+      },
+    ] = useFileUpload({
+      accept,
       multiple: true,
-      onFilesSelected: ({ plainFiles: updatedFiles }) => {
-        const firstFile = updatedFiles[0];
-        const restFiles = updatedFiles.slice(1);
+      onFilesAdded: (files) => {
+        if (loading) {
+          return;
+        }
+
+        const plainFiles = files
+          .map((file) => file.file)
+          .filter((file): file is File => file instanceof File);
+
+        if (plainFiles.length === 0) {
+          return;
+        }
+
+        const [firstFile, ...restFiles] = plainFiles;
+
+        if (!firstFile) {
+          return;
+        }
 
         replaceCurrentPlaceholder(firstFile);
 
         if (restFiles.length > 0) {
-          editor.getTransforms(PlaceholderPlugin).insert.media(restFiles);
+          const dataTransfer = new DataTransfer();
+          restFiles.forEach((file) => dataTransfer.items.add(file));
+
+          editor
+            .getTransforms(PlaceholderPlugin)
+            .insert.media(dataTransfer.files);
         }
+      },
+      onError: (errors) => {
+        errors.forEach((error) =>
+          toast.error(error || 'File selection failed. Please try again.')
+        );
       },
     });
 
+    const uploadMedia = React.useCallback(
+      async (file: File) => {
+        setUploadingFile(file);
+
+        try {
+          const result = await upload(file);
+
+          setUploadedFile({
+            name: result.name ?? file.name,
+            url: result.url,
+          });
+        } catch (error) {
+          toast.error('上传失败，请稍后重试。');
+          api.placeholder.removeUploadingFile(element.id as string);
+          setUploadedFile(null);
+        } finally {
+          setUploadingFile(null);
+        }
+      },
+      [api.placeholder, element.id, upload]
+    );
+
     const replaceCurrentPlaceholder = React.useCallback(
       (file: File) => {
-        void uploadFile(file);
         api.placeholder.addUploadingFile(element.id as string, file);
+        void uploadMedia(file);
       },
-      [api.placeholder, element.id, uploadFile]
+      [api.placeholder, element.id, uploadMedia]
     );
 
     React.useEffect(() => {
@@ -114,6 +182,7 @@ export const PlaceholderElement = withHOC(
       });
 
       api.placeholder.removeUploadingFile(element.id as string);
+      setUploadedFile(null);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [uploadedFile, element.id]);
 
@@ -138,12 +207,25 @@ export const PlaceholderElement = withHOC(
 
     return (
       <PlateElement className="my-1" {...props}>
+        <input
+          {...getInputProps({
+            accept,
+            multiple: true,
+          })}
+          className="sr-only"
+        />
         {(!loading || !isImage) && (
           <div
             className={cn(
-              'flex cursor-pointer items-center rounded-sm bg-muted p-3 pr-9 select-none hover:bg-primary/10'
+              'flex cursor-pointer items-center rounded-sm bg-muted p-3 pr-9 select-none hover:bg-primary/10',
+              isDragging &&
+                'border border-dashed border-primary bg-primary/5 transition-colors'
             )}
-            onClick={() => !loading && openFilePicker()}
+            onClick={() => !loading && openFileDialog()}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
             contentEditable={false}
           >
             <div className="relative mr-3 flex text-muted-foreground/80 [&_svg]:size-6">
@@ -188,11 +270,15 @@ export function ImageProgress({
   imageRef,
   progress = 0,
 }: {
-  file: File;
+  file: File | null;
   className?: string;
   imageRef?: React.RefObject<HTMLImageElement | null>;
   progress?: number;
 }) {
+  if (!file) {
+    return null;
+  }
+
   const [objectUrl, setObjectUrl] = React.useState<string | null>(null);
 
   React.useEffect(() => {
