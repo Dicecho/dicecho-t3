@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { UserAvatar } from "@/components/User/Avatar";
 import { RateView, RateType, RemarkContentType } from "@dicecho/types";
 import type { IRateDto } from "@dicecho/types";
@@ -9,6 +9,9 @@ import { Rate } from "@/components/ui/rate";
 import { Trans } from "react-i18next";
 import { useTranslation } from "@/lib/i18n/react";
 import { Badge } from "@/components/ui/badge";
+import { CommentSection } from "@/components/Comment";
+import { Button } from "@/components/ui/button";
+import { MessageCircle } from "lucide-react";
 
 interface IProps {
   rate: IRateDto;
@@ -16,6 +19,7 @@ interface IProps {
 
 export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
   const { t } = useTranslation();
+  const [commentVisible, setCommentVisible] = useState(false);
 
   const RATE_VIEW_MAP = {
     [RateView.PL]: t("Rate.view_pl"),
@@ -58,12 +62,12 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
         />
         <div className="flex flex-1 items-baseline gap-2">
           <div>{rate.user.nickName}</div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-muted-foreground text-sm">
             {rate.type === RateType.Rate
               ? t("Rate.type_rate")
               : t("Rate.type_mark")}
           </div>
-          <div className="ml-auto text-sm text-muted-foreground">
+          <div className="text-muted-foreground ml-auto text-sm">
             {formatDate(new Date(rate.rateAt).getTime())}
           </div>
         </div>
@@ -76,9 +80,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
       {(rate.type === RateType.Rate || rate.remarkLength > 50) && (
         <div className="flex gap-2">
           {rate.type === RateType.Rate && (
-            <Badge variant="muted">
-              {RATE_VIEW_MAP[rate.view]}
-            </Badge>
+            <Badge variant="muted">{RATE_VIEW_MAP[rate.view]}</Badge>
           )}
           {rate.remarkLength > 50 && (
             <Badge variant="outline">
@@ -95,6 +97,32 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
       )}
 
       {renderRateContent()}
+
+      <>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            variant={"secondary"}
+            onClick={() => setCommentVisible((prev) => !prev)}
+            className="gap-2"
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span>{t("comments")}</span>
+            {rate.commentCount > 0 && (
+              <Badge variant="muted">
+                {rate.commentCount}
+              </Badge>
+            )}
+          </Button>
+        </div>
+        {commentVisible && (
+          <CommentSection
+            targetName="Rate"
+            targetId={rate._id}
+            className="mt-2"
+          />
+        )}
+      </>
     </div>
   );
 };

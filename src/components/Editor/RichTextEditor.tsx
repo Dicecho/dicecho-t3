@@ -1,23 +1,25 @@
 "use client";
 
-import { Plate, WithPlateOptions, usePlateEditor } from "platejs/react";
+import { Plate, WithPlateOptions, usePlateEditor, PlateProps } from "platejs/react";
 
 import { Editor, EditorContainer } from "@/components/ui/editor";
 import { editorPlugins } from "./plugins";
 import { MarkdownPlugin } from "@platejs/markdown";
 import { preprocessMarkdownDetails } from "./utils/markdown-preprocessor";
 
-interface RichTextEditorProps extends Omit<WithPlateOptions, 'plugins'> {
+interface RichTextEditorProps extends Omit<PlateProps, 'editor' | 'children'> {
+  options?: Omit<WithPlateOptions, 'plugins'>;
   /**
    * 可选的 Markdown 初始内容
    * 如果提供,会自动转换为 Plate 节点
    */
   markdown?: string;
+  onMarkdownChange?: (markdown: string) => void;
 }
 
-export const RichTextEditor = ({ markdown, ...props }: RichTextEditorProps) => {
+export const RichTextEditor = ({ markdown, options, onMarkdownChange, ...props }: RichTextEditorProps) => {
   const editor = usePlateEditor({
-    ...props,
+    ...options,
     plugins: editorPlugins,
     // 如果提供了 markdown,预处理后使用 deserialize 转换为节点
     value: markdown
@@ -25,11 +27,19 @@ export const RichTextEditor = ({ markdown, ...props }: RichTextEditorProps) => {
           const processedMarkdown = preprocessMarkdownDetails(markdown);
           return editor.getApi(MarkdownPlugin).markdown.deserialize(processedMarkdown);
         }
-      : props.value,
+      : options?.value,
   });
 
+  const onValueChange: PlateProps['onValueChange'] = (value) => {
+    if (onMarkdownChange) {
+      return onMarkdownChange(editor.getApi(MarkdownPlugin).markdown.serialize(value));
+    }
+
+    return props.onValueChange?.(value);
+  };
+
   return (
-    <Plate editor={editor}>
+    <Plate editor={editor} onValueChange={onValueChange} {...props}>
       <EditorContainer>
         <Editor placeholder="Type your amazing content here..." />
       </EditorContainer>

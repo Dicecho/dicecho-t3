@@ -31,6 +31,7 @@ import type {
   CollectionListQuery,
   CollectionListResponse,
 } from "@/types/collection";
+import type { CommentQuery, CommentRepliesQuery, ParentCommentDto, ReplyDto } from "@/types/comment";
 import type { ITag, TagQuery } from "@/types/tag";
 import type { ITopicDto, TopicListQuery } from "@/types/topic";
 
@@ -337,6 +338,48 @@ export class DicechoApi extends APIClient {
       ),
     detail: (id: string) =>
       this.request<Empty, IRateDto>(`/api/rate/${id}`, "GET"),
+  };
+
+  comment = {
+    list: (
+      targetName: string,
+      targetId: string,
+      query: Partial<CommentQuery> = {},
+    ) => {
+      const queryString = qs.stringify(query);
+      const endpoint = queryString
+        ? `/api/comment/${targetName}/${targetId}?${queryString}`
+        : `/api/comment/${targetName}/${targetId}`;
+
+      return this.request<Empty, PaginatedResponse<ParentCommentDto>>(
+        endpoint,
+        "GET",
+      );
+    },
+    replies: (commentId: string, query: Partial<CommentRepliesQuery> = {}) => {
+      const queryString = qs.stringify(query);
+      const endpoint = queryString
+        ? `/api/comment/${commentId}/replies?${queryString}`
+        : `/api/comment/${commentId}/replies`;
+
+      return this.request<Empty, PaginatedResponse<ReplyDto>>(endpoint, "GET");
+    },
+    reply: (commentId: string, payload: { content: string }) =>
+      this.request<{ content: string }, ReplyDto>(
+        `/api/comment/${commentId}/reply`,
+        "POST",
+        payload,
+      ),
+    create: (targetName: string, targetId: string, payload: { content: string }) =>
+      this.request<{ content: string }, ParentCommentDto>(
+        `/api/comment/${targetName}/${targetId}`,
+        "POST",
+        payload,
+      ),
+    delete: (commentId: string) =>
+      this.request<Empty, Empty>(`/api/comment/${commentId}`, "DELETE"),
+    dialog: (commentId: string) =>
+      this.request<Empty, ReplyDto[]>(`/api/comment/${commentId}/dialog`, "GET"),
   };
 
   search = {
