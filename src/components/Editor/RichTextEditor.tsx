@@ -5,7 +5,7 @@ import { Plate, WithPlateOptions, usePlateEditor, PlateProps } from "platejs/rea
 import { Editor, EditorContainer } from "@/components/ui/editor";
 import { editorPlugins } from "./plugins";
 import { MarkdownPlugin } from "@platejs/markdown";
-import { preprocessMarkdownDetails } from "./utils/markdown-preprocessor";
+import { preprocessMarkdownDetails, postprocessDetailsToHtml } from "./utils/markdown-preprocessor";
 import { FixedToolbarKit } from './plugins/fixed-toolbar-kit';
 
 interface RichTextEditorProps extends Omit<PlateProps, 'editor' | 'children'> {
@@ -33,7 +33,14 @@ export const RichTextEditor = ({ markdown, options, onMarkdownChange, ...props }
 
   const onValueChange: PlateProps['onValueChange'] = (value) => {
     if (onMarkdownChange) {
-      return onMarkdownChange(editor.getApi(MarkdownPlugin).markdown.serialize(value));
+      console.log('value', value.value);
+
+      const serialized = editor.getApi(MarkdownPlugin).markdown.serialize(value);
+      console.log('serialized', serialized);
+      const postProcessed = postprocessDetailsToHtml(serialized);
+      console.log('postProcessed', postProcessed);
+
+      return onMarkdownChange(postProcessed);
     }
 
     return props.onValueChange?.(value);

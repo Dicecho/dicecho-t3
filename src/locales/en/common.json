@@ -36,6 +36,7 @@
   "random_scenario": "random",
   "refresh": "refresh",
   "load_more": "load more",
+  "details_summary_placeholder": "Add a warning title",
   "loading": "Loading...",
   "scenario_publish": "scenario publish",
   "commit_scenario_page": "commit scenario page",

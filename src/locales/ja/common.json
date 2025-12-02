@@ -36,6 +36,7 @@
   "random_scenario": "ランダム",
   "refresh": "更新",
   "load_more": "ロードモア",
+  "details_summary_placeholder": "警告タイトルを入力",
   "loading": "読み込み中...",
   "scenario_publish": "シナリオ投稿",
   "commit_scenario_page": "コミットシナリオのページ",

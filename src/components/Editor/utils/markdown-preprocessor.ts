@@ -158,3 +158,86 @@ function nodeToString(node: any): string {
   }
   return '';
 }
+
+/**
+ * 将编辑器导出的 <Details summary="..."> MDX 组件转换回标准 HTML details 结构
+ */
+export function postprocessDetailsToHtml(markdown: string): string {
+  if (!markdown || !markdown.includes('<Details')) {
+    return markdown;
+  }
+
+  const detailsBlocks: Array<{ start: number; end: number; html: string }> = [];
+  const tagRegex = /<\/?Details[^>]*>/g;
+  const stack: number[] = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = tagRegex.exec(markdown)) !== null) {
+    const tag = match[0];
+    const pos = match.index;
+
+    if (tag.startsWith('<Details')) {
+      stack.push(pos);
+    } else if (tag === '</Details>' && stack.length > 0) {
+      const startPos = stack.pop()!;
+
+      if (stack.length === 0) {
+        const endPos = pos + tag.length;
+        const mdx = markdown.slice(startPos, endPos);
+        const html = convertDetailsMdxToHtml(mdx);
+
+        detailsBlocks.push({
+          start: startPos,
+          end: endPos,
+          html,
+        });
+      }
+    }
+  }
+
+  if (detailsBlocks.length === 0) {
+    return markdown;
+  }
+
+  detailsBlocks.sort((a, b) => b.start - a.start);
+
+  let result = markdown;
+  for (const block of detailsBlocks) {
+    result = result.slice(0, block.start) + block.html + result.slice(block.end);
+  }
+
+  return result;
+}
+
+function convertDetailsMdxToHtml(mdxBlock: string): string {
+  const openingTagMatch = mdxBlock.match(/<Details[^>]*>/i);
+
+  if (!openingTagMatch || openingTagMatch.index === undefined) {
+    return mdxBlock;
+  }
+
+  const summaryMatch = openingTagMatch[0].match(/summary="([^"]*)"/i);
+  const rawSummary = summaryMatch?.[1] ?? '';
+  const summary = unescapeSummary(rawSummary);
+
+  const innerStart = openingTagMatch.index + openingTagMatch[0].length;
+  const innerEnd = mdxBlock.lastIndexOf('</Details>');
+  const innerContent =
+    innerEnd > innerStart ? mdxBlock.slice(innerStart, innerEnd) : '';
+
+  const processedContent = postprocessDetailsToHtml(innerContent).trim();
+
+  const contentSection =
+    processedContent.length > 0 ? `\n\n${processedContent}\n\n` : '\n\n';
+
+  return `<details><summary>${summary}</summary>${contentSection}</details>`;
+}
+
+function unescapeSummary(value: string): string {
+  return value
+    .replace(/\\\\/g, '\\')
+    .replace(/\\"/g, '"')
+    .replace(/\\n/g, ' ')
+    .replace(/\\r/g, '')
+    .trim();
+}

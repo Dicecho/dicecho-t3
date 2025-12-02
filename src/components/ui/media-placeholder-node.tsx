@@ -137,7 +137,7 @@ export const PlaceholderElement = withHOC(
           setUploadedFile({
             name: result.name ?? file.name,
             url: result.url,
-          });
+    });
         } catch (error) {
           toast.error('上传失败，请稍后重试。');
           api.placeholder.removeUploadingFile(element.id as string);

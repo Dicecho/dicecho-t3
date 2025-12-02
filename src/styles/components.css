@@ -7,13 +7,21 @@
 .mask-half-1 {
   mask-size: 200%;
   mask-position: left;
-  @apply [mask-position:left] rtl:[mask-position:right];
+}
+
+.rtl .mask-half-1,
+[dir='rtl'] .mask-half-1 {
+  mask-position: right;
 }
 
 .mask-half-2 {
   mask-size: 200%;
   mask-position: right;
-  @apply [mask-position:right] rtl:[mask-position:left];
+}
+
+.rtl .mask-half-2,
+[dir='rtl'] .mask-half-2 {
+  mask-position: left;
 }
 
 .mask-star {
@@ -27,4 +35,13 @@
 /* Details element styles */
 details[open] summary::before {
   transform: rotate(90deg);
+}
+
+[data-details-summary-placeholder]::before {
+  content: attr(data-details-summary-placeholder);
+  position: absolute;
+  left: 1rem;
+  top: 0.5rem;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
 }

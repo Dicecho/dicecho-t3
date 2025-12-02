@@ -36,6 +36,7 @@
   "random_scenario": "随便看看",
   "refresh": "刷新",
   "load_more": "加载更多",
+  "details_summary_placeholder": "填写预警标题",
   "loading": "加载中...",
   "scenario_publish": "模组投稿",
   "commit_scenario_page": "添加讨论词条",

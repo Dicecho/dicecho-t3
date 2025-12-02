@@ -4,14 +4,15 @@ import { BasicBlocksKit } from './plugins/basic-blocks-kit';
 import { BasicMarksKit } from './plugins/basic-marks-kit';
 import { FontKit } from './plugins/font-kit';
 import { MarkdownKit } from './plugins/markdown-kit';
-import { BaseEditorKit } from './editor-base-kit';
+import { ExitBreakKit } from './plugins/exit-break-kit';
 
 export const editorPlugins = [
-  ...BaseEditorKit,
   DetailsPlugin,
+  ...ExitBreakKit,
   ...MediaKit,
   ...BasicBlocksKit,
   ...BasicMarksKit,
   ...FontKit,
+  ...MarkdownKit,
 ];
 

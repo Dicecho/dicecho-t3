@@ -4,7 +4,7 @@ import {
   remarkMention,
   convertChildrenDeserialize,
 } from '@platejs/markdown';
-import { KEYS } from 'platejs';
+import { KEYS, NodeApi } from 'platejs';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
@@ -30,13 +30,35 @@ export const MarkdownKit = [
               ? convertChildrenDeserialize(mdastNode.children, deco, options)
               : [];
 
+            const summaryNode = {
+              type: KEYS.p,
+              children: summaryText
+                ? [{ text: summaryText }]
+                : [{ text: '' }],
+            };
+
+            const contentChildren =
+              children.length > 0
+                ? children
+                : [
+                    {
+                      type: KEYS.p,
+                      children: [{ text: '' }],
+                    },
+                  ];
+
             return {
               type: 'details',
-              summary: summaryText,
-              children: children.length > 0 ? children : [{ type: 'p', children: [{ text: '' }] }],
+              children: [summaryNode, ...contentChildren],
             };
           },
           serialize: (slateNode: any) => {
+            const children = slateNode.children || [];
+            const [summaryNode, ...contentChildren] = children;
+            const summaryText = summaryNode
+              ? NodeApi.string(summaryNode).replace(/\s+/g, ' ').trim()
+              : '';
+
             return {
               type: 'mdxJsxFlowElement',
               name: 'Details',
@@ -44,10 +66,18 @@ export const MarkdownKit = [
                 {
                   type: 'mdxJsxAttribute',
                   name: 'summary',
-                  value: slateNode.summary || '',
+                  value: summaryText,
                 },
               ],
-              children: slateNode.children || [],
+              children:
+                contentChildren.length > 0
+                  ? contentChildren
+                  : [
+                      {
+                        type: KEYS.p,
+                        children: [{ text: '' }],
+                      },
+                    ],
             };
           },
         },
