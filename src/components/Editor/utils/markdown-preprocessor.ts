@@ -94,35 +94,35 @@ function convertDetailsToMDX(html: string): string {
  * 递归处理 details 节点，转换为 MDX 格式
  */
 function processDetailsNode(node: Element): string {
-  let summary = '';
+  let summaryText = '';
+  const summaryParts: string[] = [];
   const contentParts: string[] = [];
 
-  // 遍历子节点
   for (const child of node.children) {
     if (child.type === 'element' && child.tagName === 'summary') {
-      // 提取 summary 文本
-      summary = extractText(child);
+      summaryText = extractText(child);
+      summaryParts.push(
+        (child.children || []).map(nodeToString).join('') || summaryText
+      );
     } else if (child.type === 'element' && child.tagName === 'details') {
-      // 递归处理嵌套的 details
       contentParts.push(processDetailsNode(child));
     } else if (child.type === 'element' || child.type === 'text') {
-      // 其他内容
       contentParts.push(nodeToString(child));
     }
   }
 
-  // 转义 summary 中的特殊字符
-  const escapedSummary = summary
+  const escapedSummary = summaryText
     .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"')
     .replace(/\n/g, ' ')
     .replace(/\r/g, '');
 
+  const summaryBlockContent =
+    summaryParts.join('').trim() || summaryText || '';
+
   const content = contentParts.join('').trim();
 
-  // 生成 MDX 格式
-  // MDX 要求: block 元素必须独占段落，前后都需要空行
-  return `\n\n<Details summary="${escapedSummary}">\n\n${content}\n\n</Details>\n\n`;
+  return `\n\n<Details summary="${escapedSummary}">\n\n<DetailsSummary>\n${summaryBlockContent}\n</DetailsSummary>\n\n${content}\n\n</Details>\n\n`;
 }
 
 /**
@@ -216,16 +216,27 @@ function convertDetailsMdxToHtml(mdxBlock: string): string {
     return mdxBlock;
   }
 
-  const summaryMatch = openingTagMatch[0].match(/summary="([^"]*)"/i);
-  const rawSummary = summaryMatch?.[1] ?? '';
-  const summary = unescapeSummary(rawSummary);
+  const summaryAttrMatch = openingTagMatch[0].match(/summary="([^"]*)"/i);
+  const rawSummaryAttr = summaryAttrMatch?.[1] ?? '';
 
   const innerStart = openingTagMatch.index + openingTagMatch[0].length;
   const innerEnd = mdxBlock.lastIndexOf('</Details>');
   const innerContent =
     innerEnd > innerStart ? mdxBlock.slice(innerStart, innerEnd) : '';
 
-  const processedContent = postprocessDetailsToHtml(innerContent).trim();
+  const summaryBlockMatch = innerContent.match(
+    /<DetailsSummary>([\s\S]*?)<\/DetailsSummary>/i
+  );
+
+  const summaryInner = summaryBlockMatch?.[1]?.trim() ?? '';
+
+  const summary = summaryInner || unescapeSummary(rawSummaryAttr);
+
+  const contentWithoutSummary = summaryBlockMatch
+    ? innerContent.replace(summaryBlockMatch[0], '')
+    : innerContent;
+
+  const processedContent = postprocessDetailsToHtml(contentWithoutSummary).trim();
 
   const contentSection =
     processedContent.length > 0 ? `\n\n${processedContent}\n\n` : '\n\n';

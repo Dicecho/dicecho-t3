@@ -128,9 +128,9 @@ export const CommentItem: React.FC<CommentItemProps> = ({
               {formatDate(new Date(comment.createdAt).getTime())}
             </span>
           </div>
-          <p className="text-foreground text-sm leading-6 whitespace-pre-wrap">
+          <div className="text-foreground text-sm leading-6 whitespace-pre-wrap">
             <RichTextPreview markdown={comment.content.trim()} />
-          </p>
+          </div>
           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
             <button
               type="button"
