@@ -10,7 +10,7 @@ import { KEYS, NodeApi } from 'platejs';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
-function deserializeDetails(mdastNode: any, deco: any, options: any) {
+export function deserializeDetails(mdastNode: any, deco: any, options: any) {
   const childrenMdast: any[] = mdastNode.children ?? [];
 
   const summaryElementIndex = childrenMdast.findIndex(
@@ -79,7 +79,7 @@ function deserializeDetails(mdastNode: any, deco: any, options: any) {
   };
 }
 
-function serializeDetails(slateNode: any, options: SerializeMdOptions) {
+export function serializeDetails(slateNode: any, options: SerializeMdOptions) {
   const children = slateNode.children || [];
   const [summaryNode, ...contentChildren] = children;
   const summaryText = summaryNode
