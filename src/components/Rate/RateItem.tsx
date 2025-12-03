@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { UserAvatar } from "@/components/User/Avatar";
+import { UserAvatarPopover } from "@/components/User/UserAvatarPopover";
 import { RateView, RateType, RemarkContentType } from "@dicecho/types";
 import type { IRateDto } from "@dicecho/types";
 import { formatDate } from "@/utils/time";
@@ -53,13 +54,12 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
   return (
     <div className={"flex flex-col gap-4"}>
       <div className={"flex items-center gap-2"}>
-        <UserAvatar
-          className="rounded-full"
-          user={rate.user}
-          alt="user avatar"
-          width={24}
-          height={24}
-        />
+        <UserAvatarPopover userId={rate.user._id}>
+          <UserAvatar
+            className="h-6 w-6 cursor-pointer rounded-full"
+            user={rate.user}
+          />
+        </UserAvatarPopover>
         <div className="flex flex-1 items-baseline gap-2">
           <div>{rate.user.nickName}</div>
           <div className="text-muted-foreground text-sm">

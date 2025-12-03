@@ -102,10 +102,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
                   <Link href={`/${lng}/account/${authSession.user._id}`}>
                     <UserAvatar
                       user={authSession.user}
-                      alt="avatar"
-                      width={40}
-                      height={40}
-                      className="h-10 w-10 cursor-pointer rounded-full border object-cover"
+                      className="h-10 w-10 cursor-pointer rounded-full border"
                     />
                   </Link>
                 </PopoverTrigger>

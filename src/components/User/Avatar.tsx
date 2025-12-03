@@ -1,43 +1,52 @@
-import Image, { type ImageProps } from "next/image"
-import type { ComponentProps, FC } from "react"
-import { MinidenticonImg } from '@/components/MinidenticonImg'
-import { cn } from "@/lib/utils"
+import type { ComponentProps, FC } from "react";
+import { MinidenticonImg } from "@/components/MinidenticonImg";
+import { cn } from "@/lib/utils";
 
 type UserAvatarProps = {
   user: {
-    avatarUrl?: string | Blob
-    nickName: string
+    avatarUrl?: string;
+    pendantUrl?: string;
+    nickName?: string;
   }
-} & Omit<ImageProps, 'src'>
+} & ComponentProps<"div">;
 
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
-}
-
-export const UserAvatar: FC<UserAvatarProps & ComponentProps<'img'>> = ({
+export const UserAvatar: FC<UserAvatarProps> = ({
   user,
   className,
   ...props
 }) => {
-  const avatarUrl = user.avatarUrl;
-  if(avatarUrl && isString(avatarUrl)) {
-    // Type guard ensures avatarUrl is string here
-    return (
-      <Image
-        // @ts-expect-error - Type guard ensures avatarUrl is string, but TypeScript can't infer it
-        src={avatarUrl}
-        className={(cn("object-cover rounded-full", className))}
-        {...props}
-        alt={props.alt}
-      />
-    )
-  }
+  const { avatarUrl, pendantUrl, nickName } = user;
 
-  return (
+  const avatarElement = !avatarUrl ? (
     <MinidenticonImg
-      username={user.nickName}
-      className={cn("bg-muted text-muted-foreground", className)}
+      username={nickName ?? ""}
+      className={cn("bg-muted text-muted-foreground bg-cover bg-center", className)}
       {...props}
     />
-  )
-}
+  ) : (
+    <div
+      style={{ backgroundImage: `url(${avatarUrl})` }}
+      className={cn(
+        "rounded-full object-cover bg-cover bg-center",
+        { "bg-muted text-muted-foreground": !avatarUrl },
+        className,
+      )}
+      {...props}
+    />
+  );
+
+  // 如果有装饰框,自动包裹 Pendant
+  if (pendantUrl) {
+    return (
+      <span className={cn("relative inline-block leading-none")}>
+        <span
+          className="pointer-events-none absolute left-1/2 top-1/2 z-1 h-[150%] w-[150%] -translate-x-1/2 -translate-y-1/2 bg-cover bg-center"
+          style={{ backgroundImage: `url(${pendantUrl})` }}
+        />
+        {avatarElement}
+      </span>
+    );
+  }
+
+  return avatarElement;
+};

@@ -114,10 +114,7 @@ export const AccountFollowList = ({
                   <div className="flex items-center gap-3">
                     <UserAvatar
                       user={item}
-                      alt={item.nickName}
-                      width={48}
-                      height={48}
-                      className="h-12 w-12 rounded-full object-cover"
+                      className="h-12 w-12 rounded-full"
                     />
                     <div>
                       <div className="leading-tight font-medium">

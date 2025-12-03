@@ -50,9 +50,6 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
       <UserAvatar
         className="h-6 w-6 rounded-full"
         user={replyUser}
-        alt="reply avatar"
-        width={24}
-        height={24}
       />
       <div className="flex-1 space-y-1">
         <div className="text-muted-foreground flex flex-wrap items-baseline gap-2 text-xs">

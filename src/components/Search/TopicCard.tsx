@@ -2,11 +2,11 @@
 
 import { ITopicDto } from "@/types/topic";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Eye, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { zhCN } from "date-fns/locale";
+import { UserAvatar } from "@/components/User/Avatar";
 
 interface TopicCardProps {
   topic: ITopicDto;
@@ -34,10 +34,7 @@ export function TopicCard({
         <div className="p-4">
           {showDomain && topic.domain ? (
             <div className="mb-3 flex items-center gap-2">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={topic.domain.coverUrl} alt={topic.domain.title} />
-                <AvatarFallback>{topic.domain.title[0]}</AvatarFallback>
-              </Avatar>
+              <UserAvatar user={topic.domain} className="h-8 w-8" />
               <div className="flex-1">
                 <div className="text-sm font-medium">{topic.domain.title}</div>
                 <div className="text-muted-foreground flex items-center gap-2 text-xs">
@@ -49,10 +46,7 @@ export function TopicCard({
             </div>
           ) : (
             <div className="text-muted-foreground mb-3 flex items-center gap-2 text-xs">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={topic.author.avatarUrl} alt={topic.author.nickName} />
-                <AvatarFallback>{topic.author.nickName[0]}</AvatarFallback>
-              </Avatar>
+              <UserAvatar user={topic.author} className="h-6 w-6" />
               <span>{topic.author.nickName}</span>
               <span>·</span>
               <span>{formatDate(topic.createdAt)}</span>

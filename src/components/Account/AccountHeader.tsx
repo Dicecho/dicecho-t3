@@ -76,10 +76,7 @@ export const AccountHeader = ({ user, lng }: AccountHeaderProps) => {
           <div className="relative h-32 w-32 rounded-full border-4 border-background/70 bg-background shadow-2xl">
             <UserAvatar
               user={user}
-              alt={user.nickName}
-              width={128}
-              height={128}
-              className="h-full w-full rounded-full object-cover"
+              className="h-full w-full"
             />
           </div>
           <div>

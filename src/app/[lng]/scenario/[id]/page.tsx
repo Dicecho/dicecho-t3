@@ -75,7 +75,7 @@ const ScenarioDetailPage = async (
           </div>
 
           <RateInfo
-            className="w-full bg-accent p-4 md:hidden"
+            className="w-full bg-card p-4 md:hidden"
             score={scenario.rateAvg}
             count={scenario.rateCount}
             info={scenario.rateInfo}

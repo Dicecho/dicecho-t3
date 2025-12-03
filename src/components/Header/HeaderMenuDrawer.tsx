@@ -58,11 +58,8 @@ export const HeaderMenuDrawer: FC<PropsWithChildren> = ({ children }) => {
           <DrawerHeader className="mb-4 flex gap-4 border-b border-solid p-0 pb-4">
             {isAuthenticated ? (
               <UserAvatar
-                className="h-10 w-10 rounded-full object-cover"
-                width={40}
-                height={40}
                 user={account}
-                alt="user account"
+                className="h-10 w-10"
               />
             ) : (
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">

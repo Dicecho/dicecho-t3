@@ -1,7 +1,8 @@
+import { cn } from "@/lib/utils";
 import { minidenticon } from "minidenticons";
 import { useMemo, type ComponentProps, type FC } from "react";
 
-type MinidenticonImgProps = ComponentProps<"img"> & {
+type MinidenticonImgProps = ComponentProps<"div"> & {
   username: string;
   saturation?: number;
   lightness?: number;
@@ -11,6 +12,7 @@ export const MinidenticonImg: FC<MinidenticonImgProps> = ({
   username,
   saturation = 95,
   lightness = 45,
+  className,
   ...props
 }) => {
   const svgURI = useMemo(
@@ -19,5 +21,11 @@ export const MinidenticonImg: FC<MinidenticonImgProps> = ({
       encodeURIComponent(minidenticon(username, saturation, lightness)),
     [username, saturation, lightness],
   );
-  return <img src={svgURI} alt={username} {...props} />;
+  return (
+    <div
+      style={{ backgroundImage: `url(${svgURI})` }}
+      className={cn("bg-muted text-muted-foreground rounded-full object-cover", className)}
+      {...props}
+    />
+  );
 };

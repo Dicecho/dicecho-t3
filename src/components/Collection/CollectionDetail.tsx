@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/use-toast";
 import Image from "next/image";
+import { UserAvatar } from "@/components/User/Avatar";
 
 interface CollectionDetailProps {
   collection: CollectionDto;
@@ -140,12 +141,7 @@ export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
               href={`/account/${collection.user._id}`}
               className="flex w-fit items-center gap-2 transition-opacity hover:opacity-80"
             >
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={collection.user.avatarUrl} />
-                <AvatarFallback>
-                  <User className="h-4 w-4" />
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar user={collection.user} className="h-6 w-6" />
               <span className="text-muted-foreground text-sm">
                 {collection.user.nickName}
               </span>

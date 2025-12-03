@@ -41,10 +41,7 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
         <span className="mr-2 inline-block">
           <UserAvatar
             user={scenario.author}
-            alt={scenario.author.nickName}
             className="h-5 w-5 rounded-full"
-            width={20}
-            height={20}
           />
         </span>
         <span className="flex-1">{scenario.author.nickName}</span>
@@ -57,10 +54,7 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
               <UserAvatar
                 user={contributor}
                 key={contributor._id}
-                alt={contributor.nickName}
-                width={20}
-                height={20}
-                className="h-5 w-5 rounded-full object-cover"
+                className="h-5 w-5 rounded-full"
               />
             ))}
           </div>

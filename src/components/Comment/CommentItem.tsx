@@ -117,9 +117,6 @@ export const CommentItem: React.FC<CommentItemProps> = ({
         <UserAvatar
           className="h-10 w-10 rounded-full"
           user={commentUser}
-          alt="comment avatar"
-          width={40}
-          height={40}
         />
         <div className="flex-1 space-y-2">
           <div className="flex flex-wrap items-center gap-3 text-sm">
