@@ -16,6 +16,7 @@ const createParagraphNode = (text = "") => ({
 });
 
 export function DetailsElement(props: PlateElementProps) {
+  const didRun = React.useRef(false);
   const { element, children, ...attributes } = props;
   const readOnly = useReadOnly();
   const editor = useEditorRef();
@@ -25,7 +26,11 @@ export function DetailsElement(props: PlateElementProps) {
   });
 
   React.useEffect(() => {
-    if (readOnly) return;
+    if (didRun.current) return;
+    didRun.current = true;
+
+    const path = editor.api.findPath(element);
+    if (!path) return;
 
     const legacySummary = (element as { summary?: string }).summary;
     const hasChildren =
@@ -33,37 +38,39 @@ export function DetailsElement(props: PlateElementProps) {
     const hasContent =
       Array.isArray(element.children) && element.children.length > 1;
 
-    const path = editor.api.findPath(element);
-    if (!path) return;
+    // 如果已经是新格式且结构完整，直接返回
+    if (legacySummary === undefined && hasChildren && hasContent) {
+      return;
+    }
 
     editor.tf.withoutNormalizing(() => {
-      if (legacySummary === undefined && hasChildren && hasContent) {
-        return;
-      }
-
+      // 处理旧格式：有 summary 属性的情况
       if (legacySummary !== undefined) {
+        console.log("DetailsElement useEffect insert summary", legacySummary);
+        // 插入 summary 段落到 [0] 位置，原有 children 会被推到后面
         editor.tf.insertNodes(createParagraphNode(legacySummary), {
           at: [...path, 0],
         });
-        if (!hasContent) {
+        // 如果没有 content，添加一个空的 content 段落
+        if (!hasChildren) {
           editor.tf.insertNodes(createParagraphNode(""), {
             at: [...path, 1],
           });
         }
         editor.tf.unsetNodes(["summary"], { at: path });
         return;
-      }
+      } else {
+        if (!hasChildren) {
+          editor.tf.insertNodes(createParagraphNode(""), {
+            at: [...path, 0],
+          });
+        }
 
-      if (!hasChildren) {
-        editor.tf.insertNodes(createParagraphNode(""), {
-          at: [...path, 0],
-        });
-      }
-
-      if (!hasContent) {
-        editor.tf.insertNodes(createParagraphNode(""), {
-          at: [...path, 1],
-        });
+        if (!hasContent) {
+          editor.tf.insertNodes(createParagraphNode(""), {
+            at: [...path, 1],
+          });
+        }
       }
     });
 
@@ -77,8 +84,7 @@ export function DetailsElement(props: PlateElementProps) {
         at: nextPath,
       });
     }
-
-  }, [editor, element, readOnly]);
+  }, [editor, element]);
 
   const childNodes = React.Children.toArray(children);
   const summaryNode = childNodes[0];
@@ -99,7 +105,6 @@ export function DetailsElement(props: PlateElementProps) {
     [summaryPlaceholder],
   );
 
-  const renderSummaryContent = summaryNode ?? summaryFallback;
 
   const summaryEditableContent = summaryNode ? (
     <div
@@ -152,7 +157,7 @@ export function DetailsElement(props: PlateElementProps) {
           )}
           contentEditable={false}
         >
-          {renderSummaryContent}
+          {summaryNode ?? summaryFallback}
         </summary>
         <div
           className={cn(
