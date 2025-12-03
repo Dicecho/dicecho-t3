@@ -34,7 +34,7 @@
     "@platejs/layout": "^52.0.1",
     "@platejs/link": "^52.0.1",
     "@platejs/list": "^52.0.1",
-    "@platejs/markdown": "^51.1.1",
+    "@platejs/markdown": "^52.0.4",
     "@platejs/math": "^52.0.1",
     "@platejs/media": "51.0.0",
     "@platejs/mention": "^52.0.1",

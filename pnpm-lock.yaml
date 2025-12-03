@@ -75,8 +75,8 @@ importers:
         specifier: ^52.0.1
         version: 52.0.1(platejs@51.0.0(@types/react@19.2.2)(immer@10.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@platejs/markdown':
-        specifier: ^51.1.1
-        version: 51.1.1(platejs@51.0.0(@types/react@19.2.2)(immer@10.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+        specifier: ^52.0.4
+        version: 52.0.4(platejs@51.0.0(@types/react@19.2.2)(immer@10.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       '@platejs/math':
         specifier: ^52.0.1
         version: 52.0.1(platejs@51.0.0(@types/react@19.2.2)(immer@10.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1968,15 +1968,15 @@ packages:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
 
-  '@platejs/markdown@51.1.1':
-    resolution: {integrity: sha512-aGFe3oqEQoepKTD+ZBpqmfkXK5Fw1DlB6RcWG4KLiZd1WVRU2AXOVCzqPEQCaX0fiEgmbNi4OVK879zr00D91g==}
+  '@platejs/markdown@52.0.1':
+    resolution: {integrity: sha512-WEp3GPdkIpHPp8kehpXJqJxLaDOjbnrk2wrxBbdO1Dq3S3lQKo0MpCtrL0F0jxc9vun7DYzCSpMslV317aZRGA==}
     peerDependencies:
-      platejs: '>=51.0.0'
+      platejs: '>=52.0.1'
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
 
-  '@platejs/markdown@52.0.1':
-    resolution: {integrity: sha512-WEp3GPdkIpHPp8kehpXJqJxLaDOjbnrk2wrxBbdO1Dq3S3lQKo0MpCtrL0F0jxc9vun7DYzCSpMslV317aZRGA==}
+  '@platejs/markdown@52.0.4':
+    resolution: {integrity: sha512-YH+u/3v/46x/vWSfv/r7KToycNxUuVDag5TIcXBTSY7y6c5+jA8tWFJHlTcUKp1aGgKsnsFnwjVzs5K9gKnY7g==}
     peerDependencies:
       platejs: '>=52.0.1'
       react: '>=18.0.0'
@@ -9952,7 +9952,7 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
-  '@platejs/markdown@51.1.1(platejs@51.0.0(@types/react@19.2.2)(immer@10.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)':
+  '@platejs/markdown@52.0.1(platejs@51.0.0(@types/react@19.2.2)(immer@10.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)':
     dependencies:
       marked: 15.0.12
       mdast-util-math: 3.0.0
@@ -9969,7 +9969,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@platejs/markdown@52.0.1(platejs@51.0.0(@types/react@19.2.2)(immer@10.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)':
+  '@platejs/markdown@52.0.4(platejs@51.0.0(@types/react@19.2.2)(immer@10.2.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)':
     dependencies:
       marked: 15.0.12
       mdast-util-math: 3.0.0

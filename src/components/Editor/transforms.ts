@@ -127,8 +127,9 @@ export const insertBlock = (
 };
 
 export const insertInlineElement = (editor: PlateEditor, type: string) => {
-  if (insertInlineMap[type]) {
-    insertInlineMap[type](editor, type);
+  const handler = insertInlineMap[type];
+  if (handler) {
+    handler(editor, type);
   }
 };
 

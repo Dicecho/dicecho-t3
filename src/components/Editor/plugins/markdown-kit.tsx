@@ -5,6 +5,7 @@ import {
   convertChildrenDeserialize,
   convertNodesSerialize,
   SerializeMdOptions,
+  defaultRules,
 } from "@platejs/markdown";
 import { KEYS, NodeApi } from "platejs";
 import remarkGfm from "remark-gfm";
@@ -73,6 +74,64 @@ function deserializeSpan(mdastNode: any, deco: any, options: any) {
   );
   if (!style.color && !style.backgroundColor) return children;
   return applyStyleMarks(children, style);
+}
+
+function serializeLeafWithStyle(leaf: any) {
+  // base text
+  let node: any = {
+    type: "text",
+    value: leaf.text ?? "",
+  };
+
+  if (leaf.italic) {
+    node = { type: "emphasis", children: [node] };
+  }
+  if (leaf.bold) {
+    node = { type: "strong", children: [node] };
+  }
+  if (leaf.strikethrough) {
+    node = { type: "delete", children: [node] };
+  }
+
+  const styleParts: string[] = [];
+  if (leaf.underline) styleParts.push("text-decoration: underline");
+  if (leaf.color) styleParts.push(`color: ${leaf.color}`);
+  if (leaf.backgroundColor) styleParts.push(`background-color: ${leaf.backgroundColor}`);
+
+  if (styleParts.length > 0) {
+    node = {
+      type: "mdxJsxTextElement",
+      name: "span",
+      attributes: [
+        {
+          type: "mdxJsxAttribute",
+          name: "style",
+          value: styleParts.join("; "),
+        },
+      ],
+      children: [node],
+    };
+  }
+
+  return [node];
+}
+
+function serializeParagraph(node: any, options: SerializeMdOptions) {
+  const children = node.children ?? [];
+  const mdChildren: any[] = [];
+
+  children.forEach((child: any) => {
+    if (child.text !== undefined) {
+      mdChildren.push(...serializeLeafWithStyle(child));
+    } else {
+      mdChildren.push(...convertNodesSerialize([child], options));
+    }
+  });
+
+  return {
+    type: "paragraph",
+    children: mdChildren,
+  };
 }
 
 export function deserializeDetails(mdastNode: any, deco: any, options: any) {
@@ -192,15 +251,27 @@ export function serializeDetails(slateNode: any, options: SerializeMdOptions) {
   };
 }
 
+const { backgroundColor, color, fontFamily, fontSize, fontWeight, ...restDefaultRules } =
+  defaultRules as any;
+
 export const MarkdownKit = [
   MarkdownPlugin.configure({
     options: {
       plainMarks: [KEYS.suggestion],
       remarkPlugins: [remarkMath, remarkGfm, remarkMdx, remarkMention],
-      // 自定义转换规则
       rules: {
+        ...restDefaultRules,
+        text: {
+          deserialize: restDefaultRules.text.deserialize,
+          serialize: serializeLeafWithStyle,
+        },
+        p: {
+          deserialize: restDefaultRules.p?.deserialize,
+          serialize: serializeParagraph,
+        },
         span: {
           deserialize: deserializeSpan,
+          serialize: restDefaultRules.span.serialize,
         },
         // 支持 HTML <details> 标签
         details: {

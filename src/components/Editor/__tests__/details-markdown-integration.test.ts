@@ -26,6 +26,27 @@ function createTestEditor() {
 }
 
 describe('Details Markdown 完整转换测试', () => {
+  describe("serialize style marks", () => {
+    const editor = createTestEditor();
+    const value = [
+      {
+        type: KEYS.p,
+        children: [
+          { text: '多', color: '#FE0000', backgroundColor: '#93C47D' },
+          { text: '样', color: '#FFD966', backgroundColor: '#93C47D' },
+          { text: '式', color: '#FE0000', backgroundColor: '#CC0000' },
+        ],
+      },
+    ];
+    const markdown = editor.getApi(MarkdownPlugin).markdown.serialize({ value });
+    expect(markdown).toContain('color: #FE0000');
+    expect(markdown).toContain('background-color: #93C47D');
+    expect(markdown).toContain('color: #FFD966');
+    expect(markdown).toContain('background-color: #93C47D');
+    expect(markdown).toContain('color: #FE0000');
+    expect(markdown).toContain('background-color: #CC0000');
+  })
+
   describe('Markdown → Slate AST (deserialize)', () => {
     test('应该正确反序列化简单的 details', () => {
       const editor = createTestEditor();

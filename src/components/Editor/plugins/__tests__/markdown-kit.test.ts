@@ -101,4 +101,26 @@ Body
     expect(md2).toContain("color: #FE0000");
     expect(md2).toMatch(/~~/);
   });
+
+  test("多段不同样式的文本序列化不合并", () => {
+    const editor = createEditor();
+    const slate = [
+      {
+        type: KEYS.p,
+        children: [
+          { text: "多", color: "#FE0000", backgroundColor: "#93C47D" },
+          { text: "样", color: "#FFD966", backgroundColor: "#93C47D" },
+          { text: "式", color: "#FE0000", backgroundColor: "#CC0000" },
+        ],
+      },
+    ];
+
+    const md = editor
+      .getApi(MarkdownPlugin)
+      .markdown.serialize({ value: slate });
+
+    expect(md.match(/color: #FE0000/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(md).toContain("color: #FFD966");
+    expect(md).toContain("background-color: #CC0000");
+  });
 });
