@@ -1,14 +1,24 @@
 import { unified } from 'unified';
 import rehypeParse from 'rehype-parse';
+import rehypeStringify from 'rehype-stringify';
 import { visit } from 'unist-util-visit';
-import type { Element } from 'hast';
+import type { Element, Root } from 'hast';
+import { rehypeNormalizeDetails } from './rehype-normalize-details';
 
 /**
- * 预处理 Markdown 文本,将 HTML <details> 标签转换为 MDX 组件格式
- * 使用 rehype 正确解析 HTML，避免手动正则解析的复杂性
+ * 预处理 Markdown 文本，将 HTML <details> 标签转换为 MDX 组件格式
+ *
+ * 优化版本：使用 rehype 插件处理脏数据
+ * - 自动修复未闭合的标签
+ * - 规范化缺失的 <summary>
+ * - 正确处理嵌套的 details
  */
 export function preprocessMarkdownDetails(markdown: string): string {
-  // 使用栈来找到正确配对的 <details> 块
+  if (!markdown || !markdown.toLowerCase().includes('<details')) {
+    return markdown;
+  }
+
+  // 使用栈来找到顶层的 <details> 块
   const detailsBlocks: Array<{ start: number; end: number; html: string; mdx: string }> = [];
   const tagRegex = /<\/?details[^>]*>/gi;
   const stack: Array<number> = [];
@@ -19,13 +29,11 @@ export function preprocessMarkdownDetails(markdown: string): string {
     const pos = match.index;
 
     if (tag.startsWith('<details')) {
-      // 开标签，入栈
       stack.push(pos);
     } else if (tag === '</details>' && stack.length > 0) {
-      // 闭标签，出栈
       const startPos = stack.pop()!;
 
-      // 如果栈为空，说明这是一个顶层的 details 块
+      // 只处理顶层的 details（栈为空）
       if (stack.length === 0) {
         const endPos = pos + match[0].length;
         const html = markdown.slice(startPos, endPos);
@@ -41,7 +49,18 @@ export function preprocessMarkdownDetails(markdown: string): string {
     }
   }
 
-  // 从后往前替换，避免位置偏移
+  // 如果有未闭合的标签，直接使用 rehype 处理整个 markdown
+  // rehype 会自动修复未闭合的标签
+  if (stack.length > 0) {
+    return preprocessWithRehype(markdown);
+  }
+
+  // 如果没有找到任何完整的 details 块，直接返回
+  if (detailsBlocks.length === 0) {
+    return markdown;
+  }
+
+  // 从后往前替换完整的 details 块，避免位置偏移
   detailsBlocks.sort((a, b) => b.start - a.start);
 
   let result = markdown;
@@ -49,18 +68,73 @@ export function preprocessMarkdownDetails(markdown: string): string {
     result = result.slice(0, block.start) + block.mdx + result.slice(block.end);
   }
 
-  // 清理剩余的未闭合的小写 <details> 和 <summary> 标签
-  // 注意：不能用 gi 标志，否则会误删大写的 <Details>
-  result = result
-    .replace(/<details[^>]*>/g, '')
-    .replace(/<\/details>/g, '')
-    .replace(/<summary[^>]*>/g, '')
-    .replace(/<\/summary>/g, '');
-
-  // 清理多余的连续空行（保留最多两个换行符）
+  // 清理多余的连续空行
   result = result.replace(/\n{3,}/g, '\n\n');
 
   return result.trim();
+}
+
+/**
+ * 使用 rehype 处理包含脏数据的 markdown
+ * 用于处理未闭合标签等复杂情况
+ *
+ * 注意：此函数会自动修复未闭合的标签，然后转换所有 details 节点
+ */
+function preprocessWithRehype(markdown: string): string {
+  try {
+    // 1. 解析 HTML（rehype 会自动修复未闭合的标签）
+    const tree = unified()
+      .use(rehypeParse, { fragment: true })
+      .parse(markdown) as Root;
+
+    // 2. 规范化 details 标签
+    rehypeNormalizeDetails()(tree);
+
+    // 3. 在 AST 上直接转换 details 节点为文本节点
+    //    这样可以避免字符串替换的复杂性
+    const transformDetailsInPlace = (node: any) => {
+      if (!node.children) return;
+
+      const newChildren: any[] = [];
+
+      for (const child of node.children) {
+        if (child.type === 'element' && child.tagName === 'details') {
+          // 转换 details 节点为包含 MDX 的 raw HTML 节点
+          const mdx = processDetailsNode(child);
+          newChildren.push({
+            type: 'raw',
+            value: mdx,
+          });
+        } else {
+          // 递归处理子节点
+          transformDetailsInPlace(child);
+          newChildren.push(child);
+        }
+      }
+
+      node.children = newChildren;
+    };
+
+    transformDetailsInPlace(tree);
+
+    // 4. 使用 rehype-stringify 输出
+    // 配置：不使用自闭合标签（如 <img />），因为 MDX 解析器不支持
+    const processor = unified()
+      .use(rehypeStringify, {
+        closeSelfClosing: false,
+        allowDangerousHtml: true,
+      });
+
+    let result = String(processor.stringify(tree));
+
+    // 5. 清理多余空行
+    result = result.replace(/\n{3,}/g, '\n\n');
+
+    return result.trim();
+  } catch (error) {
+    console.error('[preprocessWithRehype] Error:', error);
+    return markdown; // 出错时返回原文
+  }
 }
 
 /**
@@ -92,37 +166,35 @@ function convertDetailsToMDX(html: string): string {
 
 /**
  * 递归处理 details 节点，转换为 MDX 格式
+ *
+ * 优化：使用标准 HTML <summary> 标签，而不是自定义的 <DetailsSummary>
+ * 这样可以：
+ * 1. 消除重复存储（不需要 summary 属性）
+ * 2. 消除转义/反转义逻辑
+ * 3. 使用 remark 原生支持的标签
  */
 function processDetailsNode(node: Element): string {
-  let summaryText = '';
-  const summaryParts: string[] = [];
+  let summaryContent = '';
   const contentParts: string[] = [];
 
   for (const child of node.children) {
     if (child.type === 'element' && child.tagName === 'summary') {
-      summaryText = extractText(child);
-      summaryParts.push(
-        (child.children || []).map(nodeToString).join('') || summaryText
-      );
+      // 保留 summary 的完整 HTML（支持富文本）
+      summaryContent = (child.children || []).map(nodeToString).join('');
     } else if (child.type === 'element' && child.tagName === 'details') {
+      // 递归处理嵌套的 details
       contentParts.push(processDetailsNode(child));
     } else if (child.type === 'element' || child.type === 'text') {
       contentParts.push(nodeToString(child));
     }
   }
 
-  const escapedSummary = summaryText
-    .replace(/\\/g, '\\\\')
-    .replace(/"/g, '\\"')
-    .replace(/\n/g, ' ')
-    .replace(/\r/g, '');
-
-  const summaryBlockContent =
-    summaryParts.join('').trim() || summaryText || '';
-
   const content = contentParts.join('').trim();
 
-  return `\n\n<Details summary="${escapedSummary}">\n\n<DetailsSummary>\n${summaryBlockContent}\n</DetailsSummary>\n\n${content}\n\n</Details>\n\n`;
+  // 使用标准 HTML 标签，添加适当的换行符确保 remark-mdx 正确解析
+  // 重要：summary 标签内容独占一行，避免单行过长导致解析错误
+  // 这对于处理用户输入的单行 <details> 尤其重要
+  return `\n\n<details>\n\n<summary>\n${summaryContent || ''}\n</summary>\n\n${content}\n\n</details>\n\n`;
 }
 
 /**
@@ -157,98 +229,4 @@ function nodeToString(node: any): string {
     return `<${tagName}>${childrenStr}</${tagName}>`;
   }
   return '';
-}
-
-/**
- * 将编辑器导出的 <Details summary="..."> MDX 组件转换回标准 HTML details 结构
- */
-export function postprocessDetailsToHtml(markdown: string): string {
-  if (!markdown || !markdown.includes('<Details')) {
-    return markdown;
-  }
-
-  const detailsBlocks: Array<{ start: number; end: number; html: string }> = [];
-  const tagRegex = /<\/?Details[^>]*>/g;
-  const stack: number[] = [];
-  let match: RegExpExecArray | null;
-
-  while ((match = tagRegex.exec(markdown)) !== null) {
-    const tag = match[0];
-    const pos = match.index;
-
-    if (tag.startsWith('<Details')) {
-      stack.push(pos);
-    } else if (tag === '</Details>' && stack.length > 0) {
-      const startPos = stack.pop()!;
-
-      if (stack.length === 0) {
-        const endPos = pos + tag.length;
-        const mdx = markdown.slice(startPos, endPos);
-        const html = convertDetailsMdxToHtml(mdx);
-
-        detailsBlocks.push({
-          start: startPos,
-          end: endPos,
-          html,
-        });
-      }
-    }
-  }
-
-  if (detailsBlocks.length === 0) {
-    return markdown;
-  }
-
-  detailsBlocks.sort((a, b) => b.start - a.start);
-
-  let result = markdown;
-  for (const block of detailsBlocks) {
-    result = result.slice(0, block.start) + block.html + result.slice(block.end);
-  }
-
-  return result;
-}
-
-function convertDetailsMdxToHtml(mdxBlock: string): string {
-  const openingTagMatch = mdxBlock.match(/<Details[^>]*>/i);
-
-  if (!openingTagMatch || openingTagMatch.index === undefined) {
-    return mdxBlock;
-  }
-
-  const summaryAttrMatch = openingTagMatch[0].match(/summary="([^"]*)"/i);
-  const rawSummaryAttr = summaryAttrMatch?.[1] ?? '';
-
-  const innerStart = openingTagMatch.index + openingTagMatch[0].length;
-  const innerEnd = mdxBlock.lastIndexOf('</Details>');
-  const innerContent =
-    innerEnd > innerStart ? mdxBlock.slice(innerStart, innerEnd) : '';
-
-  const summaryBlockMatch = innerContent.match(
-    /<DetailsSummary>([\s\S]*?)<\/DetailsSummary>/i
-  );
-
-  const summaryInner = summaryBlockMatch?.[1]?.trim() ?? '';
-
-  const summary = summaryInner || unescapeSummary(rawSummaryAttr);
-
-  const contentWithoutSummary = summaryBlockMatch
-    ? innerContent.replace(summaryBlockMatch[0], '')
-    : innerContent;
-
-  const processedContent = postprocessDetailsToHtml(contentWithoutSummary).trim();
-
-  const contentSection =
-    processedContent.length > 0 ? `\n\n${processedContent}\n\n` : '\n\n';
-
-  return `<details><summary>${summary}</summary>${contentSection}</details>`;
-}
-
-function unescapeSummary(value: string): string {
-  return value
-    .replace(/\\\\/g, '\\')
-    .replace(/\\"/g, '"')
-    .replace(/\\n/g, ' ')
-    .replace(/\\r/g, '')
-    .trim();
 }

@@ -10,45 +10,53 @@ import { KEYS, NodeApi } from 'platejs';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
-function getMdastText(nodes: any[] = []): string {
-  return nodes
-    .map((node) => {
-      if (!node) return '';
-      if (node.type === 'text') return node.value ?? '';
-      if (node.children) return getMdastText(node.children);
-      return '';
-    })
-    .join('');
-}
-
 function deserializeDetails(mdastNode: any, deco: any, options: any) {
   const childrenMdast: any[] = mdastNode.children ?? [];
 
   const summaryElementIndex = childrenMdast.findIndex(
     (child) =>
-      child?.type === 'mdxJsxFlowElement' && child.name === 'DetailsSummary'
+      (child?.type === 'element' && child.tagName === 'summary') ||
+      (child?.type === 'mdxJsxFlowElement' && child.name === 'summary')
   );
 
-  let summaryText = '';
   let remainingChildren = childrenMdast;
+  let summaryChildren: any[] = [{ text: '' }];
 
   if (summaryElementIndex !== -1) {
+    // 新格式：使用标准 <summary> 标签，保留其富文本子节点
     const summaryChild = childrenMdast[summaryElementIndex];
-    summaryText = getMdastText(summaryChild.children);
+    const deserialized = convertChildrenDeserialize(
+      summaryChild.children ?? [],
+      deco,
+      options
+    );
+
+    if (Array.isArray(deserialized) && deserialized.length > 0) {
+      const first = deserialized[0];
+      // 常规情况下 <summary> 会被解析成一个段落，直接复用其子节点以保留行内样式
+      if (first?.type === KEYS.p && Array.isArray(first.children)) {
+        summaryChildren = first.children;
+      } else {
+        // 已经是行内节点（如 text/link/mark），直接挂到 summary
+        summaryChildren = deserialized;
+      }
+    }
+
     remainingChildren = [
       ...childrenMdast.slice(0, summaryElementIndex),
       ...childrenMdast.slice(summaryElementIndex + 1),
     ];
   } else {
+    // 旧格式：<Details summary="...">，只能拿到纯文本
     const summaryAttr = mdastNode.attributes?.find(
       (attr: any) => attr.name === 'summary'
     );
-    summaryText = summaryAttr?.value || '';
+    summaryChildren = [{ text: summaryAttr?.value || '' }];
   }
 
   const summaryNode = {
     type: KEYS.p,
-    children: summaryText ? [{ text: summaryText }] : [{ text: '' }],
+    children: summaryChildren,
   };
 
   const contentChildren = remainingChildren.length
@@ -119,13 +127,16 @@ export const MarkdownKit = [
     options: {
       plainMarks: [KEYS.suggestion, KEYS.comment],
       remarkPlugins: [remarkMath, remarkGfm, remarkMdx, remarkMention],
-      // 自定义转换规则:将 <Details> MDX 组件转换为 DetailsPlugin 节点
+      // 自定义转换规则
       rules: {
+        // 支持 HTML <details> 标签
+        details: {
+          deserialize: deserializeDetails,
+          serialize: serializeDetails,
+        },
+        // 向后兼容：支持旧的 <Details> MDX 组件
         Details: {
           deserialize: deserializeDetails,
-        },
-        details: {
-          serialize: serializeDetails,
         },
       },
     },
