@@ -32,13 +32,18 @@ function deserializeDetails(mdastNode: any, deco: any, options: any) {
     );
 
     if (Array.isArray(deserialized) && deserialized.length > 0) {
-      const first = deserialized[0];
-      // 常规情况下 <summary> 会被解析成一个段落，直接复用其子节点以保留行内样式
-      if (first?.type === KEYS.p && Array.isArray(first.children)) {
-        summaryChildren = first.children;
-      } else {
-        // 已经是行内节点（如 text/link/mark），直接挂到 summary
-        summaryChildren = deserialized;
+      // 将所有反序列化结果的 children 展平，避免因格式化换行产生多个段落而丢失后续行内节点
+      const flattened: any[] = [];
+      deserialized.forEach((node: any) => {
+        if (Array.isArray(node.children) && node.children.length) {
+          flattened.push(...node.children);
+        } else {
+          flattened.push(node);
+        }
+      });
+
+      if (flattened.length > 0) {
+        summaryChildren = flattened;
       }
     }
 
@@ -125,7 +130,7 @@ function serializeDetails(slateNode: any, options: SerializeMdOptions) {
 export const MarkdownKit = [
   MarkdownPlugin.configure({
     options: {
-      plainMarks: [KEYS.suggestion, KEYS.comment],
+      plainMarks: [KEYS.suggestion],
       remarkPlugins: [remarkMath, remarkGfm, remarkMdx, remarkMention],
       // 自定义转换规则
       rules: {

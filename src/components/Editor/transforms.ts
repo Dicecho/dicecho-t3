@@ -63,8 +63,10 @@ const insertBlockMap: Record<
       select: true,
       type: KEYS.mediaEmbed,
     }),
-  [KEYS.table]: (editor) =>
-    editor.getTransforms(TablePlugin).insert.table({}, { select: true }),
+  [KEYS.table]: (editor) => {
+    const tf = editor.getTransforms(TablePlugin);
+    tf?.insert?.table?.({}, { select: true });
+  },
   [KEYS.toc]: (editor) => insertToc(editor, { select: true }),
   [KEYS.video]: (editor) => insertVideoPlaceholder(editor, { select: true }),
 };
@@ -105,8 +107,10 @@ export const insertBlock = (
       return;
     }
 
-    if (type in insertBlockMap) {
-      insertBlockMap[type](editor, type);
+    const handler = insertBlockMap[type];
+
+    if (handler) {
+      handler(editor, type);
     } else {
       editor.tf.insertNodes(editor.api.create.block({ type }), {
         at: PathApi.next(path),
@@ -167,9 +171,10 @@ export const setBlockType = (
       if (node[KEYS.listType]) {
         editor.tf.unsetNodes([KEYS.listType, 'indent'], { at: path });
       }
-      if (type in setBlockMap) {
-        return setBlockMap[type](editor, type, entry);
-      }
+  const handler = setBlockMap[type];
+  if (handler) {
+    return handler(editor, type, entry);
+  }
       if (node.type !== type) {
         editor.tf.setNodes({ type }, { at: path });
       }

@@ -220,9 +220,10 @@ function TablePicker() {
     const newGrid = [...tablePicker.grid];
 
     for (let i = 0; i < newGrid.length; i++) {
-      for (let j = 0; j < newGrid[i].length; j++) {
-        newGrid[i][j] =
-          i >= 0 && i <= rowIndex && j >= 0 && j <= colIndex ? 1 : 0;
+      const row = newGrid[i] ?? [];
+
+      for (let j = 0; j < row.length; j++) {
+        row[j] = i >= 0 && i <= rowIndex && j >= 0 && j <= colIndex ? 1 : 0;
       }
     }
 
@@ -236,7 +237,7 @@ function TablePicker() {
     <div
       className="flex! m-0 flex-col p-0"
       onClick={() => {
-        tf.insert.table(tablePicker.size, { select: true });
+        tf?.insert?.table?.(tablePicker.size, { select: true });
         editor.tf.focus();
       }}
       role="button"

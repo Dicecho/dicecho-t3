@@ -198,35 +198,84 @@ function processDetailsNode(node: Element): string {
 }
 
 /**
- * 提取节点中的纯文本
- */
-function extractText(node: any): string {
-  if (node.type === 'text') {
-    return node.value;
-  }
-  if (node.type === 'element' && node.children) {
-    return node.children.map(extractText).join('');
-  }
-  return '';
-}
-
-/**
  * 将节点转换为字符串（包括 HTML 标签）
  */
 function nodeToString(node: any): string {
   if (node.type === 'text') {
-    return node.value;
+    return escapeText(node.value);
   }
+
   if (node.type === 'element') {
     const tagName = node.tagName;
+    const attrs = formatAttributes(node.properties || {});
     const childrenStr = (node.children || []).map(nodeToString).join('');
 
-    // 自闭合标签
-    if (!node.children || node.children.length === 0) {
-      return `<${tagName} />`;
+    // 即便没有子节点，也使用显式的闭合标签，避免自闭合导致 MDX 解析异常
+    return `<${tagName}${attrs}>${childrenStr}</${tagName}>`;
+  }
+
+  return '';
+}
+
+/**
+ * 将 HAST properties 序列化为 HTML 属性字符串
+ */
+function formatAttributes(props: Record<string, any>): string {
+  const entries: string[] = [];
+
+  Object.entries(props).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    if (typeof value === 'boolean') {
+      if (value) entries.push(key);
+      return;
     }
 
-    return `<${tagName}>${childrenStr}</${tagName}>`;
-  }
-  return '';
+    if (Array.isArray(value)) {
+      if (value.length === 0) return;
+      if (key === 'className') {
+        entries.push(`class="${escapeAttr(value.join(' '))}"`);
+      } else {
+        entries.push(`${key}="${escapeAttr(value.join(' '))}"`);
+      }
+      return;
+    }
+
+    if (key === 'className') {
+      entries.push(`class="${escapeAttr(String(value))}"`);
+      return;
+    }
+
+    if (key === 'style') {
+      const styleString =
+        typeof value === 'string'
+          ? value
+          : Object.entries(value)
+              .map(([k, v]) => `${camelToKebab(k)}: ${v}`)
+              .join('; ');
+      if (styleString) {
+        entries.push(`style="${escapeAttr(styleString)}"`);
+      }
+      return;
+    }
+
+    entries.push(`${key}="${escapeAttr(String(value))}"`);
+  });
+
+  return entries.length ? ' ' + entries.join(' ') : '';
+}
+
+function camelToKebab(str: string): string {
+  return str.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
+}
+
+function escapeAttr(value: string): string {
+  return value.replace(/"/g, '&quot;');
+}
+
+function escapeText(value: string): string {
+  if (!value) return '';
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }

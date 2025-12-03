@@ -35,7 +35,7 @@ import {
 import {
   getBlockType,
   setBlockType,
-} from '@/components/editor/transforms';
+} from '@/components/Editor/transforms';
 
 import { ToolbarButton, ToolbarMenuGroup } from './toolbar';
 
@@ -138,7 +138,7 @@ export function TurnIntoToolbarButton(props: DropdownMenuProps) {
       turnIntoItems.find((item) => item.value === (value ?? KEYS.p)) ??
       turnIntoItems[0],
     [value]
-  );
+  )!;
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen} modal={false} {...props}>

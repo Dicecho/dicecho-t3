@@ -39,7 +39,7 @@ import {
 import {
   insertBlock,
   insertInlineElement,
-} from '@/components/editor/transforms';
+} from '@/components/Editor/transforms';
 
 import { ToolbarButton, ToolbarMenuGroup } from './toolbar';
 
