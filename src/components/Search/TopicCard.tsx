@@ -34,7 +34,7 @@ export function TopicCard({
         <div className="p-4">
           {showDomain && topic.domain ? (
             <div className="mb-3 flex items-center gap-2">
-              <UserAvatar user={topic.domain} className="h-8 w-8" />
+              <UserAvatar user={{ avatarUrl: topic.domain.coverUrl, nickName: topic.domain.title }} className="h-8 w-8" />
               <div className="flex-1">
                 <div className="text-sm font-medium">{topic.domain.title}</div>
                 <div className="text-muted-foreground flex items-center gap-2 text-xs">
