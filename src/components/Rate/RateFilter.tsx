@@ -183,7 +183,7 @@ export const RateFilter: FC<RateFilterProps> = ({
 
   return (
     <div className="flex w-full flex-col gap-2">
-      <div className={clsx("flex gap-2", className)} {...props}>
+      <div className={clsx("flex gap-2 items-center", className)} {...props}>
         <Tabs
           value={query.filter?.type?.toString() ?? "0"}
           onValueChange={(value) =>

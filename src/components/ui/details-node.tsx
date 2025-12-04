@@ -21,9 +21,7 @@ export function DetailsElement(props: PlateElementProps) {
   const readOnly = useReadOnly();
   const editor = useEditorRef();
   const { t } = useTranslation();
-  const summaryPlaceholder = t("details_summary_placeholder", {
-    defaultValue: "填写预警标题",
-  });
+  const summaryPlaceholder = t("details_summary_placeholder");
 
   React.useEffect(() => {
     if (didRun.current) return;
@@ -46,7 +44,6 @@ export function DetailsElement(props: PlateElementProps) {
     editor.tf.withoutNormalizing(() => {
       // 处理旧格式：有 summary 属性的情况
       if (legacySummary !== undefined) {
-        console.log("DetailsElement useEffect insert summary", legacySummary);
         // 插入 summary 段落到 [0] 位置，原有 children 会被推到后面
         editor.tf.insertNodes(createParagraphNode(legacySummary), {
           at: [...path, 0],

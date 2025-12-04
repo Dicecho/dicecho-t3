@@ -338,6 +338,38 @@ export class DicechoApi extends APIClient {
       ),
     detail: (id: string) =>
       this.request<Empty, IRateDto>(`/api/rate/${id}`, "GET"),
+    create: (
+      modId: string,
+      payload: {
+        rate?: number;
+        remark?: string;
+        remarkType: string;
+        type: number;
+        view?: number;
+        isAnonymous?: boolean;
+        accessLevel?: string;
+      },
+    ) =>
+      this.request<typeof payload, IRateDto>(
+        `/api/rate/mod/${modId}`,
+        "POST",
+        payload,
+      ),
+    update: (
+      id: string,
+      payload: Partial<{
+        rate: number;
+        remark: string;
+        remarkType: string;
+        type: number;
+        view: number;
+        isAnonymous: boolean;
+        accessLevel: string;
+      }>,
+    ) =>
+      this.request<typeof payload, IRateDto>(`/api/rate/${id}`, "PUT", payload),
+    delete: (id: string) =>
+      this.request<Empty, Empty>(`/api/rate/${id}`, "DELETE"),
   };
 
   comment = {

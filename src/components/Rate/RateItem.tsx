@@ -12,15 +12,32 @@ import { useTranslation } from "@/lib/i18n/react";
 import { Badge } from "@/components/ui/badge";
 import { CommentSection } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { MessageCircle, Edit, Trash2 } from "lucide-react";
+import { ShareButton } from "@/components/ui/share-button";
+import { RateEditDialog } from "./RateEditDialog";
+import { RateDeleteDialog } from "./RateDeleteDialog";
 
 interface IProps {
   rate: IRateDto;
+  onDeleted?: () => void;
 }
 
-export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
+export const RateItem: React.FunctionComponent<IProps> = ({
+  rate,
+  onDeleted,
+}) => {
   const { t } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
+
+  const { data: session, status } = useSession();
+  const canEdit =
+    status === "authenticated" && rate.user._id === session?.user?._id;
+
+  const rateUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/rate/${rate._id}`
+      : `https://dicecho.com/rate/${rate._id}`;
 
   const RATE_VIEW_MAP = {
     [RateView.PL]: t("Rate.view_pl"),
@@ -109,11 +126,31 @@ export const RateItem: React.FunctionComponent<IProps> = ({ rate }) => {
             <MessageCircle className="h-4 w-4" />
             <span>{t("comments")}</span>
             {rate.commentCount > 0 && (
-              <Badge variant="muted">
-                {rate.commentCount}
-              </Badge>
+              <Badge variant="muted">{rate.commentCount}</Badge>
             )}
           </Button>
+
+          <ShareButton url={rateUrl} variant="secondary" size="sm">
+            {t("share")}
+          </ShareButton>
+
+          {canEdit && (
+            <>
+              <RateEditDialog rate={rate}>
+                <Button size="sm" variant="secondary" className="gap-2">
+                  <Edit className="h-4 w-4" />
+                  <span>{t("edit")}</span>
+                </Button>
+              </RateEditDialog>
+
+              <RateDeleteDialog rate={rate} onSuccess={onDeleted}>
+                <Button size="sm" variant="secondary" className="gap-2">
+                  <Trash2 className="h-4 w-4" />
+                  <span>{t("delete")}</span>
+                </Button>
+              </RateDeleteDialog>
+            </>
+          )}
         </div>
         {commentVisible && (
           <CommentSection
