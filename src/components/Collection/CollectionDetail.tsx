@@ -24,7 +24,7 @@ import type { CollectionDto } from "@/types/collection";
 import { Heart, MessageSquare, User, Edit, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import Image from "next/image";
 import { UserAvatar } from "@/components/User/Avatar";
 
@@ -56,19 +56,15 @@ export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
       queryClient.invalidateQueries({
         queryKey: ["collection", "detail", collection._id],
       });
-      toast({
-        title: t(
-          collection.isFavorited
-            ? "collection_unfavorited"
-            : "collection_favorited",
-        ),
-      });
+      toast.success(t(
+        collection.isFavorited
+          ? "collection_unfavorited"
+          : "collection_favorited",
+      ));
     },
     onError: (error: Error) => {
-      toast({
-        title: t("error"),
+      toast.error(t("error"), {
         description: error.message,
-        variant: "destructive",
       });
     },
   });

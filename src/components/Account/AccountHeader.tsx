@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "@/lib/i18n/react";
 import type { IUserDto } from "@dicecho/types";
 import { UserPlus, UserMinus, Settings } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 interface AccountHeaderProps {
   user: IUserDto;
@@ -28,9 +28,7 @@ export const AccountHeader = ({ user, lng }: AccountHeaderProps) => {
     mutationFn: () => api.user.follow(user._id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", "profile", user._id] });
-      toast({
-        title: t("follow_success"),
-      });
+      toast.success(t("follow_success"));
     },
   });
 
@@ -38,9 +36,7 @@ export const AccountHeader = ({ user, lng }: AccountHeaderProps) => {
     mutationFn: () => api.user.unfollow(user._id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", "profile", user._id] });
-      toast({
-        title: t("unfollow_success"),
-      });
+      toast.success(t("unfollow_success"));
     },
   });
 

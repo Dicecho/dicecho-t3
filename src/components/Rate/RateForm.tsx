@@ -144,7 +144,7 @@ export function RateForm({
               <FormControl>
                 <div className="w-full max-w-full overflow-x-hidden overflow-y-auto rounded-md border">
                   <RichTextEditor
-                    className="max-h-80 min-h-30 p-4"
+                    className="max-h-80 min-h-32 p-4"
                     options={
                       rate && rate.remarkType === RemarkContentType.Richtext
                         ? {

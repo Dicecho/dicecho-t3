@@ -21,7 +21,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useDicecho } from "@/hooks/useDicecho";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import type { CollectionDto } from "@/types/collection";
@@ -53,18 +53,14 @@ export function CollectionDeleteDialog({
       return api.collection.delete(collection._id);
     },
     onSuccess: () => {
-      toast({
-        title: t("collection_deleted"),
-      });
+      toast.success(t("collection_deleted"));
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: ["collection"] });
       onSuccess?.();
     },
     onError: (error: Error) => {
-      toast({
-        title: t("error"),
+      toast.error(t("error"), {
         description: error.message,
-        variant: "destructive",
       });
     },
   });

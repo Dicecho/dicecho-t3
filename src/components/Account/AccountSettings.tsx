@@ -20,7 +20,7 @@ import {
 import { useDicecho } from "@/hooks/useDicecho";
 import { useTranslation } from "@/lib/i18n/react";
 import type { IUserDto } from "@dicecho/types";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 type AccountSettingsProps = {
   user: IUserDto;
@@ -74,7 +74,7 @@ export const AccountSettings = ({ user }: AccountSettingsProps) => {
       });
     },
     onSuccess: (updatedUser) => {
-      toast({ title: t("settings_profile_saved") });
+      toast.success(t("settings_profile_saved"));
       profileForm.reset({
         nickName: updatedUser.nickName ?? "",
         note: updatedUser.note ?? "",
@@ -88,7 +88,7 @@ export const AccountSettings = ({ user }: AccountSettingsProps) => {
   const passwordMutation = useMutation({
     mutationFn: (values: PasswordFormValues) => api.user.changePassword(values),
     onSuccess: () => {
-      toast({ title: t("settings_password_saved") });
+      toast.success(t("settings_password_saved"));
       passwordForm.reset();
     },
   });

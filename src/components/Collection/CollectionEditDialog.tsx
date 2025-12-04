@@ -43,7 +43,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useDicecho } from "@/hooks/useDicecho";
 import type { CollectionDto } from "@/types/collection";
 import { useTranslation } from "@/lib/i18n/react";
@@ -103,19 +103,15 @@ export function CollectionEditDialog({
       return api.collection.create(values);
     },
     onSuccess: (data) => {
-      toast({
-        title: t(collection ? "collection_updated" : "collection_created"),
-      });
+      toast.success(t(collection ? "collection_updated" : "collection_created"));
       setOpen(false);
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["collection"] });
       onSuccess?.(data);
     },
     onError: (error: Error) => {
-      toast({
-        title: t("error"),
+      toast.error(t("error"), {
         description: error.message,
-        variant: "destructive",
       });
     },
   });

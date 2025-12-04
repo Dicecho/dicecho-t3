@@ -15,8 +15,7 @@ import { useAccount } from "@/hooks/useAccount";
 import { useTranslation } from "@/lib/i18n/react";
 import type { IUserDto } from "@dicecho/types";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/components/ui/use-toast";
-import { LinkWithLng } from "../Link";
+import { toast } from "sonner";
 
 type FollowListProps = {
   userId: string;
@@ -64,10 +63,10 @@ export const AccountFollowList = ({
     try {
       if (action === "follow") {
         await api.user.follow(targetId);
-        toast({ title: t("follow_success") });
+        toast.success(t("follow_success"));
       } else {
         await api.user.unfollow(targetId);
-        toast({ title: t("unfollow_success") });
+        toast.success(t("unfollow_success"));
       }
       await queryClient.invalidateQueries({ queryKey: ["account", type, userId, account?._id] });
       await queryClient.invalidateQueries({

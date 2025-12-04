@@ -8,7 +8,7 @@ import {
   SortableItemHandle,
 } from "@/components/ui/sortable";
 import { useDicecho } from "@/hooks/useDicecho";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useTranslation } from "@/lib/i18n/react";
 import { GripVertical, Star } from "lucide-react";
 import type { IModDto } from "@dicecho/types";
@@ -96,7 +96,7 @@ export const CollectionItemsList = ({
       } as any);
     },
     onSuccess: () => {
-      toast({ title: t("collection_order_updated") });
+      toast.success(t("collection_order_updated"));
       queryClient.invalidateQueries({
         queryKey: ["collection", "items", collectionId],
       });
@@ -105,10 +105,8 @@ export const CollectionItemsList = ({
       });
     },
     onError: (error: Error) => {
-      toast({
-        title: t("error"),
+      toast.error(t("error"), {
         description: error.message,
-        variant: "destructive",
       });
       // Revert to original order on error
       setLocalItems(items);
@@ -128,7 +126,7 @@ export const CollectionItemsList = ({
       } as any);
     },
     onSuccess: () => {
-      toast({ title: t("collection_item_removed") });
+      toast.success(t("collection_item_removed"));
       queryClient.invalidateQueries({
         queryKey: ["collection", "items", collectionId],
       });
@@ -137,10 +135,8 @@ export const CollectionItemsList = ({
       });
     },
     onError: (error: Error) => {
-      toast({
-        title: t("error"),
+      toast.error(t("error"), {
         description: error.message,
-        variant: "destructive",
       });
       setLocalItems(items);
     },

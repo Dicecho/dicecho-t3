@@ -6,7 +6,7 @@ import { dir } from "i18next";
 import { ThemeProvider } from "next-themes";
 import { TRPCReactProvider } from "@/trpc/react";
 import { Header } from "@/components/Header";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { Layout as AppLayout } from "@/components/Layout";
 import { languages } from "@/lib/i18n/settings";
 import { ThemeScript } from "@/components/theme-script";
@@ -49,7 +49,7 @@ export default async function RootLayout(
             <AppLayout>
               <Header lng={lng} />
               {children}
-              <Toaster />
+              <Toaster richColors position="top-center"/>
             </AppLayout>
           </TRPCReactProvider>
         </ThemeProvider>

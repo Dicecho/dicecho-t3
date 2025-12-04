@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { CloudUpload, ImageIcon, Upload, XIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/lib/i18n/react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 interface CoverUploadProps {
   value?: string;
@@ -67,15 +67,11 @@ export default function CoverUpload({
       try {
         const result = await upload(file);
         onChange?.(result.url);
-        toast({
-          title: t('upload_success'),
-        });
+        toast.success(t('upload_success'));
       } catch (error) {
         setUploadError(error instanceof Error ? error.message : t('upload_failed'));
-        toast({
-          title: t('error'),
-          description: t('upload_failed'),
-          variant: 'destructive',
+        toast.error(t('upload_failed'), {
+          description: error instanceof Error ? error.message : t('upload_failed'),
         });
         setCoverImage(null);
       } finally {
