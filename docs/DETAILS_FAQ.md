@@ -185,7 +185,7 @@ markdown-kit 是 **Slate AST ↔ Markdown AST (mdast) 的桥梁**。
 ```
 用户输入 HTML
   ↓
-[preprocessMarkdownDetails]  ← 清理脏数据，规范化 HTML
+[preprocessMarkdown]  ← 清理脏数据，规范化 HTML
   ↓
 规范的 <details> HTML
   ↓
@@ -345,7 +345,7 @@ Hidden content
 </details>
 `;
 
-const processed = preprocessMarkdownDetails(markdown);
+const processed = preprocessMarkdown(markdown);
 const slateAST = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
 // 验证 AST 结构

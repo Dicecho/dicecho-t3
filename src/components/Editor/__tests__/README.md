@@ -23,7 +23,7 @@ __tests__/
 ```
 用户输入 HTML
     ↓
-[preprocessMarkdownDetails]
+[preprocessMarkdown]
     ↓
 MDX <Details><summary>...</summary>...</Details>
     ↓

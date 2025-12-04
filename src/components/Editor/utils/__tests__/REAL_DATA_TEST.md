@@ -33,7 +33,7 @@
 
 ### 测试目标
 
-确保 preprocessMarkdownDetails 能够：
+确保 preprocessMarkdown 能够：
 - ✅ 不抛出错误（鲁棒性）
 - ✅ 保留正常的 markdown 内容
 - ✅ 正确处理完整的 details 块
@@ -44,5 +44,5 @@
 
 ### 相关问题
 - 用户报告：线上渲染此内容触发错误
-- 修复方案：preprocessMarkdownDetails 使用 rehype 处理脏数据
+- 修复方案：preprocessMarkdown 使用 rehype 处理脏数据
 - 验证结果：处理成功，不抛出错误

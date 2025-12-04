@@ -11,7 +11,7 @@ import { MarkdownPlugin } from '@platejs/markdown';
 import { KEYS } from 'platejs';
 import { MarkdownKit } from '../plugins/markdown-kit';
 import { DetailsPlugin } from '../plugins/details-plugin';
-import { preprocessMarkdownDetails } from '../utils/markdown-preprocessor';
+import { preprocessMarkdown } from '../utils/markdown-preprocessor';
 
 /**
  * 创建测试用的编辑器实例
@@ -59,7 +59,7 @@ Hidden content here
 </details>
 `;
 
-      const processed = preprocessMarkdownDetails(markdown);
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       // 验证结构
@@ -99,7 +99,7 @@ Inner content
 </details>
 `;
 
-      const processed = preprocessMarkdownDetails(markdown);
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       expect(result).toHaveLength(1);
@@ -125,7 +125,7 @@ Content
 </details>
 `;
 
-      const processed = preprocessMarkdownDetails(markdown);
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       const detailsNode = result[0];
@@ -150,8 +150,8 @@ Content
 </Details>
 `;
 
-      // preprocessMarkdownDetails 会将大写的 Details 转换为小写
-      const processed = preprocessMarkdownDetails(markdown);
+      // preprocessMarkdown 会将大写的 Details 转换为小写
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       expect(result).toHaveLength(1);
@@ -328,7 +328,7 @@ Test content
 `;
 
       // Markdown → Slate
-      const processed = preprocessMarkdownDetails(originalMarkdown);
+      const processed = preprocessMarkdown(originalMarkdown);
       const slateValue = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       // Slate → Markdown
@@ -363,7 +363,7 @@ Inner content
 </details>
 `;
 
-      const processed = preprocessMarkdownDetails(originalMarkdown);
+      const processed = preprocessMarkdown(originalMarkdown);
       const slateValue1 = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
       const markdown = editor.getApi(MarkdownPlugin).markdown.serialize({ value: slateValue1 });
       const slateValue2 = editor.getApi(MarkdownPlugin).markdown.deserialize(markdown);
@@ -431,7 +431,7 @@ Hidden text
 Conclusion text
 `;
 
-      const processed = preprocessMarkdownDetails(markdown);
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       // 应该包含多种类型的节点
@@ -463,7 +463,7 @@ const code = "example";
 </details>
 `;
 
-      const processed = preprocessMarkdownDetails(markdown);
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       const detailsNode = result[0];
@@ -487,7 +487,7 @@ const code = "example";
 </details>
 `;
 
-      const processed = preprocessMarkdownDetails(markdown);
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       expect(result[0].type).toBe('details');
@@ -499,7 +499,7 @@ const code = "example";
 
       const markdown = `<details><summary></summary></details>`;
 
-      const processed = preprocessMarkdownDetails(markdown);
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       expect(result[0].type).toBe('details');
@@ -517,7 +517,7 @@ Content with "quotes" and 'apostrophes'
 </details>
 `;
 
-      const processed = preprocessMarkdownDetails(markdown);
+      const processed = preprocessMarkdown(markdown);
       const result = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
       const detailsNode = result[0];
@@ -574,7 +574,7 @@ hello?world
 `;
 
       // 步骤 1: 预处理
-      const processed = preprocessMarkdownDetails(realDirtyData);
+      const processed = preprocessMarkdown(realDirtyData);
 
       // 验证预处理结果
       expect(processed).toBeTruthy();

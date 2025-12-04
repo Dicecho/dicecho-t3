@@ -11,7 +11,7 @@ import { KEYS } from "platejs";
 
 import { MarkdownKit } from "../markdown-kit";
 import { DetailsPlugin } from "../../plugins/details-plugin";
-import { preprocessMarkdownDetails } from "../../utils/markdown-preprocessor";
+import { preprocessMarkdown } from "../../utils/markdown-preprocessor";
 
 function createEditor() {
   return createPlateEditor({
@@ -30,7 +30,7 @@ Content
 
 </details>
 `;
-    const processed = preprocessMarkdownDetails(md);
+    const processed = preprocessMarkdown(md);
     const slate = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
 
     const summary = slate[0].children[0];
@@ -76,7 +76,7 @@ Body
 
 </details>`;
 
-    const processed = preprocessMarkdownDetails(md);
+    const processed = preprocessMarkdown(md);
     const slate = editor.getApi(MarkdownPlugin).markdown.deserialize(processed);
     const md2 = editor
       .getApi(MarkdownPlugin)

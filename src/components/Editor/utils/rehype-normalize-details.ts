@@ -80,15 +80,3 @@ function normalizeDetailsElement(node: Element): void {
   // 重建 children：summary 在前，内容在后
   node.children = [summaryElement, ...contentChildren];
 }
-
-/**
- * 提取文本内容
- */
-function extractText(node: any): string {
-  if (!node) return '';
-  if (node.type === 'text') return node.value || '';
-  if (node.children) {
-    return node.children.map(extractText).join('');
-  }
-  return '';
-}

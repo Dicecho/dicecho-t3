@@ -5,7 +5,7 @@ import { Plate, WithPlateOptions, usePlateEditor } from "platejs/react";
 import { Editor, EditorContainer } from "@/components/ui/editor";
 import { editorPlugins } from "./plugins";
 import { MarkdownPlugin } from "@platejs/markdown";
-import { preprocessMarkdownDetails } from "./utils/markdown-preprocessor";
+import { preprocessMarkdown } from "./utils/markdown-preprocessor";
 
 interface RichTextPreviewProps extends Omit<WithPlateOptions, 'plugins'> {
   /**
@@ -23,7 +23,7 @@ export const RichTextPreview = ({ markdown, ...props }: RichTextPreviewProps) =>
     // 如果提供了 markdown,预处理后使用 deserialize 转换为节点
     value: markdown
       ? (editor) => {
-          const processedMarkdown = preprocessMarkdownDetails(markdown);
+          const processedMarkdown = preprocessMarkdown(markdown);
           return editor.getApi(MarkdownPlugin).markdown.deserialize(processedMarkdown);
         }
       : props.value,

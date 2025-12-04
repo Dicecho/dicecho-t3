@@ -7,7 +7,7 @@
 **优化前：**
 ```
 HTML <details>
-  ↓ [preprocessMarkdownDetails] 正则 + rehype 混合，~125行代码
+  ↓ [preprocessMarkdown] 正则 + rehype 混合，~125行代码
   ↓
 MDX <Details summary="escaped text">
     <DetailsSummary>actual content</DetailsSummary>  ← 重复存储
@@ -27,7 +27,7 @@ HTML <details>
 **优化后：**
 ```
 HTML <details>
-  ↓ [preprocessMarkdownDetails] 栈解析 + rehype 插件，~75行代码
+  ↓ [preprocessMarkdown] 栈解析 + rehype 插件，~75行代码
   ↓
 MDX <Details>
     <summary>content</summary>  ← Single Source of Truth
