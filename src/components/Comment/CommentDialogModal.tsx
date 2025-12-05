@@ -34,7 +34,7 @@ export const CommentDialogModal: React.FC<React.PropsWithChildren<CommentDialogM
       <DialogTrigger>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-h-[80vh] overflow-y-auto" showClose>
+      <DialogContent className="max-h-[80vh] overflow-y-auto" showCloseButton>
         <DialogHeader>
           <DialogTitle>{t("comment_dialog_title")}</DialogTitle>
         </DialogHeader>

@@ -20,8 +20,8 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n/react";
 import { useDicecho } from "@/hooks/useDicecho";
-import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const DEFAULT_QUERY: Partial<IModListQuery> = {
   sort: { lastRateAt: -1 },
@@ -157,14 +157,18 @@ export function ScenarioListWithFilter({
           />
         </div>
         <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
-          <Button className="capitalize">
-            <Upload size={16} />
-            {t("scenario_publish")}
-          </Button>
-          <Button className="capitalize" variant="outline" color="primary">
-            <Plus size={16} />
-            {t("commit_scenario_page")}
-          </Button>
+          <Link href={`/${lng}/scenario/publish`}>
+            <Button className="w-full capitalize">
+              <Upload size={16} />
+              {t("scenario_publish")}
+            </Button>
+          </Link>
+          <Link href={`/${lng}/scenario/contribute`}>
+            <Button className="w-full capitalize">
+              <Plus size={16} />
+              {t("commit_scenario_page")}
+            </Button>
+          </Link>
 
           <Card className="sticky top-20">
             <CardHeader>

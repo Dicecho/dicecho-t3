@@ -75,6 +75,72 @@ type UpdateCollectionDto = Partial<
   Pick<CollectionDto, "name" | "description" | "coverUrl" | "accessLevel">
 >;
 
+type ModCreatePayload = {
+  title: string;
+  originTitle?: string;
+  alias?: string;
+  description?: string;
+  coverUrl?: string;
+  imageUrls?: string[];
+  playerNumber: [number, number];
+  moduleRule: string;
+  tags?: string[];
+  relatedLinks?: { name: string; url: string }[];
+  languages?: string[];
+};
+
+
+
+type PublishModPayload = ModCreatePayload & {
+  modFiles: {
+    name: string;
+    size: number;
+    url: string;
+    type: string;
+  }[];
+}
+
+type ContributeModPayload = ModCreatePayload & {
+  author: string;
+};
+
+type ModUpsertPayload = Partial<
+  Pick<
+    IModDto,
+    | "title"
+    | "originTitle"
+    | "alias"
+    | "description"
+    | "origin"
+    | "originUrl"
+    | "coverUrl"
+    | "moduleRule"
+    | "playerNumber"
+  >
+> & {
+  tags?: string[];
+  languages?: string[];
+  relatedLinks?: IModDto["relatedLinks"];
+  imageUrls?: IModDto["imageUrls"];
+  modFiles?: IModDto["modFiles"];
+};
+
+export interface OperationLogDto {
+  _id: string;
+  before?: Record<string, unknown>;
+  after?: Record<string, unknown>;
+  createdAt: string;
+  action: string;
+  changedKeys: string[];
+  targetId: string;
+  targetName: string;
+  operator: {
+    _id: string;
+    nickName: string;
+    avatarUrl: string;
+  };
+}
+
 export interface OSSCredentials {
   AccessKeyId: string;
   SecretAccessKey: string;
@@ -287,6 +353,24 @@ export class DicechoApi extends APIClient {
       ),
     hot: () =>
       this.request<Empty, PaginatedResponse<IModDto>>(`/api/mod/hot`, "GET"),
+    publish: (payload: PublishModPayload) =>
+      this.request<PublishModPayload & { isForeign: false }, IModDto>(`/api/mod`, "POST", {
+        ...payload,
+        isForeign: false,
+      }),
+    contribute: (payload: ContributeModPayload) =>
+      this.request<ContributeModPayload & { isForeign: true }, IModDto>(`/api/mod`, "POST", {
+        ...payload,
+        isForeign: true,
+      }),
+    update: (id: string, payload: ModUpsertPayload) =>
+      this.request<ModUpsertPayload, IModDto>(
+        `/api/mod/${id}`,
+        "PUT",
+        payload,
+      ),
+    recommend: (id: string) =>
+      this.request<Empty, ModListApiResponse>(`/api/mod/${id}/recommend`, "GET"),
   };
 
   collection = {
@@ -445,6 +529,18 @@ export class DicechoApi extends APIClient {
         `/api/file/upload_from_url`,
         "POST",
         { url },
+      ),
+  };
+
+  log = {
+    list: (
+      targetName: string,
+      targetId: string,
+      query: Partial<{ page: number; pageSize: number; action: string }> = {},
+    ) =>
+      this.request<Empty, PaginatedResponse<OperationLogDto>>(
+        `/api/log/${targetName}/${targetId}/?${qs.stringify(query)}`,
+        "GET",
       ),
   };
 }
