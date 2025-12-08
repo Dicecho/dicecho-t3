@@ -192,10 +192,11 @@ export class DicechoApi extends APIClient {
     endpoint: string,
     method: FetchLikeInit["method"],
     params: P = {} as P,
-    { withToken = true }: { withToken?: boolean } = {},
+    { withToken = true, revalidate, tags }: { withToken?: boolean; revalidate?: number | false; tags?: string[] } = {},
   ): Promise<R> {
 
     const accessToken = this.header.Authorization?.split(" ")[1];
+    const fetchOptions = revalidate !== undefined || tags ? { revalidate, tags } : undefined;
 
     if (this.refreshToken && accessToken && withToken) {
       const decode = jwtDecode(accessToken);
@@ -211,20 +212,20 @@ export class DicechoApi extends APIClient {
             this.setToken({});
           });
         return super
-          .request<P, Response<R>>(endpoint, method, params)
+          .request<P, Response<R>>(endpoint, method, params, fetchOptions)
           .then((res) => res.data);
       }
     }
 
     return super
-      .request<P, Response<R>>(endpoint, method, params)
+      .request<P, Response<R>>(endpoint, method, params, fetchOptions)
       .then((res) => res.data)
       .catch(async (err: Error) => {
         if (isBackendError(err)) {
           if (err.body.code === AuthErrorCode.REFRESH_TOKEN_DISABLES) {
             this.clearAuthorization();
             return super
-              .request<P, Response<R>>(endpoint, method, params)
+              .request<P, Response<R>>(endpoint, method, params, fetchOptions)
               .then((res) => res.data);
           }
         }
@@ -337,15 +338,17 @@ export class DicechoApi extends APIClient {
   };
 
   module = {
-    list: (params: Partial<IModListQuery> = {}) =>
+    list: (params: Partial<IModListQuery> = {}, options?: { revalidate?: number | false }) =>
       this.request<Empty, ModListApiResponse>(
         `/api/mod?${qs.stringify(params)}`,
         "GET",
+        {},
+        { revalidate: options?.revalidate ?? 60 }, // Default 60s cache
       ),
-    detail: (id: string) =>
-      this.request<Empty, ModRetrieveApiResponse>(`/api/mod/${id}`, "GET"),
-    config: () =>
-      this.request<Empty, ModFilterConfig>(`/api/mod/config`, "GET"),
+    detail: (id: string, options?: { revalidate?: number | false }) =>
+      this.request<Empty, ModRetrieveApiResponse>(`/api/mod/${id}`, "GET", {}, { revalidate: options?.revalidate ?? 300 }),
+    config: (options?: { revalidate?: number | false }) =>
+      this.request<Empty, ModFilterConfig>(`/api/mod/config`, "GET", {}, { revalidate: options?.revalidate ?? 3600 }),
     random: (params: Partial<IModListQuery> = {}) =>
       this.request<Empty, ModRetrieveApiResponse>(
         `/api/mod/random?${qs.stringify(params)}`,

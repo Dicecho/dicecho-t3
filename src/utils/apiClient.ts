@@ -63,16 +63,24 @@ export class APIClient {
     endpoint: string,
     method: FetchLikeInit["method"],
     params: P = {} as P,
+    fetchOptions?: { revalidate?: number | false; tags?: string[] },
   ): Promise<R> {
     return new Promise((resolve, reject) => {
-      const init: FetchLikeInit = {
+      const init: FetchLikeInit & { next?: { revalidate?: number | false; tags?: string[] } } = {
         method: method,
         headers: {
           "Content-Type": "application/json",
           ...this.header,
         },
-        cache: "no-cache",
+        // Remove hardcoded cache: "no-cache" to allow Next.js caching
+        // Only disable cache for mutations (POST, PUT, DELETE)
+        ...(method !== "GET" ? { cache: "no-cache" as RequestCache } : {}),
       };
+
+      // Add Next.js specific cache options for GET requests
+      if (method === "GET" && fetchOptions) {
+        init.next = fetchOptions;
+      }
 
       if (Object.keys(params).length !== 0) {
         Object.assign(init, {

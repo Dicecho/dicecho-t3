@@ -2,7 +2,6 @@
 
 import type {
   IModListQuery,
-  ModListApiResponse,
   ModFilterConfig,
 } from "@dicecho/types";
 import { Upload, Plus, Search } from "lucide-react";
@@ -10,17 +9,16 @@ import { queryToFormData, formDataToQuery } from "@/components/Scenario/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScenarioList } from "@/components/Scenario/ScenarioList";
 import {
   ScenarioFilter,
   type ScenarioFilterProps,
 } from "@/components/Scenario/ScenarioFilter";
 import qs from "qs";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n/react";
 import { useDicecho } from "@/hooks/useDicecho";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 const DEFAULT_QUERY: Partial<IModListQuery> = {
@@ -28,61 +26,31 @@ const DEFAULT_QUERY: Partial<IModListQuery> = {
   pageSize: 12,
 };
 
-function urlToQuery(searchQuery: string): Partial<IModListQuery> {
-  return {
-    ...DEFAULT_QUERY,
-    ...qs.parse(searchQuery),
-  };
-}
-
 function queryToUrl(query: Partial<IModListQuery>): string {
   return qs.stringify(query);
 }
 
-interface ScenarioListWithFilterProps {
+interface ScenarioPageContentProps {
   lng: string;
-  initialConfig: ScenarioFilterProps["config"];
-  initialQuery: Partial<IModListQuery>;
+  config: ScenarioFilterProps["config"];
+  query: Partial<IModListQuery>;
+  children: React.ReactNode;
 }
 
-export function ScenarioListWithFilter({
+export function ScenarioPageContent({
   lng,
-  initialConfig,
-  initialQuery,
-}: ScenarioListWithFilterProps) {
-  const searchParams = useSearchParams();
+  config,
+  query,
+  children,
+}: ScenarioPageContentProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const { api } = useDicecho();
 
-  console.log("initialScenarios", initialQuery);
+  const [searchKeyword, setSearchKeyword] = useState(query.keyword || "");
 
-  const [searchKeyword, setSearchKeyword] = useState(
-    initialQuery.keyword || "",
-  );
-
-  // Manage query state locally
-  const [query, setQuery] = useState<Partial<IModListQuery>>(initialQuery);
-
-  // Update query when URL changes (e.g., browser back/forward)
-  useEffect(() => {
-    const newQuery = searchParams.toString()
-      ? urlToQuery(searchParams.toString())
-      : DEFAULT_QUERY;
-    setQuery(newQuery);
-    setSearchKeyword(newQuery.keyword || "");
-  }, [searchParams]);
-
-  // Check if current query matches initial query
-  const isInitialQuery = JSON.stringify(query) === JSON.stringify(initialQuery);
-
-  // Fetch scenarios with client-side query changes
-  // const { data: scenarios } = useQuery({
-  //   queryKey: ["scenarios", ...Object.values(query)],
-  //   queryFn: () => api.module.list(query),
-  //   // Only use initialData for the initial query to avoid cache issues
-  //   ...(isInitialQuery ? { initialData: initialScenarios } : {}),
-  // });
+  // Create a stable key to force filter re-mount on query changes
+  const filterKey = queryToUrl(query);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,16 +61,7 @@ export function ScenarioListWithFilter({
         ...query,
         keyword,
       };
-      const newUrl = `/${lng}/scenario?${queryToUrl(newQuery)}`;
-
-      // Update URL without triggering navigation
-      window.history.replaceState(
-        { ...window.history.state, as: newUrl, url: newUrl },
-        "",
-        newUrl,
-      );
-
-      setQuery(newQuery);
+      router.push(`/${lng}/scenario?${queryToUrl(newQuery)}`);
     }
   };
 
@@ -112,22 +71,13 @@ export function ScenarioListWithFilter({
   };
 
   const handleFilterChange = (newQuery: Partial<IModListQuery>) => {
-    const newUrl = `/${lng}/scenario?${queryToUrl({
-      ...DEFAULT_QUERY,
-      ...newQuery,
-    })}`;
-
-    // Update URL without triggering navigation
-    window.history.replaceState(
-      { ...window.history.state, as: newUrl, url: newUrl },
-      "",
-      newUrl,
+    router.push(
+      `/${lng}/scenario?${queryToUrl({
+        ...DEFAULT_QUERY,
+        ...query,      // Preserve existing query params (like keyword)
+        ...newQuery,   // Apply filter changes
+      })}`,
     );
-
-    setQuery({
-      ...DEFAULT_QUERY,
-      ...newQuery,
-    });
   };
 
   return (
@@ -149,10 +99,7 @@ export function ScenarioListWithFilter({
               </Button>
             </ButtonGroup>
           </form>
-          <ScenarioList
-            initialData={undefined}
-            query={query}
-          />
+          {children}
         </div>
         <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
           <Link href={`/${lng}/scenario/publish`}>
@@ -175,7 +122,8 @@ export function ScenarioListWithFilter({
 
             <CardContent>
               <ScenarioFilter
-                config={initialConfig}
+                key={filterKey}
+                config={config}
                 initialFilter={queryToFormData(query)}
                 onChange={(data) => handleFilterChange(formDataToQuery(data))}
               />

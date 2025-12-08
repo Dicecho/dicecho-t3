@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Rate } from "@/components/ui/rate";
 
 export function ScenarioCardSkeleton() {
   return (
@@ -14,9 +13,9 @@ export function ScenarioCardSkeleton() {
         <Skeleton className="w-16 h-4" />
       </div>
 
-      <div className="w-full flex items-center">
-        <Rate className="gap-0" value={0} size="sm" allowHalf readOnly />
-        <Skeleton className="w-8 h-4 ml-auto" />
+      <div className="w-full flex items-center justify-between">
+        <Skeleton className="w-20 h-4" />
+        <Skeleton className="w-8 h-4" />
       </div>
     </div>
   );
