@@ -21,7 +21,7 @@ export const ScenarioCardGrid: FC<ScenarioCardGridProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className={cn("grid grid-cols-2 gap-4 md:grid-cols-4", className)}>
+      <div className={cn("grid grid-cols-2 gap-10 md:grid-cols-4", className)}>
         {new Array(8).fill(0).map((_, index) => (
           <ScenarioCardSkeleton key={index} />
         ))}
@@ -30,7 +30,7 @@ export const ScenarioCardGrid: FC<ScenarioCardGridProps> = ({
   }
 
   return (
-    <div className={cn("grid grid-cols-2 gap-4 md:grid-cols-4", className)}>
+    <div className={cn("grid grid-cols-2 gap-10 md:grid-cols-4", className)}>
       {scenarios.map((scenario) => (
         <Link
           href={`/${lng}/scenario/${scenario._id}`}

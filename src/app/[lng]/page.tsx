@@ -83,10 +83,10 @@ export default async function Home(props: {
             {/* Recommended Collections */}
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle>推荐合集</CardTitle>
+                <CardTitle>{t("home_recommended_collections")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-4 gap-10">
                   {collections.map((collection) => (
                     <CollectionCard
                       key={collection._id}
@@ -100,10 +100,10 @@ export default async function Home(props: {
             {/* Recent Submissions */}
             <Card className="mb-6">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>最新投稿</CardTitle>
+                <CardTitle>{t("home_recent_submissions")}</CardTitle>
                 <Link href={`/${lng}/scenario?filter[isForeign]=false&sort[createdAt]=-1`}>
                   <Button variant="link" size="sm">
-                    查看更多 &gt;&gt;
+                    {t("home_view_more")}
                   </Button>
                 </Link>
               </CardHeader>
@@ -115,10 +115,10 @@ export default async function Home(props: {
             {/* Hot Scenarios */}
             <Card className="mb-6">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>一周热门模组</CardTitle>
+                <CardTitle>{t("home_hot_scenarios")}</CardTitle>
                 <Link href={`/${lng}/scenario`}>
                   <Button variant="link" size="sm">
-                    查看更多 &gt;&gt;
+                    {t("home_view_more")}
                   </Button>
                 </Link>
               </CardHeader>
@@ -130,10 +130,10 @@ export default async function Home(props: {
             {/* Foreign Mods */}
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>新增词条</CardTitle>
+                <CardTitle>{t("home_new_entries")}</CardTitle>
                 <Link href={`/${lng}/scenario?filter[isForeign]=true&sort[createdAt]=-1`}>
                   <Button variant="link" size="sm">
-                    查看更多 &gt;&gt;
+                    {t("home_view_more")}
                   </Button>
                 </Link>
               </CardHeader>
@@ -161,7 +161,7 @@ export default async function Home(props: {
               className="w-full mb-4"
             >
               <a href="https://discord.gg/geEpSKFUzG" target="_blank" rel="noopener noreferrer">
-                Join us Discord server
+                {t("home_discord_join")}
               </a>
             </Button>
           </div>
@@ -174,7 +174,7 @@ export default async function Home(props: {
 
           {/* Recommended Collections */}
           <div>
-            <h2 className="text-xl font-semibold mb-3">推荐合集</h2>
+            <h2 className="text-xl font-semibold mb-3">{t("home_recommended_collections")}</h2>
             <div className="grid grid-cols-2 gap-3">
               {collections.slice(0, 4).map((collection) => (
                 <CollectionCard
@@ -188,10 +188,10 @@ export default async function Home(props: {
           {/* Recent Submissions */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xl font-semibold">最新投稿</h2>
+              <h2 className="text-xl font-semibold">{t("home_recent_submissions")}</h2>
               <Link href={`/${lng}/scenario?filter[isForeign]=false&sort[createdAt]=-1`}>
                 <Button variant="link" size="sm" className="px-0">
-                  查看更多 &gt;&gt;
+                  {t("home_view_more")}
                 </Button>
               </Link>
             </div>
@@ -201,10 +201,10 @@ export default async function Home(props: {
           {/* Hot Scenarios */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xl font-semibold">一周热门模组</h2>
+              <h2 className="text-xl font-semibold">{t("home_hot_scenarios")}</h2>
               <Link href={`/${lng}/scenario`}>
                 <Button variant="link" size="sm" className="px-0">
-                  查看更多 &gt;&gt;
+                  {t("home_view_more")}
                 </Button>
               </Link>
             </div>
@@ -214,10 +214,10 @@ export default async function Home(props: {
           {/* Foreign Mods */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xl font-semibold">新增词条</h2>
+              <h2 className="text-xl font-semibold">{t("home_new_entries")}</h2>
               <Link href={`/${lng}/scenario?filter[isForeign]=true&sort[createdAt]=-1`}>
                 <Button variant="link" size="sm" className="px-0">
-                  查看更多 &gt;&gt;
+                  {t("home_view_more")}
                 </Button>
               </Link>
             </div>

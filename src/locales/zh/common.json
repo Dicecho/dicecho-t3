@@ -298,5 +298,11 @@
   "upload_success": "上传成功",
   "upload_failed": "上传失败",
   "retry": "重试",
-  "retry_upload": "重试上传"
+  "retry_upload": "重试上传",
+  "home_recommended_collections": "推荐合集",
+  "home_recent_submissions": "最新投稿",
+  "home_hot_scenarios": "一周热门模组",
+  "home_new_entries": "新增词条",
+  "home_view_more": "查看更多 >>",
+  "home_discord_join": "加入我们的 Discord 服务器"
 }

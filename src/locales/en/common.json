@@ -298,5 +298,11 @@
   "upload_success": "Upload successful",
   "upload_failed": "Upload failed",
   "retry": "Retry",
-  "retry_upload": "Retry Upload"
+  "retry_upload": "Retry Upload",
+  "home_recommended_collections": "Recommended Collections",
+  "home_recent_submissions": "Recent Submissions",
+  "home_hot_scenarios": "Hot Scenarios This Week",
+  "home_new_entries": "New Entries",
+  "home_view_more": "View More >>",
+  "home_discord_join": "Join us Discord server"
 }

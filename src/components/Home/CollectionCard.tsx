@@ -1,6 +1,5 @@
 "use client";
 import { FC } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import type { CollectionDto } from "@/types/collection";
 import { cn } from "@/lib/utils";
 import { LinkWithLng } from "../Link";
@@ -16,20 +15,15 @@ export const CollectionCard: FC<CollectionCardProps> = ({
 }) => {
   return (
     <LinkWithLng href={`/collection/${collection._id}`}>
-      <Card className={cn("overflow-hidden hover:shadow-lg transition-shadow", className)}>
+      <div className={cn("overflow-hidden space-y-1", className)}>
         <div
-          className="aspect-video w-full bg-cover bg-center"
+          className="aspect-square w-full bg-cover bg-center rounded-sm"
           style={{
             backgroundImage: `url(${collection.coverUrl})`,
           }}
         />
-        <CardContent className="p-3">
-          <div className="font-semibold line-clamp-1 mb-1">{collection.name}</div>
-          <div className="text-xs text-muted-foreground line-clamp-2">
-            {collection.description}
-          </div>
-        </CardContent>
-      </Card>
+        <div className="text-sm line-clamp-1">{collection.name}</div>
+      </div>
     </LinkWithLng>
   );
 };

@@ -299,5 +299,11 @@
   "upload_success": "アップロードが成功しました",
   "upload_failed": "アップロードに失敗しました",
   "retry": "再試行",
-  "retry_upload": "再試行"
+  "retry_upload": "再試行",
+  "home_recommended_collections": "おすすめコレクション",
+  "home_recent_submissions": "最新投稿",
+  "home_hot_scenarios": "今週の人気シナリオ",
+  "home_new_entries": "新規エントリ",
+  "home_view_more": "もっと見る >>",
+  "home_discord_join": "Discord サーバーに参加"
 }
