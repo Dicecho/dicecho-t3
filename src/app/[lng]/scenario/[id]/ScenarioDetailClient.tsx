@@ -183,12 +183,12 @@ export function ScenarioDetailClient({
               </Card>
             )}
 
-            <ScenarioRecommendList
+            {/* <ScenarioRecommendList
               lng={lng}
               scenarioId={scenario._id}
               tags={scenario.tags}
               moduleRule={scenario.moduleRule}
-            />
+            /> */}
 
             <RateInfo
               className="w-full bg-card p-4 max-md:hidden"

@@ -125,7 +125,7 @@ export function ScenarioFilter({
                     ))}
                   </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={() => field.onChange("")} className="shrink-0">
+                <Button type="button" variant="outline" onClick={() => field.onChange("")} className="shrink-0">
                   <XCircle />
                 </Button>
               </ButtonGroup>
@@ -158,7 +158,7 @@ export function ScenarioFilter({
                     ))}
                   </SelectContent>
                 </Select>
-                <Button variant="outline" onClick={() => field.onChange("")} className="shrink-0">
+                <Button type="button" variant="outline" onClick={() => field.onChange("")} className="shrink-0">
                   <XCircle />
                 </Button>
               </ButtonGroup>
@@ -218,14 +218,17 @@ export function ScenarioFilter({
           className="w-full capitalize"
           type="button"
           variant="outline"
-          onClick={() =>
-            form.reset({
+          onClick={() => {
+            const resetValues = {
               rule: "",
               language: "",
               sortKey: ModSortKey.LAST_RATE_AT,
               sortOrder: SortOrder.DESC.toString(),
-            })
-          }
+            };
+            form.reset(resetValues);
+            // Manually trigger onChange since form.reset doesn't trigger watch
+            onChange(resetValues);
+          }}
         >
           {t("reset_filter", { ns: "common" })}
         </Button>

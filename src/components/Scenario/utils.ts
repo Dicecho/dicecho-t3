@@ -12,18 +12,27 @@ export function queryToFormData(query: Partial<IModListQuery>): FormData {
 
 export function formDataToQuery(data: FormData): Partial<IModListQuery> {
   const query: Partial<IModListQuery> = {};
+
+  // Always set filter, even if empty (to explicitly remove it from URL)
   if (data.rule) {
     Object.assign(query, {
       filter: {
         moduleRule: data.rule,
       },
     });
+  } else {
+    // Explicitly set to undefined to remove from URL
+    Object.assign(query, { filter: undefined });
   }
 
+  // Always set languages, even if empty (to explicitly remove it from URL)
   if (data.language) {
     Object.assign(query, {
       languages: [data.language],
     });
+  } else {
+    // Explicitly set to undefined to remove from URL
+    Object.assign(query, { languages: undefined });
   }
 
   if (data.sortKey && data.sortOrder) {
