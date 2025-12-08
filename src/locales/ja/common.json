@@ -295,7 +295,6 @@
   "cover_upload_hint": "ここに画像をドラッグ＆ドロップ、またはクリックして参照",
   "cover_size_hint": "推奨サイズ：1200x675px • 最大 5MB",
   "cover_change": "変更",
-  "cover_browse": "ファイルを参照",
   "upload": "アップロード",
   "upload_success": "アップロードが成功しました",
   "upload_failed": "アップロードに失敗しました",

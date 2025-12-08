@@ -25,16 +25,23 @@ export const DicechoProvider = ({
   children: React.ReactNode;
 }) => {
   const { data: session, status } = useSession();
+  const [initialized, setInitialized] = useState(false);
   const [api] = useState(
     new DicechoApi({ origin: env.NEXT_PUBLIC_DICECHO_API_ENDPOINT }),
   );
 
   useEffect(() => {
-    api.setToken(session?.user ?? {})
-  }, [session?.user, api])
+    if (status === 'loading') {
+      setInitialized(false);
+      return;
+    }
+    
+    api.setToken(session?.user ?? {});
+    setInitialized(true);
+  }, [session?.user, api, status])
 
   return (
-    <DicechoContext.Provider value={{ api, initialized: status !== 'loading' }}>
+    <DicechoContext.Provider value={{ api, initialized }}>
       {children}
     </DicechoContext.Provider>
   );

@@ -294,7 +294,6 @@
   "cover_upload_hint": "拖拽图片到此处，或点击浏览",
   "cover_size_hint": "建议尺寸：1200x675px • 最大 5MB",
   "cover_change": "更新",
-  "cover_browse": "浏览文件",
   "upload": "上传",
   "upload_success": "上传成功",
   "upload_failed": "上传失败",

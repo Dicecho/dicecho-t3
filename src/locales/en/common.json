@@ -294,7 +294,6 @@
   "cover_upload_hint": "Drag and drop an image here, or click to browse",
   "cover_size_hint": "Recommended size: 1200x675px • Max 5MB",
   "cover_change": "Change",
-  "cover_browse": "Browse Files",
   "upload": "Upload",
   "upload_success": "Upload successful",
   "upload_failed": "Upload failed",

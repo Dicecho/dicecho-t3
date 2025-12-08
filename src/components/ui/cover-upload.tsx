@@ -27,29 +27,14 @@ export default function CoverUpload({
   const { t } = useTranslation();
   const { upload, isUploading, progress } = useUploadOSS();
 
-  const [coverImage, setCoverImage] = useState<FileWithPreview | null>(null);
-  const [imageLoading, setImageLoading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [coverImage, setCoverImage] = useState<string | null>(null);
 
-  // Initialize with existing value
   useEffect(() => {
-    if (value && !coverImage) {
-      setCoverImage({
-        id: 'existing-cover',
-        file: {
-          id: 'existing-cover',
-          name: 'cover.jpg',
-          size: 0,
-          type: 'image/jpeg',
-          url: value,
-        },
-        preview: value,
-      });
-    }
-  }, [value, coverImage]);
+    setCoverImage(value ?? null);
+  }, [value]);
 
   const [
-    { isDragging, errors },
+    { isDragging },
     { handleDragEnter, handleDragLeave, handleDragOver, handleDrop, openFileDialog, getInputProps },
   ] = useFileUpload({
     maxFiles: 1,
@@ -59,23 +44,18 @@ export default function CoverUpload({
     onFilesAdded: async (files) => {
       const file = files[0]?.file;
       if (!(file instanceof File)) return;
-
-      setImageLoading(true);
-      setUploadError(null);
-      setCoverImage(files[0] ?? null);
+      setCoverImage(files[0]?.preview ?? null);
 
       try {
         const result = await upload(file);
+        console.log(result);
         onChange?.(result.url);
         toast.success(t('upload_success'));
       } catch (error) {
-        setUploadError(error instanceof Error ? error.message : t('upload_failed'));
         toast.error(t('upload_failed'), {
           description: error instanceof Error ? error.message : t('upload_failed'),
         });
         setCoverImage(null);
-      } finally {
-        setImageLoading(false);
       }
     },
   });
@@ -83,17 +63,10 @@ export default function CoverUpload({
   const removeCoverImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCoverImage(null);
-    setImageLoading(false);
-    setUploadError(null);
     onChange?.(null);
   };
 
-  const retryUpload = () => {
-    setUploadError(null);
-    openFileDialog();
-  };
-
-  const hasImage = coverImage && coverImage.preview;
+  const hasImage = coverImage;
 
   return (
     <div className={cn('w-full space-y-4', className)}>
@@ -120,7 +93,7 @@ export default function CoverUpload({
             {/* Cover Image Display */}
             <div className="relative h-full w-full">
               {/* Loading placeholder */}
-              {imageLoading && (
+              {isUploading && (
                 <div className="absolute inset-0 animate-pulse bg-muted flex items-center justify-center">
                   <div className="flex flex-col items-center gap-2 text-muted-foreground">
                     <ImageIcon className="size-5" />
@@ -131,14 +104,12 @@ export default function CoverUpload({
 
               {/* Actual image */}
               <img
-                src={coverImage.preview}
+                src={coverImage}
                 alt="Cover Image"
                 className={cn(
                   'h-full w-full object-cover transition-opacity duration-300',
-                  imageLoading ? 'opacity-0' : 'opacity-100',
+                  isUploading ? 'opacity-0' : 'opacity-100',
                 )}
-                onLoad={() => setImageLoading(false)}
-                onError={() => setImageLoading(false)}
               />
 
               {/* Overlay on hover */}
@@ -211,11 +182,6 @@ export default function CoverUpload({
             <div className="rounded-full bg-primary/10 p-4">
               <CloudUpload className="size-8 text-primary" />
             </div>
-
-            <Button variant="outline" size="sm" type="button">
-              <ImageIcon />
-              {t('cover_browse')}
-            </Button>
           </div>
         )}
       </div>
