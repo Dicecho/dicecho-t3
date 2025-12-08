@@ -37,8 +37,8 @@ export const ScenarioRateList = ({
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2">
+      <CardHeader className="overflow-x-hidden">
+        <div className="flex items-center gap-2 flex-wrap">
           <RateFilter
             rateCount={rateCount}
             markCount={markCount}

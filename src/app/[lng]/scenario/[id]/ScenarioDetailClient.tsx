@@ -71,12 +71,14 @@ export function ScenarioDetailClient({
             </Button>
           </Link>
         )}
-        <Link className="ml-auto" href={scenario.originUrl} target="_blank">
-          <Button color="primary">
-            <LinkIcon size={16} />
-            {t("origin")}
-          </Button>
-        </Link>
+        {scenario.originUrl && (
+          <Link className="ml-auto" href={scenario.originUrl} target="_blank">
+            <Button color="primary">
+              <LinkIcon size={16} />
+              {t("origin")}
+            </Button>
+          </Link>
+        )}
       </>
     );
   }, [lng, scenario, scenarioId, t]);
