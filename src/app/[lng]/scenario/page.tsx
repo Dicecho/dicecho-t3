@@ -32,11 +32,8 @@ const ScenarioPage = async (props: {
 
   const api = await getDicechoServerApi();
   
-  // Fetch initial data on server
-  const [config, scenarios] = await Promise.all([
-    api.module.config(),
-    api.module.list(query),
-  ]);
+
+  const config = await api.module.config();
 
   return (
     <>
@@ -45,7 +42,7 @@ const ScenarioPage = async (props: {
       </MobileHeader>
       <ScenarioListWithFilter
         lng={lng}
-        initialScenarios={scenarios}
+        // initialScenarios={scenarios}
         initialConfig={config}
         initialQuery={query}
       />

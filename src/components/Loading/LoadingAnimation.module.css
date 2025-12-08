@@ -1,0 +1,14 @@
+.wrapper {
+  background-size: cover;
+  animation: dice-loading 1.4s steps(50) infinite;
+  --dice-width: 120px;
+}
+
+@keyframes dice-loading {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: calc(var(--dice-width) * -50);
+  }
+}

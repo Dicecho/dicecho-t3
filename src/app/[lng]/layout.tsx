@@ -11,6 +11,8 @@ import { Layout as AppLayout } from "@/components/Layout";
 import { languages } from "@/lib/i18n/settings";
 import { ThemeScript } from "@/components/theme-script";
 
+export const dynamic = 'force-static'
+
 // TODO: support i18n
 export const metadata = {
   title: "Dicecho",

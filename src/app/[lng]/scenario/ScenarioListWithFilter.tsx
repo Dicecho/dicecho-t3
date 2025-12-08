@@ -41,14 +41,12 @@ function queryToUrl(query: Partial<IModListQuery>): string {
 
 interface ScenarioListWithFilterProps {
   lng: string;
-  initialScenarios: ModListApiResponse;
   initialConfig: ScenarioFilterProps["config"];
   initialQuery: Partial<IModListQuery>;
 }
 
 export function ScenarioListWithFilter({
   lng,
-  initialScenarios,
   initialConfig,
   initialQuery,
 }: ScenarioListWithFilterProps) {
@@ -152,7 +150,7 @@ export function ScenarioListWithFilter({
             </ButtonGroup>
           </form>
           <ScenarioList
-            initialData={isInitialQuery ? initialScenarios : undefined}
+            initialData={undefined}
             query={query}
           />
         </div>
