@@ -45,7 +45,7 @@ export default async function RootLayout(
       <head>
         <ThemeScript />
       </head>
-      <body className="bg-custom-gradient min-h-screen bg-no-repeat">
+      <body className="bg-custom-gradient min-h-screen bg-no-repeat overflow-x-hidden">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <TRPCReactProvider>
             <AppLayout>

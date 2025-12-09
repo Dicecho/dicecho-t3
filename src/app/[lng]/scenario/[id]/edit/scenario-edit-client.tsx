@@ -34,7 +34,7 @@ export function ScenarioEditPageClient({ lng, scenario, config }: Props) {
   };
 
   return (
-    <div className="container mx-auto mt-16 grid grid-cols-6 gap-6 px-4 pb-12">
+    <div className="container mt-16 grid grid-cols-6 gap-6 pb-12">
       <div className="col-span-6 space-y-6 lg:col-span-4">
         <Card className="p-6">
           {scenario.isForeign ? (

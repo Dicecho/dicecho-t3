@@ -29,7 +29,7 @@ export default async function AccountSettingPage(
       <>
         <AccountHeader user={user} lng={lng} />
         <AccountTabs user={user} lng={lng} userId={id} />
-        <div className="container mx-auto py-4">
+        <div className="container py-4">
           <AccountSettings user={user} />
         </div>
         <MobileFooter />

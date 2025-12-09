@@ -67,7 +67,7 @@ export const AccountHeader = ({ user, lng }: AccountHeaderProps) => {
           <div className="h-full w-full bg-linear-to-b from-black/20 via-black/40 to-background" />
         </div>
       </div>
-      <div className="relative container mx-auto flex flex-col gap-6 pb-10 pt-16 md:pt-28">
+      <div className="relative container flex flex-col gap-6 pb-10 pt-16 md:pt-28">
         <div className="flex md:flex-col md:items-center gap-4 md:text-center flex-row items-end md:gap-8 text-left">
           <div className="relative h-32 w-32 rounded-full border-4 border-background/70 bg-background shadow-2xl">
             <UserAvatar

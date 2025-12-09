@@ -26,7 +26,7 @@ export default async function CollectionDetailPage(props: {
 
     return (
       <>
-        <div className="container mx-auto py-6">
+        <div className="container py-6">
           <CollectionDetail collection={collection} />
         </div>
         <MobileFooter />

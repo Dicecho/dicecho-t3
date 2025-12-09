@@ -78,7 +78,7 @@ export const AccountTabs = ({ user, lng, userId }: AccountTabsProps) => {
 
   return (
     <div className="sticky top-14 md:top-16 z-10 border-b border-border/60 bg-background/95 px-4 backdrop-blur supports-backdrop-filter:bg-background/70">
-      <div className="container mx-auto px-0">
+      <div className="container">
         <Tabs value={getActiveTab()} onValueChange={handleTabChange}>
           <TabsList className="flex h-12 w-full justify-start gap-2 overflow-x-auto rounded-none border-0 bg-transparent p-0">
             {tabItems.map((tab) => (

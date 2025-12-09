@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { ModSortKey, SortOrder, type ModFilterConfig } from "@dicecho/types";
 import { type LanguageCodes, LanguageCodeMap } from "@/utils/language";
 import { ArrowUpNarrowWide, ArrowDownNarrowWide, XCircle } from "lucide-react";
@@ -12,16 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useTranslation } from "@/lib/i18n/react";
 
 const SortKeys = [
@@ -64,175 +54,139 @@ export const ModSortKeyMap: Record<string, Record<ModSortKey, string>> = {
   },
 };
 
-const formSchema = z.object({
-  rule: z.string().optional(),
-  language: z.string().optional(),
-  sortKey: z.enum(SortKeys).optional(),
-  sortOrder: z.string().optional(),
-});
-
-export type FormData = z.infer<typeof formSchema>;
+export interface FilterValue {
+  rule?: string;
+  language?: string;
+  sortKey?: ModSortKey;
+  sortOrder?: string;
+}
 
 export interface ScenarioFilterProps {
   config: ModFilterConfig;
-  initialFilter?: Partial<FormData>;
-  onChange?: (filter: FormData) => void;
+  value: FilterValue;
+  onChange: (value: FilterValue) => void;
 }
 
 export function ScenarioFilter({
   config,
-  initialFilter = {},
-  onChange = () => {},
+  value,
+  onChange,
 }: ScenarioFilterProps) {
   const { t, i18n } = useTranslation();
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
+
+  const handleReset = () => {
+    onChange({
+      rule: undefined,
+      language: undefined,
       sortKey: ModSortKey.LAST_RATE_AT,
       sortOrder: SortOrder.DESC.toString(),
-      ...initialFilter,
-    },
-  });
-
-  useEffect(() => {
-    const { unsubscribe } = form.watch((values) => {
-      onChange(values);
     });
-
-    return () => unsubscribe();
-  }, [form, onChange]);
+  };
 
   return (
-    <Form {...form}>
-      <form className="space-y-4">
-        <FormField
-          control={form.control}
-          name="rule"
-          render={({ field }) => (
-            <FormItem>
-              <ButtonGroup orientation="horizontal" className="w-full min-w-0">
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="flex-1 min-w-0">
-                      <SelectValue placeholder={t("select_rule")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {config?.rules.map((rule) => (
-                      <SelectItem key={rule._id} value={rule._id}>
-                        {rule._id}({rule.count})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button type="button" variant="outline" onClick={() => field.onChange("")} className="shrink-0">
-                  <XCircle />
-                </Button>
-              </ButtonGroup>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="language"
-          render={({ field }) => (
-            <FormItem>
-              <ButtonGroup orientation="horizontal" className="w-full min-w-0">
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="flex-1 min-w-0">
-                      <SelectValue placeholder={t("select_languages")} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {config?.languages.map((language) => (
-                      <SelectItem key={language._id} value={language._id}>
-                        {
-                          LanguageCodeMap[i18n.language]![
-                            language._id as LanguageCodes
-                          ]
-                        }
-                        ({language.count})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button type="button" variant="outline" onClick={() => field.onChange("")} className="shrink-0">
-                  <XCircle />
-                </Button>
-              </ButtonGroup>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <ButtonGroup orientation="horizontal" className="w-full min-w-0">
-          <FormField
-            control={form.control}
-            name="sortKey"
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className="capitalize flex-1 min-w-0">
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {SortKeys.map((key) => (
-                    <SelectItem key={key} value={key} className="capitalize">
-                      {ModSortKeyMap[i18n.language]![key]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="sortOrder"
-            render={({ field }) => (
-              <Button
-                className="shrink-0"
-                variant="outline"
-                type="button"
-                onClick={() => {
-                  field.onChange(
-                    field.value?.toString() === SortOrder.DESC.toString()
-                      ? SortOrder.ASC
-                      : SortOrder.DESC,
-                  );
-                }}
-              >
-                {field.value?.toString() === SortOrder.DESC.toString() ? (
-                  <ArrowDownNarrowWide size={16} />
-                ) : (
-                  <ArrowUpNarrowWide size={16} />
-                )}
-              </Button>
-            )}
-          />
-        </ButtonGroup>
+    <div className="space-y-4">
+      <ButtonGroup orientation="horizontal" className="w-full min-w-0">
+        <Select
+          key={value.rule || 'empty'}
+          value={value.rule}
+          onValueChange={(rule) => onChange({ ...value, rule })}
+        >
+          <SelectTrigger className="flex-1 min-w-0">
+            <SelectValue placeholder={t("select_rule")} />
+          </SelectTrigger>
+          <SelectContent>
+            {config?.rules.map((rule) => (
+              <SelectItem key={rule._id} value={rule._id}>
+                {rule._id}({rule.count})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         <Button
-          className="w-full capitalize"
           type="button"
           variant="outline"
+          onClick={() => onChange({ ...value, rule: undefined })}
+          className="shrink-0"
+        >
+          <XCircle />
+        </Button>
+      </ButtonGroup>
+
+      <ButtonGroup orientation="horizontal" className="w-full min-w-0">
+        <Select
+          key={value.language || 'empty'}
+          value={value.language}
+          onValueChange={(language) => onChange({ ...value, language })}
+        >
+          <SelectTrigger className="flex-1 min-w-0">
+            <SelectValue placeholder={t("select_languages")} />
+          </SelectTrigger>
+          <SelectContent>
+            {config?.languages.map((language) => (
+              <SelectItem key={language._id} value={language._id}>
+                {LanguageCodeMap[i18n.language]![language._id as LanguageCodes]}
+                ({language.count})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => onChange({ ...value, language: undefined })}
+          className="shrink-0"
+        >
+          <XCircle />
+        </Button>
+      </ButtonGroup>
+
+      <ButtonGroup orientation="horizontal" className="w-full min-w-0">
+        <Select
+          value={value.sortKey}
+          onValueChange={(sortKey) => onChange({ ...value, sortKey: sortKey as ModSortKey })}
+        >
+          <SelectTrigger className="capitalize flex-1 min-w-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SortKeys.map((key) => (
+              <SelectItem key={key} value={key} className="capitalize">
+                {ModSortKeyMap[i18n.language]![key]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Button
+          className="shrink-0"
+          variant="outline"
+          type="button"
           onClick={() => {
-            const resetValues = {
-              rule: "",
-              language: "",
-              sortKey: ModSortKey.LAST_RATE_AT,
-              sortOrder: SortOrder.DESC.toString(),
-            };
-            form.reset(resetValues);
-            // Manually trigger onChange since form.reset doesn't trigger watch
-            onChange(resetValues);
+            onChange({
+              ...value,
+              sortOrder:
+                value.sortOrder?.toString() === SortOrder.DESC.toString()
+                  ? SortOrder.ASC.toString()
+                  : SortOrder.DESC.toString(),
+            });
           }}
         >
-          {t("reset_filter", { ns: "common" })}
+          {value.sortOrder?.toString() === SortOrder.DESC.toString() ? (
+            <ArrowDownNarrowWide size={16} />
+          ) : (
+            <ArrowUpNarrowWide size={16} />
+          )}
         </Button>
-      </form>
-    </Form>
+      </ButtonGroup>
+
+      <Button
+        className="w-full capitalize"
+        type="button"
+        variant="outline"
+        onClick={handleReset}
+      >
+        {t("reset_filter", { ns: "common" })}
+      </Button>
+    </div>
   );
 }

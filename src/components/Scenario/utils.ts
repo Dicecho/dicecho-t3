@@ -1,7 +1,7 @@
 import type { IModListQuery, ModSortKey } from '@dicecho/types';
-import type { FormData } from './ScenarioFilter'
+import type { FilterValue } from './ScenarioFilter'
 
-export function queryToFormData(query: Partial<IModListQuery>): FormData {
+export function queryToFormData(query: Partial<IModListQuery>): FilterValue {
   return {
     rule: query.filter?.moduleRule,
     language: query.languages?.[0],
@@ -10,7 +10,7 @@ export function queryToFormData(query: Partial<IModListQuery>): FormData {
   };
 }
 
-export function formDataToQuery(data: FormData): Partial<IModListQuery> {
+export function formDataToQuery(data: FilterValue): Partial<IModListQuery> {
   const query: Partial<IModListQuery> = {};
 
   // Always set filter, even if empty (to explicitly remove it from URL)

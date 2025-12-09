@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 
 export function ScenarioDetailSkeleton() {
   return (
-    <div className="md:container mx-auto">
+    <div className="md:container">
       {/* Mobile cover image */}
       <div className="relative h-[280px] w-full bg-muted md:hidden" />
 

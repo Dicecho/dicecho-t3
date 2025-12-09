@@ -22,7 +22,7 @@ export default async function AccountRatePage(
       <>
         <AccountHeader user={user} lng={lng} />
         <AccountTabs user={user} lng={lng} userId={id} />
-        <div className="container mx-auto py-4">
+        <div className="container py-4">
           <AccountRateList userId={id} />
         </div>
         <MobileFooter />

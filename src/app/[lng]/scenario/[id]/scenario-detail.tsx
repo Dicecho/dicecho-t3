@@ -14,10 +14,9 @@ export async function ScenarioDetailServer({ lng, id }: ScenarioDetailServerProp
   const scenario = await api.module.detail(id, { revalidate: 300 });
 
   // Generate JSON-LD structured data for Google rich snippets
-  // Use VideoGame type (most appropriate for TRPG scenarios in schema.org)
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'VideoGame',
+    '@type': 'Game',
     name: scenario.originTitle || scenario.title,
     description: scenario.description || `${scenario.title} - TRPG scenario`,
     image: scenario.coverUrl,

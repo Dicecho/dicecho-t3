@@ -72,7 +72,7 @@ export default async function Home(props: {
         <HeaderMenu />
       </MobileHeader>
 
-      <main className="container mx-auto py-6">
+      <main className="container py-6">
         {/* Desktop Layout */}
         <div className="hidden md:grid md:grid-cols-12 md:gap-6">
           {/* Main Content - Left Side (2/3) */}

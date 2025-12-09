@@ -19,7 +19,7 @@ export function ScenarioPublishPageClient({ lng, config }: Props) {
   const router = useRouter();
 
   return (
-    <div className="container mx-auto mt-16 max-w-4xl px-4 pb-12">
+    <div className="container mt-16 pb-12">
       <Card className="p-6">
         <ScenarioEditForm
           config={config}

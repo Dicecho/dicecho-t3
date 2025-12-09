@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ScenarioFilter,
-  type ScenarioFilterProps,
+  type FilterValue,
 } from "@/components/Scenario/ScenarioFilter";
 import qs from "qs";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -32,7 +32,7 @@ function queryToUrl(query: Partial<IModListQuery>): string {
 
 interface ScenarioPageContentProps {
   lng: string;
-  config: ScenarioFilterProps["config"];
+  config: ModFilterConfig;
   query: Partial<IModListQuery>;
   children: React.ReactNode;
 }
@@ -48,9 +48,6 @@ export function ScenarioPageContent({
   const { api } = useDicecho();
 
   const [searchKeyword, setSearchKeyword] = useState(query.keyword || "");
-
-  // Create a stable key to force filter re-mount on query changes
-  const filterKey = queryToUrl(query);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,18 +67,18 @@ export function ScenarioPageContent({
     router.push(`/${lng}/scenario/${scenario._id}`);
   };
 
-  const handleFilterChange = (newQuery: Partial<IModListQuery>) => {
+  const handleFilterChange = (filterValue: FilterValue) => {
     router.push(
       `/${lng}/scenario?${queryToUrl({
         ...DEFAULT_QUERY,
         ...query,      // Preserve existing query params (like keyword)
-        ...newQuery,   // Apply filter changes
+        ...formDataToQuery(filterValue),   // Apply filter changes
       })}`,
     );
   };
 
   return (
-    <div className="container mx-auto pt-4 max-md:px-4">
+    <div className="container pt-4">
       <div className="grid grid-cols-6 gap-8">
         <div className="col-span-6 md:col-span-4">
           <form onSubmit={handleSearch} className="flex w-full items-center">
@@ -122,10 +119,9 @@ export function ScenarioPageContent({
 
             <CardContent>
               <ScenarioFilter
-                key={filterKey}
                 config={config}
-                initialFilter={queryToFormData(query)}
-                onChange={(data) => handleFilterChange(formDataToQuery(data))}
+                value={queryToFormData(query)}
+                onChange={handleFilterChange}
               />
               <Button
                 className="mt-4 w-full capitalize"

@@ -56,7 +56,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
         "bg-background sticky top-0 right-0 left-0 z-10 shadow-xl max-md:hidden",
       )}
     >
-      <div className="container mx-auto">
+      <div className="container">
         <div className="flex min-h-16 items-center gap-4">
           <div className="flex shrink-0 items-center">
             <Link href={`/${lng}`} passHref>

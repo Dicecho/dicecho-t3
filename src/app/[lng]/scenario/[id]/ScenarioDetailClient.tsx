@@ -90,7 +90,7 @@ export function ScenarioDetailClient({
   return (
     <>
       <ScenarioDetailHeader title={scenario.title} />
-      <div className="md:container mx-auto">
+      <div className="md:container">
         <div
           className="relative z-0 h-[280px] w-full bg-cover bg-center bg-no-repeat brightness-75 md:hidden"
           style={{ backgroundImage: `url(${scenario.coverUrl})` }}

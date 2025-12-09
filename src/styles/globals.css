@@ -207,3 +207,18 @@
     cursor: pointer;
   }
 }
+
+@utility container {
+  margin-inline: auto;  /* 相当于 mx-auto，自动居中 */
+  padding-inline: 1rem; /* 默认 padding */
+
+  @variant sm {
+    padding-inline: 2rem;
+  }
+  @variant md {
+    padding-inline: 4rem;
+  }
+  @variant lg {
+    padding-inline: 4rem;
+  }
+}

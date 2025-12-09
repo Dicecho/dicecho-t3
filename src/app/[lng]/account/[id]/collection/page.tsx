@@ -26,7 +26,7 @@ export default async function AccountCollectionPage(
       <>
         <AccountHeader user={user} lng={lng} />
         <AccountTabs user={user} lng={lng} userId={id} />
-        <div className="container mx-auto py-4">
+        <div className="container py-4">
           <AccountCollection userId={id} isSelf={isSelf} />
         </div>
         <MobileFooter />

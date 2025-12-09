@@ -24,7 +24,7 @@ export default async function AccountTopicPage(
       <>
         <AccountHeader user={user} lng={lng} />
         <AccountTabs user={user} lng={lng} userId={id} />
-        <div className="container mx-auto py-4">
+        <div className="container py-4">
           <Card>
             <CardContent className="p-8 text-center text-muted-foreground">
               帖子功能开发中...

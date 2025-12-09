@@ -32,7 +32,7 @@ export default async function CollectionPage(props: {
 
   return (
     <>
-      <div className="container mx-auto py-6">
+      <div className="container py-6">
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-center justify-between">
