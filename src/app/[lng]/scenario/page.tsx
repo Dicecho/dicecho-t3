@@ -4,7 +4,7 @@ import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
 import { ScenarioPageContent } from "./scenario-page-content";
 import { ScenarioListServer } from "./scenario-list";
-import { ScenarioListSkeleton } from "./scenario-list-skeleton";
+import { ScenarioListSkeleton } from "@/components/Scenario/scenario-list-skeleton";
 import { Suspense } from "react";
 import qs from "qs";
 import { getDicechoServerApi } from "@/server/dicecho";

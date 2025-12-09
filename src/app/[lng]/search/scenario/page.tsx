@@ -1,21 +1,20 @@
 import type { IModListQuery } from "@dicecho/types";
-import { ScenarioSearchClient } from "./ScenarioSearchClient";
+import { ScenarioFilterWrapper } from "./filter-wrapper";
+import { ScenarioListServer } from "./scenario-list";
+import { ScenarioListSkeleton } from "@/components/Scenario/scenario-list-skeleton";
 import { Empty } from "@/components/Empty";
 import qs from "qs";
 import { getTranslation } from "@/lib/i18n";
 import { getDicechoServerApi } from "@/server/dicecho";
+import { Suspense } from "react";
 
 const DEFAULT_QUERY: Partial<IModListQuery> = {
   sort: { lastRateAt: -1 },
   pageSize: 12,
 };
 
-function urlToQuery(searchQuery: string): Partial<IModListQuery> {
-  return {
-    ...DEFAULT_QUERY,
-    ...qs.parse(searchQuery),
-  };
-}
+export const dynamic = "auto";
+export const dynamicParams = true;
 
 const ScenarioSearchPage = async (props: {
   params: Promise<{ lng: string }>;
@@ -25,9 +24,23 @@ const ScenarioSearchPage = async (props: {
   const params = await props.params;
   const { lng } = params;
 
-  const query = searchParams
-    ? urlToQuery(qs.stringify(searchParams))
-    : DEFAULT_QUERY;
+  const parsedParams =
+    searchParams && Object.keys(searchParams).length > 0
+      ? qs.parse(qs.stringify(searchParams), {
+          decoder(value, defaultDecoder) {
+            const decoded = defaultDecoder(value);
+            if (/^-?\d+$/.test(decoded)) {
+              return parseInt(decoded, 10);
+            }
+            return decoded;
+          },
+        })
+      : {};
+
+  const query: Partial<IModListQuery> = {
+    ...DEFAULT_QUERY,
+    ...parsedParams,
+  };
 
   const keyword = (searchParams?.keyword as string) || "";
 
@@ -36,30 +49,20 @@ const ScenarioSearchPage = async (props: {
     return <Empty emptyText={t("search_no_keyword")} />;
   }
 
-  // Add keyword to query
   const finalQuery = { ...query, keyword };
-
   const api = await getDicechoServerApi();
-  
-  // Fetch config and initial data in parallel on server
-  const [config, scenarios] = await Promise.all([
-    api.module.config(),
-    api.module.list({ ...finalQuery, pageSize: 20 }),
-  ]);
-
-  if (scenarios.totalCount === 0) {
-    const { t } = await getTranslation(lng);
-    return <Empty emptyText={t("search_no_scenario")} />;
-  }
+  const config = await api.module.config();
+  const queryKey = qs.stringify(finalQuery);
 
   return (
-    <ScenarioSearchClient
-      lng={lng}
-      initialScenarios={scenarios}
-      initialConfig={config}
-      initialQuery={finalQuery}
-      keyword={keyword}
-    />
+    <ScenarioFilterWrapper lng={lng} config={config} query={finalQuery}>
+      <Suspense
+        key={queryKey}
+        fallback={<ScenarioListSkeleton count={finalQuery.pageSize ?? 12} />}
+      >
+        <ScenarioListServer query={finalQuery} />
+      </Suspense>
+    </ScenarioFilterWrapper>
   );
 };
 

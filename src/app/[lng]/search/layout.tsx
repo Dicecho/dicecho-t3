@@ -1,22 +1,22 @@
-"use client";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SearchLayout } from "./search-layout";
+import { PropsWithChildren, Suspense } from "react";
 
-import { SearchLayoutContent } from "@/components/Search/SearchLayoutContent";
-import { Suspense } from "react";
-
-export default function SearchLayout({
+export default function layout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: PropsWithChildren) {
   return (
-    <Suspense fallback={<div className="container mx-auto py-8">
-      <div className="mb-6">
-        <div className="mb-4 h-8 w-64 animate-pulse rounded bg-gray-200" />
-        <div className="h-12 w-full animate-pulse rounded bg-gray-200" />
-      </div>
-    </div>}>
-      <SearchLayoutContent>{children}</SearchLayoutContent>
+    <Suspense
+      fallback={
+        <div className="container py-8">
+          <div className="mb-6">
+            <Skeleton className="mb-4 h-8 w-64 rounded" />
+            <Skeleton className="h-12 w-full rounded" />
+          </div>
+        </div>
+      }
+    >
+      <SearchLayout>{children}</SearchLayout>
     </Suspense>
   );
 }
-

@@ -75,7 +75,7 @@ export const defaultPresets: Record<string, ThemePreset> = {
         "accent-foreground": "var(--foreground)",
         destructive: "oklch(0.6368 0.2078 25.3313)",
         "destructive-foreground": "oklch(1.0000 0 0)",
-        border: "oklch(0.4432 0.0314 277.9958)",
+        border: "rgba(0,0,0,0)",
         input: "oklch(0.4432 0.0314 277.9958)",
         ring: "var(--primary)",
         "chart-1": "var(--primary)",
