@@ -69,6 +69,7 @@ export const themeTokenVariableMap: Record<keyof ThemeValues, string> = {
   shadowOffsetX: "--shadow-offset-x",
   shadowOffsetY: "--shadow-offset-y",
   letterSpacing: "--letter-spacing",
+  borderWidth: "--border-width",
 };
 
 const baseLightValues: ThemeValues = {
@@ -135,6 +136,7 @@ const baseLightValues: ThemeValues = {
   shadowOffsetX: "0",
   shadowOffsetY: "1px",
   letterSpacing: "0em",
+  borderWidth: "1px",
 };
 
 const baseDarkValues: ThemeValues = {
@@ -201,6 +203,7 @@ const baseDarkValues: ThemeValues = {
   shadowOffsetX: "0",
   shadowOffsetY: "1px",
   letterSpacing: "0em",
+  borderWidth: "1px",
 };
 
 const cssVarNameToTokenKey = Object.entries(themeTokenVariableMap).reduce(

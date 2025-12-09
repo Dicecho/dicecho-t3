@@ -69,6 +69,7 @@ export type ThemeValues = {
   shadowOffsetX: string;
   shadowOffsetY: string;
   letterSpacing: string;
+  borderWidth: string;
 };
 
 export type ThemeTokens = Record<ThemeMode, ThemeValues>;
