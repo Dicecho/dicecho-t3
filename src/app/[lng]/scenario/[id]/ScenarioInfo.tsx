@@ -23,17 +23,15 @@ const InfoItem: FC<
 
 interface ScenarioInfoProps extends ComponentProps<"div"> {
   scenario: IModDto;
-  lng: string;
 }
 
 export const ScenarioInfo: FC<ScenarioInfoProps> = ({
   scenario,
-  lng,
   className,
   ref,
   ...props
 }) => {
-  const { t } = useTranslation(lng);
+  const { t, i18n } = useTranslation();
 
   return (
     <>
@@ -76,7 +74,7 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
           <div className="flex items-center gap-2">
             {scenario.languages.map((language) => (
               <span key={language}>
-                {LanguageCodeMap[lng]![language as LanguageCodes]}
+                {LanguageCodeMap[i18n.language]![language as LanguageCodes]}
               </span>
             ))}
           </div>

@@ -1,11 +1,10 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
-import { ScenarioDetailServer } from "./scenario-detail";
-import { ScenarioDetailSkeleton } from "./scenario-detail-skeleton";
+import { ScenarioDetail } from "./scenario-detail";
+import { ScenarioDetailHeader } from "./header";
 import { getDicechoServerApi } from "@/server/dicecho";
 
 // Let Next.js decide the rendering strategy based on usage
-export const dynamic = 'auto';
+export const dynamic = "auto";
 
 // ISR with 5 minutes revalidation (scenario details change less frequently)
 export const revalidate = 300;
@@ -22,12 +21,14 @@ export async function generateMetadata({
     const scenario = await api.module.detail(id, { revalidate: 300 });
 
     const title = scenario.originTitle || scenario.title;
-    const baseDescription = scenario.description || `${scenario.title} - TRPG scenario on DiceEcho`;
+    const baseDescription =
+      scenario.description || `${scenario.title} - TRPG scenario on DiceEcho`;
 
     // Add rating info to description for OG
-    const ratingInfo = scenario.rateCount > 0
-      ? `★ ${scenario.rateAvg}/10 (${scenario.rateCount} reviews)`
-      : '';
+    const ratingInfo =
+      scenario.rateCount > 0
+        ? `★ ${scenario.rateAvg}/10 (${scenario.rateCount} reviews)`
+        : "";
     const description = ratingInfo
       ? `${ratingInfo}\n\n${baseDescription}`
       : baseDescription;
@@ -40,27 +41,31 @@ export async function generateMetadata({
       openGraph: {
         title,
         description, // Use enhanced description with rating for OG
-        images: imageUrl ? [{
-          url: imageUrl,
-          width: 800,
-          height: 1067, // 3:4 aspect ratio
-          alt: title,
-        }] : [],
-        type: 'article',
-        siteName: 'DiceEcho',
+        images: imageUrl
+          ? [
+              {
+                url: imageUrl,
+                width: 800,
+                height: 1067, // 3:4 aspect ratio
+                alt: title,
+              },
+            ]
+          : [],
+        type: "article",
+        siteName: "DiceEcho",
       },
       twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title,
         description,
         images: imageUrl ? [imageUrl] : [],
       },
     };
   } catch (error) {
-    console.error('Failed to generate metadata for scenario:', id, error);
+    console.error("Failed to generate metadata for scenario:", id, error);
     return {
-      title: 'Scenario - DiceEcho',
-      description: 'TRPG scenario on DiceEcho',
+      title: "Scenario - DiceEcho",
+      description: "TRPG scenario on DiceEcho",
     };
   }
 }
@@ -71,11 +76,55 @@ const ScenarioDetailPage = async ({
   params: Promise<{ lng: string; id: string }>;
 }) => {
   const { lng, id } = await params;
+  const api = await getDicechoServerApi();
+
+  // Server-side data fetching with 300s (5min) revalidation cache
+  // Scenario details change less frequently than lists
+  const scenario = await api.module.detail(id, { revalidate: 300 });
+
+  // Generate JSON-LD structured data for Google rich snippets
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Game",
+    name: scenario.originTitle || scenario.title,
+    description: scenario.description || `${scenario.title} - TRPG scenario`,
+    image: scenario.coverUrl,
+    ...(scenario.rateCount > 0 && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: scenario.rateAvg,
+        bestRating: 10,
+        worstRating: 0,
+        ratingCount: scenario.rateCount,
+      },
+    }),
+    ...(scenario.releaseDate && {
+      datePublished: scenario.releaseDate,
+    }),
+    // Additional game-specific properties
+    ...(scenario.moduleRule && {
+      gamePlatform: scenario.moduleRule, // e.g., "COC7", "DND5E"
+    }),
+    ...(scenario.playerNumber && {
+      numberOfPlayers: {
+        "@type": "QuantitativeValue",
+        minValue: scenario.playerNumber[0],
+        maxValue: scenario.playerNumber[1],
+      },
+    }),
+  };
 
   return (
-    <Suspense fallback={<ScenarioDetailSkeleton />}>
-      <ScenarioDetailServer lng={lng} id={id} />
-    </Suspense>
+    <>
+      {/* JSON-LD for Google Rich Snippets */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <ScenarioDetailHeader title={scenario.title} />
+      <ScenarioDetail lng={lng} scenario={scenario} />
+    </>
   );
 };
 

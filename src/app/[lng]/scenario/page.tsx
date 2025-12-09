@@ -15,7 +15,7 @@ const DEFAULT_QUERY: Partial<IModListQuery> = {
   pageSize: 12,
 };
 
-export const dynamic = 'auto';
+export const dynamic = "auto";
 export const dynamicParams = true;
 
 const ScenarioPage = async ({
