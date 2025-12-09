@@ -24,6 +24,7 @@
     "@ss-blocks": "https://shadcnstudio.com/r/blocks/{name}.json",
     "@ss-themes": "https://shadcnstudio.com/r/themes/{name}.json",
     "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
-    "@reui": "https://reui.io/r/{name}.json"
+    "@reui": "https://reui.io/r/{name}.json",
+    "@react-bits": "https://reactbits.dev/r/{name}.json"
   }
 }
