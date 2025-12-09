@@ -1,24 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/lib/i18n/react";
 
 interface SearchInputProps {
-  lng: string;
   placeholder?: string;
   className?: string;
 }
 
-export function SearchInput({ lng, placeholder, className }: SearchInputProps) {
-  const [keyword, setKeyword] = useState("");
+export function SearchInput({ placeholder, className }: SearchInputProps) {
+  const searchParams = useSearchParams();
+  const keywordParam = searchParams.get("keyword") || "";
+  const [keyword, setKeyword] = useState(keywordParam);
   const router = useRouter();
+  const { t, i18n } = useTranslation();
 
   const handleSearch = () => {
     if (keyword.trim()) {
-      router.push(`/${lng}/search?keyword=${encodeURIComponent(keyword.trim())}`);
+      router.push(`/${i18n.language}/search?keyword=${encodeURIComponent(keyword.trim())}`);
     }
   };
 
@@ -33,7 +36,7 @@ export function SearchInput({ lng, placeholder, className }: SearchInputProps) {
       <div className="relative flex-1">
         <Input
           type="text"
-          placeholder={placeholder}
+          placeholder={placeholder ?? t("search_placeholder")}
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={handleKeyDown}

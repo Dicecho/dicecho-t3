@@ -27,12 +27,12 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
       exact: false,
       icon: BookText,
     },
-    {
-      title: t("forum"),
-      link: "/forum",
-      exact: false,
-      icon: MessagesSquare,
-    },
+    // {
+    //   title: t("forum"),
+    //   link: "/forum",
+    //   exact: false,
+    //   icon: MessagesSquare,
+    // },
     {
       title: t("replay"),
       link: "/replay",

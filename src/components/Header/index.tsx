@@ -89,7 +89,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
           </div>
 
           <div className="hidden flex-1 md:flex">
-            <SearchInput lng={lng} placeholder={t("search_placeholder")} className="max-w-md" />
+            <SearchInput placeholder={t("search_placeholder")} className="max-w-md" />
           </div>
 
           <div className="ml-auto flex items-center gap-2 capitalize">

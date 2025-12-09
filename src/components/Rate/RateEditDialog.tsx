@@ -105,7 +105,7 @@ export function RateEditDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px]" showCloseButton={false}>
         <DialogHeader className="hidden">
           <DialogTitle>{t(rate ? "edit_rate" : "create_rate")}</DialogTitle>
         </DialogHeader>
