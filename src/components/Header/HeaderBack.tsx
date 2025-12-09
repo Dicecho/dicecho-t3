@@ -14,7 +14,7 @@ export const HeaderBack: FC<
 
   return (
     <button
-      className={clsx("flex", className)}
+      className={clsx("flex text-sm", className)}
       {...props}
       onClick={() => {
         if (window.history.length > 2) {
@@ -24,7 +24,7 @@ export const HeaderBack: FC<
         }
       }}
     >
-      <ChevronLeft />
+      <ChevronLeft className="w-5 h-5" />
       {t("back")}
     </button>
   );

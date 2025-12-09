@@ -8,6 +8,7 @@ import { ScenarioListSkeleton } from "@/components/Scenario/scenario-list-skelet
 import { Suspense } from "react";
 import qs from "qs";
 import { getDicechoServerApi } from "@/server/dicecho";
+import { HeaderSearch } from "@/components/Header/HeaderSearch";
 
 const DEFAULT_QUERY: Partial<IModListQuery> = {
   sort: { lastRateAt: -1 },
@@ -53,8 +54,8 @@ const ScenarioPage = async ({
 
   return (
     <>
-      <MobileHeader>
-        <HeaderMenu />
+      <MobileHeader left={<HeaderMenu />}>
+        <HeaderSearch />
       </MobileHeader>
       <ScenarioPageContent lng={lng} config={config} query={query}>
         <Suspense

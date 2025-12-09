@@ -33,6 +33,8 @@ export type ThemeValues = {
   border: string;
   input: string;
   ring: string;
+  header: string;
+  footer: string;
   chart1: string;
   chart2: string;
   chart3: string;

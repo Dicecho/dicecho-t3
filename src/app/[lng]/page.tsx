@@ -4,6 +4,7 @@ import { getDicechoServerApi } from "@/server/dicecho";
 import { MobileFooter } from "@/components/Footer";
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
+import { HeaderSearch } from "@/components/Header/HeaderSearch";
 import { getTranslation } from "@/lib/i18n";
 import { BannerCarousel } from "@/components/Home/BannerCarousel";
 import { ScenarioCardGrid } from "@/components/Home/ScenarioCardGrid";
@@ -68,8 +69,8 @@ export default async function Home(props: {
 
   return (
     <>
-      <MobileHeader>
-        <HeaderMenu />
+      <MobileHeader left={<HeaderMenu />}>
+        <HeaderSearch />
       </MobileHeader>
 
       <main className="container py-6">
@@ -175,7 +176,7 @@ export default async function Home(props: {
           {/* Recommended Collections */}
           <div>
             <h2 className="text-xl font-semibold mb-3">{t("home_recommended_collections")}</h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-10">
               {collections.slice(0, 4).map((collection) => (
                 <CollectionCard
                   key={collection._id}

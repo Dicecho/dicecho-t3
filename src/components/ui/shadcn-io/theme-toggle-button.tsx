@@ -18,10 +18,12 @@ export interface ThemeToggleButtonProps {
   url?: string; // For gif variant
   className?: string;
   onClick?: () => void;
+  buttonVariant?: "outline" | "card";
 }
 export const ThemeToggleButton = ({
   theme = "light",
   showLabel = false,
+  buttonVariant = "outline",
   variant = "circle",
   start = "center",
   url,
@@ -176,7 +178,7 @@ export const ThemeToggleButton = ({
   }, [onClick, variant, start, url, theme]);
   return (
     <Button
-      variant="outline"
+      variant={buttonVariant}
       size={showLabel ? "default" : "icon"}
       onClick={handleClick}
       className={cn(

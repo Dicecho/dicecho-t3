@@ -59,7 +59,7 @@ export function SearchLayout({ children }: { children: React.ReactNode }) {
       value: "scenario",
       label: `${t("search_tab_scenario")}`,
       href: `/search/scenario?keyword=${keyword}`,
-      count: scenariosCount?.totalCount ? (
+      count: scenariosCount ? (
         <Badge variant="accent"> {scenariosCount.totalCount} </Badge>
       ) : (
         <Loader2 className="h-4 w-4 animate-spin" />
@@ -69,7 +69,7 @@ export function SearchLayout({ children }: { children: React.ReactNode }) {
       value: "tag",
       label: `${t("search_tab_tag")}`,
       href: `/search/tag?keyword=${keyword}`,
-      count: tagsCount?.totalCount ? (
+      count: tagsCount ? (
         <Badge variant="accent"> {tagsCount.totalCount} </Badge>
       ) : (
         <Loader2 className="h-4 w-4 animate-spin" />
@@ -79,7 +79,7 @@ export function SearchLayout({ children }: { children: React.ReactNode }) {
       value: "topic",
       label: `${t("search_tab_topic")}`,
       href: `/search/topic?keyword=${keyword}`,
-      count: topicsCount?.totalCount ? (
+      count: topicsCount ? (
         <Badge variant="accent"> {topicsCount.totalCount} </Badge>
       ) : (
         <Loader2 className="h-4 w-4 animate-spin" />
@@ -89,7 +89,7 @@ export function SearchLayout({ children }: { children: React.ReactNode }) {
       value: "user",
       label: `${t("search_tab_user")}`,
       href: `/search/user?keyword=${keyword}`,
-      count: usersCount?.totalCount ? (
+      count: usersCount ? (
         <Badge variant="accent"> {usersCount.totalCount} </Badge>
       ) : (
         <Loader2 className="h-4 w-4 animate-spin" />

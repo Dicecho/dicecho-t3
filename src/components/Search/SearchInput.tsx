@@ -6,13 +6,15 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/react";
+import { cn } from "@/lib/utils";
 
 interface SearchInputProps {
   placeholder?: string;
   className?: string;
+  inputClassName?: string;
 }
 
-export function SearchInput({ placeholder, className }: SearchInputProps) {
+export function SearchInput({ placeholder, className, inputClassName }: SearchInputProps) {
   const searchParams = useSearchParams();
   const keywordParam = searchParams.get("keyword") || "";
   const [keyword, setKeyword] = useState(keywordParam);
@@ -32,7 +34,7 @@ export function SearchInput({ placeholder, className }: SearchInputProps) {
   };
 
   return (
-    <div className={`flex items-center gap-2 ${className || ""}`}>
+    <div className={cn("flex items-center gap-2", className)}>
       <div className="relative flex-1">
         <Input
           type="text"
@@ -40,11 +42,11 @@ export function SearchInput({ placeholder, className }: SearchInputProps) {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="pr-10"
+          className={cn("pr-10 text-sm", inputClassName)}
         />
         <Button
           size="sm"
-          variant="ghost"
+          variant="dim"
           className="absolute right-0 top-0 h-full"
           onClick={handleSearch}
         >

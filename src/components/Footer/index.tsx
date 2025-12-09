@@ -50,7 +50,7 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
   return (
     <div
       className={clsx(
-        "md:hidden container fixed bottom-0 z-10 flex justify-between bg-background py-4 px-4 shadow-[0_-20px_25px_-5px_rgba(0,0,0,0.1)]",
+        "md:hidden container fixed bottom-0 z-10 flex justify-between bg-footer py-4 px-4 shadow-[0_-8px_10px_-1px_rgba(0,0,0,0.25)]",
         className,
       )}
       {...props}
@@ -70,7 +70,7 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
               <div
                 className={clsx(
                   "flex items-center justify-center w-10 h-10",
-                  {['rounded-full bg-muted text-muted-foreground']: !matched },
+                  {['rounded-full bg-input/60 text-input-foreground']: !matched },
                   {['rounded-lg bg-primary text-primary-foreground']: matched },
                 )}
               >

@@ -23,8 +23,7 @@ export default async function AccountPage(
 
   return (
     <>
-      <MobileHeader>
-        <HeaderMenu />
+      <MobileHeader left={<HeaderMenu />}>
       </MobileHeader>
       <main className="flex min-h-screen items-center justify-center w-full">
         <SignIn />

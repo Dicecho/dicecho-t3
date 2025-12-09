@@ -53,7 +53,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
     <div
       {...props}
       className={clsx(
-        "bg-background sticky top-0 right-0 left-0 z-10 shadow-xl max-md:hidden",
+        "bg-header sticky top-0 right-0 left-0 z-10 shadow-xl max-md:hidden",
       )}
     >
       <div className="container">
