@@ -5,9 +5,11 @@ import { X, ChevronDownIcon } from 'lucide-react';
 import * as React from 'react';
 import { forwardRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useDebounce } from '@/hooks/use-debounce';
 
 import { Badge } from '@/components/ui/badge';
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 export interface Option {
@@ -91,19 +93,6 @@ export interface MultipleSelectorRef {
   reset: () => void;
 }
 
-export function useDebounce<T>(value: T, delay?: number): T {
-  const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay || 500);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
 
 function transToGroupOption(options: Option[], groupBy?: string) {
   if (options.length === 0) {
@@ -425,7 +414,20 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           handleKeyDown(e);
           commandProps?.onKeyDown?.(e);
         }}
-        className={cn('h-auto overflow-visible bg-transparent', commandProps?.className)}
+        className={cn(
+          // 视觉边框样式 - 与 Select 对齐，放在外层让 ButtonGroup 能控制
+          'min-h-9 overflow-visible rounded-md border border-input bg-transparent shadow-xs outline-none',
+          // 过渡动画
+          'transition-[color,box-shadow]',
+          // 焦点状态 - 与 Select 统一
+          'focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50',
+          // 深色模式
+          'dark:bg-input/30 dark:hover:bg-input/50',
+          // 禁用状态
+          'disabled:cursor-not-allowed disabled:opacity-50',
+          className,
+          commandProps?.className,
+        )}
         shouldFilter={
           commandProps?.shouldFilter !== undefined ? commandProps.shouldFilter : !onSearch
         } // When onSearch is provided, we don't want to filter the options. You can still override it.
@@ -433,11 +435,11 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       >
         <div
           className={cn(
-            'flex items-start justify-between rounded-md border border-input px-3 py-2 text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 md:text-sm',
+            // 布局和内间距 - 只影响输入区域，不影响下拉框定位
+            'flex items-start justify-between gap-2 px-3 py-2 text-sm',
             {
               'cursor-text': !disabled && selected.length !== 0,
             },
-            className,
           )}
           onClick={() => {
             if (disabled) return;
@@ -542,7 +544,12 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         <div className="relative">
           {open && (
             <CommandList
-              className="absolute top-1 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in"
+              className={cn(
+                // 基础样式 - 与 SelectContent 对齐
+                "absolute top-2 z-50 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none",
+                // 动画效果 - 与 Select 统一
+                "animate-in fade-in-0 zoom-in-95 slide-in-from-top-2",
+              )}
               onMouseLeave={() => {
                 setOnScrollbar(false);
               }}
@@ -554,7 +561,16 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               }}
             >
               {isLoading ? (
-                <>{loadingIndicator}</>
+                <>
+                  {loadingIndicator || (
+                    // 默认的 loading skeleton
+                    <div className="p-2 space-y-2">
+                      <Skeleton className="h-8 w-full" />
+                      <Skeleton className="h-8 w-full" />
+                      <Skeleton className="h-8 w-full" />
+                    </div>
+                  )}
+                </>
               ) : (
                 <>
                   {EmptyItem()}

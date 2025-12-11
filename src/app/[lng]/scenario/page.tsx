@@ -25,7 +25,6 @@ const ScenarioPage = async ({
   params: Promise<{ lng: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
-  const { lng } = await params;
   const resolvedSearchParams = await searchParams;
 
   const parsedParams =
@@ -57,7 +56,7 @@ const ScenarioPage = async ({
       <MobileHeader left={<HeaderMenu />}>
         <HeaderSearch />
       </MobileHeader>
-      <ScenarioPageContent lng={lng} config={config} query={query}>
+      <ScenarioPageContent config={config} query={query}>
         <Suspense
           key={queryKey}
           fallback={<ScenarioListSkeleton count={query.pageSize ?? 12} />}

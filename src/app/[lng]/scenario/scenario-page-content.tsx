@@ -18,8 +18,8 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n/react";
 import { useDicecho } from "@/hooks/useDicecho";
-import { useState } from "react";
-import Link from "next/link";
+import { PropsWithChildren, useState } from "react";
+import { LinkWithLng } from "@/components/Link";
 
 const DEFAULT_QUERY: Partial<IModListQuery> = {
   sort: { lastRateAt: -1 },
@@ -31,20 +31,17 @@ function queryToUrl(query: Partial<IModListQuery>): string {
 }
 
 interface ScenarioPageContentProps {
-  lng: string;
   config: ModFilterConfig;
   query: Partial<IModListQuery>;
-  children: React.ReactNode;
 }
 
 export function ScenarioPageContent({
-  lng,
   config,
   query,
   children,
-}: ScenarioPageContentProps) {
+}: PropsWithChildren<ScenarioPageContentProps>) {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { api } = useDicecho();
 
   const [searchKeyword, setSearchKeyword] = useState(query.keyword || "");
@@ -58,24 +55,25 @@ export function ScenarioPageContent({
         ...query,
         keyword,
       };
-      router.push(`/${lng}/scenario?${queryToUrl(newQuery)}`);
+      router.push(`/${i18n.language}/scenario?${queryToUrl(newQuery)}`);
     }
   };
 
   const handleRandom = async () => {
     const scenario = await api.module.random(query);
-    router.push(`/${lng}/scenario/${scenario._id}`);
+    router.push(`/${i18n.language}/scenario/${scenario._id}`);
   };
 
   const handleFilterChange = (filterValue: FilterValue) => {
     router.push(
-      `/${lng}/scenario?${queryToUrl({
+      `/${i18n.language}/scenario?${queryToUrl({
         ...DEFAULT_QUERY,
         ...query,      // Preserve existing query params (like keyword)
         ...formDataToQuery(filterValue),   // Apply filter changes
       })}`,
     );
   };
+
 
   return (
     <div className="container pt-4">
@@ -99,18 +97,18 @@ export function ScenarioPageContent({
           {children}
         </div>
         <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
-          <Link href={`/${lng}/scenario/publish`}>
+          <LinkWithLng href={`/scenario/publish`}>
             <Button className="w-full capitalize">
               <Upload size={16} />
               {t("scenario_publish")}
             </Button>
-          </Link>
-          <Link href={`/${lng}/scenario/contribute`}>
+          </LinkWithLng>
+          <LinkWithLng href={`/scenario/contribute`}>
             <Button className="w-full capitalize">
               <Plus size={16} />
               {t("commit_scenario_page")}
             </Button>
-          </Link>
+          </LinkWithLng>
 
           <Card className="sticky top-20">
             <CardHeader>

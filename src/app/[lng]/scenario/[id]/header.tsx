@@ -2,11 +2,11 @@
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderBack } from "@/components/Header/HeaderBack";
 import { useParams } from "next/navigation";
-import { useWindowScroll } from "@uidotdev/usehooks";
+import { useWindowScroll } from "react-use";
 import { cn } from "@/lib/utils";
 
 export const ScenarioDetailHeader = ({ title }: { title: string }) => {
-  const [state] = useWindowScroll();
+  const state = useWindowScroll();
   const { lng } = useParams<{ lng: string }>();
 
   const y = state.y ?? 0;

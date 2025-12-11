@@ -519,6 +519,16 @@ export class DicechoApi extends APIClient {
       ),
   };
 
+  tag = {
+    modRecommend: (options?: { revalidate?: number | false }) =>
+      this.request<Empty, ITag[]>(
+        `/api/tag/modRecommend`,
+        "GET",
+        {},
+        { revalidate: options?.revalidate ?? 3600 },
+      ),
+  };
+
   config = {
     banner: () =>
       this.request<Empty, BannerDto[]>(`/api/config/banner`, "GET"),
