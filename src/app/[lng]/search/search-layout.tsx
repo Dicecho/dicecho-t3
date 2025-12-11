@@ -99,7 +99,7 @@ export function SearchLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="container py-8 overflow-x-hidden">
-      <div className="mb-6">
+      <div className="mb-4">
         <h1 className="mb-4 text-2xl font-bold">
           {t("search_result_for")}: &quot;{keyword}&quot;
         </h1>

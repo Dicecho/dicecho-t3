@@ -16,7 +16,7 @@ export default function layout({ children }: PropsWithChildren) {
       <Suspense
         fallback={
           <div className="container py-8">
-            <div className="mb-6">
+            <div className="mb-4">
               <Skeleton className="mb-4 h-8 w-64 rounded" />
               <Skeleton className="h-12 w-full rounded" />
             </div>

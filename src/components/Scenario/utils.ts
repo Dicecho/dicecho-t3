@@ -1,5 +1,6 @@
-import type { IModListQuery, ModSortKey, TagFilterMode } from '@dicecho/types';
-import type { FilterValue } from './ScenarioFilter'
+import type { IModListQuery } from "@dicecho/types";
+import type { FilterValue } from "./ScenarioFilter";
+import qs from "qs";
 
 function playersToQuery(players: Array<number>) {
   if (!players || players.length === 0) return {};
@@ -25,8 +26,6 @@ export function queryToFormData(query: Partial<IModListQuery>): FilterValue {
   return {
     rule: query.filter?.moduleRule,
     language: query.languages?.[0],
-    sortKey: Object.keys(query.sort ?? { lastRateAt: "-1" })[0] as ModSortKey,
-    sortOrder: Object.values(query.sort ?? { lastRateAt: "-1" })[0] as string,
     tags: query.tags || [],
     tagsMode: query.tagsMode,
     players: queryToPlayers({
@@ -61,14 +60,6 @@ export function formDataToQuery(data: FilterValue): Partial<IModListQuery> {
     Object.assign(query, { languages: undefined });
   }
 
-  if (data.sortKey && data.sortOrder) {
-    Object.assign(query, {
-      sort: {
-        [data.sortKey]: data.sortOrder,
-      },
-    });
-  }
-
   // Handle tags
   if (data.tags && data.tags.length > 0) {
     Object.assign(query, { tags: data.tags });
@@ -91,4 +82,30 @@ export function formDataToQuery(data: FilterValue): Partial<IModListQuery> {
   }
 
   return query;
+}
+
+const DEFAULT_QUERY: Partial<IModListQuery> = {
+  sort: { lastRateAt: -1 },
+  pageSize: 12,
+};
+
+export function getScenarioFilterQuery(
+  searchParams: string,
+): Partial<IModListQuery> {
+  const parsedParams = qs.parse(searchParams, {
+    decoder(value, defaultDecoder) {
+      // First decode the URL-encoded value
+      const decoded = defaultDecoder(value);
+      // Then convert numeric strings to numbers
+      if (/^-?\d+$/.test(decoded)) {
+        return parseInt(decoded, 10);
+      }
+      return decoded;
+    },
+  });
+
+  return {
+    ...DEFAULT_QUERY,
+    ...parsedParams,
+  };
 }

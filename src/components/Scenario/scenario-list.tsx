@@ -15,6 +15,8 @@ import type { IModListQuery, ModListApiResponse } from "@dicecho/types";
 import type { ComponentProps, FC } from "react";
 import { ScenarioCardSkeleton } from "./ScenarioCardSkeleton";
 import { Loader2 } from "lucide-react";
+import { LinkWithLng } from "../Link";
+import { ScenarioSort } from "./scenario-sort";
 
 interface ScenarioListProps extends ComponentProps<"div"> {
   initialData?: ModListApiResponse;
@@ -27,7 +29,7 @@ export const ScenarioList: FC<ScenarioListProps> = ({
   className,
   ...props
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { api } = useDicecho();
   const { ref, inView } = useInView();
 
@@ -66,19 +68,25 @@ export const ScenarioList: FC<ScenarioListProps> = ({
 
   return (
     <>
-      <div className="text-muted-foreground mt-2 flex items-center gap-2 text-sm">
-        <Trans
-          i18nKey="search_result"
-          t={t}
-          values={{
-            count: isLoading ? "" : (data?.pages[0]?.totalCount ?? 0),
-          }}
-          components={{
-            loading: isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : <></>,
-          }}
-        />
+      <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-2">
+          <Trans
+            className="text-muted-foreground"
+            i18nKey="search_result"
+            t={t}
+            values={{
+              count: isLoading ? "" : (data?.pages[0]?.totalCount ?? 0),
+            }}
+            components={{
+              loading: isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <></>
+              ),
+            }}
+          />
+        </div>
+        <ScenarioSort className="ml-auto" />
       </div>
       <Separator className="mt-2 mb-4" />
       <div
@@ -94,12 +102,12 @@ export const ScenarioList: FC<ScenarioListProps> = ({
               .map((_, index) => <ScenarioCardSkeleton key={index} />)
           : data?.pages.flatMap((page) =>
               page.data.map((scenario) => (
-                <Link
-                  href={`/${i18n.language}/scenario/${scenario._id}`}
+                <LinkWithLng
+                  href={`/scenario/${scenario._id}`}
                   key={scenario._id}
                 >
                   <ScenarioCard scenario={scenario} />
-                </Link>
+                </LinkWithLng>
               )),
             )}
       </div>

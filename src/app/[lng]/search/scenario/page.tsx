@@ -1,17 +1,11 @@
-import type { IModListQuery } from "@dicecho/types";
-import { ScenarioFilterWrapper } from "./filter-wrapper";
-import { ScenarioListServer } from "./scenario-list";
+import { ScenarioListServer } from "@/components/Scenario/scenario-list-server";
 import { ScenarioListSkeleton } from "@/components/Scenario/scenario-list-skeleton";
-import { Empty } from "@/components/Empty";
+import { ScenarioSearchParamsFilter } from "@/components/Scenario/search-params-filter";
 import qs from "qs";
 import { getTranslation } from "@/lib/i18n";
-import { getDicechoServerApi } from "@/server/dicecho";
 import { Suspense } from "react";
-
-const DEFAULT_QUERY: Partial<IModListQuery> = {
-  sort: { lastRateAt: -1 },
-  pageSize: 12,
-};
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getScenarioFilterQuery } from "@/components/Scenario/utils";
 
 export const dynamic = "auto";
 export const dynamicParams = true;
@@ -20,49 +14,34 @@ const ScenarioSearchPage = async (props: {
   params: Promise<{ lng: string }>;
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) => {
-  const searchParams = await props.searchParams;
   const params = await props.params;
-  const { lng } = params;
+  const searchParams = await props.searchParams;
+  const { t } = await getTranslation(params.lng);
 
-  const parsedParams =
-    searchParams && Object.keys(searchParams).length > 0
-      ? qs.parse(qs.stringify(searchParams), {
-          decoder(value, defaultDecoder) {
-            const decoded = defaultDecoder(value);
-            if (/^-?\d+$/.test(decoded)) {
-              return parseInt(decoded, 10);
-            }
-            return decoded;
-          },
-        })
-      : {};
-
-  const query: Partial<IModListQuery> = {
-    ...DEFAULT_QUERY,
-    ...parsedParams,
-  };
-
-  const keyword = (searchParams?.keyword as string) || "";
-
-  if (!keyword) {
-    const { t } = await getTranslation(lng);
-    return <Empty emptyText={t("search_no_keyword")} />;
-  }
-
-  const finalQuery = { ...query, keyword };
-  const api = await getDicechoServerApi();
-  const config = await api.module.config();
-  const queryKey = qs.stringify(finalQuery);
+  const query = getScenarioFilterQuery(qs.stringify(searchParams));
+  const queryKey = qs.stringify(query);
 
   return (
-    <ScenarioFilterWrapper lng={lng} config={config} query={finalQuery}>
-      <Suspense
-        key={queryKey}
-        fallback={<ScenarioListSkeleton count={finalQuery.pageSize ?? 12} />}
-      >
-        <ScenarioListServer query={finalQuery} />
-      </Suspense>
-    </ScenarioFilterWrapper>
+    <div className="grid grid-cols-6 gap-8">
+      <div className="col-span-6 md:col-span-4">
+        <Suspense
+          key={queryKey}
+          fallback={<ScenarioListSkeleton count={query.pageSize ?? 12} />}
+        >
+          <ScenarioListServer query={query} />
+        </Suspense>
+      </div>
+      <div className="hidden flex-col gap-4 md:col-span-2 md:flex">
+        <Card className="sticky top-20">
+          <CardHeader>
+            <CardTitle className="capitalize">{t("filter")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScenarioSearchParamsFilter />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
 

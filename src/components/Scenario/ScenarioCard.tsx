@@ -1,9 +1,7 @@
 'use client'
-import React from "react";
 import type { IModDto } from "@dicecho/types";
 import { MinidenticonImg } from '@/components/MinidenticonImg'
 import { Rate } from "@/components/ui/rate";
-import { Card } from "@/components/ui/card";
 import clsx from "clsx";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n/react";
