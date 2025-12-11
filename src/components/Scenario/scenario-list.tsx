@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ScenarioCard } from "./ScenarioCard";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
@@ -28,9 +28,12 @@ export const ScenarioList: FC<ScenarioListProps> = ({
   ...props
 }) => {
   const { t } = useTranslation();
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({
+    rootMargin: '300px',
+    threshold: 0,
+  });
 
-  const { data, isLoading, fetchNextPage, hasNextPage } =
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     api.scenario.list.useInfiniteQuery(query, {
       initialPageParam: 1,
       initialData: initialData
@@ -49,13 +52,13 @@ export const ScenarioList: FC<ScenarioListProps> = ({
     });
 
   useEffect(() => {
-    if (isLoading) return;
-    if (inView && hasNextPage) {
-      fetchNextPage().catch((err) => {
-        console.error(err);
-      });
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+        .catch((err) => {
+          console.error(err);
+        });
     }
-  }, [inView, isLoading, fetchNextPage, hasNextPage]);
+  }, [inView, isFetchingNextPage, fetchNextPage, hasNextPage]);
 
   return (
     <>
@@ -107,7 +110,7 @@ export const ScenarioList: FC<ScenarioListProps> = ({
           className="mt-8 grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4"
           ref={ref}
         >
-          {new Array(query.pageSize ?? 4).fill(0).map((_, index) => (
+          {new Array(4).fill(0).map((_, index) => (
             <ScenarioCardSkeleton key={index} />
           ))}
         </div>
