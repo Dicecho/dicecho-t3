@@ -1,25 +1,23 @@
 "use client";
 import { useEffect } from "react";
-import Link from "next/link";
 import { ScenarioCard } from "./ScenarioCard";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
-import { omit } from "lodash";
 import { Trans } from "react-i18next";
 import { useTranslation } from "@/lib/i18n/react";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useDicecho } from "@/hooks/useDicecho";
 import { Separator } from "@/components/ui/separator";
 
-import type { IModListQuery, ModListApiResponse } from "@dicecho/types";
+import type { IModListQuery } from "@dicecho/types";
 import type { ComponentProps, FC } from "react";
 import { ScenarioCardSkeleton } from "./ScenarioCardSkeleton";
 import { Loader2 } from "lucide-react";
 import { LinkWithLng } from "../Link";
 import { ScenarioSort } from "./scenario-sort";
+import { api } from "@/trpc/react";
+import type { ScenariolListApiResponse } from "@/server/api/routers/scenario";
 
 interface ScenarioListProps extends ComponentProps<"div"> {
-  initialData?: ModListApiResponse;
+  initialData?: ScenariolListApiResponse;
   query?: Partial<IModListQuery>;
 }
 
@@ -30,32 +28,25 @@ export const ScenarioList: FC<ScenarioListProps> = ({
   ...props
 }) => {
   const { t } = useTranslation();
-  const { api } = useDicecho();
   const { ref, inView } = useInView();
 
-  const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    initialPageParam: 1,
-    initialData: initialData
-      ? {
-          pageParams: [],
-          pages: [initialData],
-        }
-      : undefined,
-    queryKey: [`scenarios`, omit(query, "page")],
-    queryFn: ({ pageParam }) => {
-      return api.module.list({ ...query, page: pageParam });
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage.hasNext ? lastPage.page + 1 : undefined;
-    },
-    getPreviousPageParam: (firstPage) => {
-      return firstPage.page - 1;
-    },
-    staleTime: 3600 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchOnMount: false,
-  });
+  const { data, isLoading, fetchNextPage, hasNextPage } =
+    api.scenario.list.useInfiniteQuery(query, {
+      initialPageParam: 1,
+      initialData: initialData
+        ? {
+            pageParams: [],
+            pages: [initialData],
+          }
+        : undefined,
+      getNextPageParam: (lastPage) => {
+        return lastPage.hasNext ? lastPage.nextCursor : undefined;
+      },
+      staleTime: 3600 * 1000,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+    });
 
   useEffect(() => {
     if (isLoading) return;

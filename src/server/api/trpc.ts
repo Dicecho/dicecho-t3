@@ -12,6 +12,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { getServerAuthSession } from "@/server/auth";
+import { getDatabase } from "@/server/db/mongodb";
 
 /**
  * 1. CONTEXT
@@ -27,9 +28,11 @@ import { getServerAuthSession } from "@/server/auth";
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await getServerAuthSession();
+  const db = await getDatabase();
 
   return {
     session,
+    db,
     ...opts,
   };
 };

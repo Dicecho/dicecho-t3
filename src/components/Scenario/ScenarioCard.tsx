@@ -1,5 +1,4 @@
 'use client'
-import type { IModDto } from "@dicecho/types";
 import { MinidenticonImg } from '@/components/MinidenticonImg'
 import { Rate } from "@/components/ui/rate";
 import clsx from "clsx";
@@ -7,7 +6,16 @@ import Image from "next/image";
 import { useTranslation } from "@/lib/i18n/react";
 
 interface ScenarioCardProps {
-  scenario: IModDto;
+  scenario: {
+    coverUrl: string;
+    title: string;
+    author: {
+      avatarUrl: string;
+      nickName: string;
+    };
+    rateAvg: number;
+    rateCount: number;
+  };
 }
 
 export function ScenarioCard({ scenario }: ScenarioCardProps) {

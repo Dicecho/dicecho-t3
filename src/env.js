@@ -22,6 +22,7 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string() : z.string().url()
     ),
+    MONGO_URI: z.string().url(),
   },
 
   /**
@@ -44,6 +45,7 @@ export const env = createEnv({
     PROXY_AGENT_URL: process.env.PROXY_AGENT_URL,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXT_PUBLIC_DICECHO_API_ENDPOINT: process.env.NEXT_PUBLIC_DICECHO_API_ENDPOINT,
+    MONGO_URI: process.env.MONGO_URI,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
