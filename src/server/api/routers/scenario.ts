@@ -112,6 +112,15 @@ export const scenarioRouter = createTRPCRouter({
       if (filter?.rateCount) match.rateCount = filter.rateCount;
       if (filter?.author) match.author = filter.author;
       if (filter?.isForeign) match.isForeign = filter.isForeign;
+      if (
+        sort &&
+        Object.keys(sort).findIndex((key) => key === "rateAvg") !== -1
+      ) {
+        match.$or = [
+          { validRateCount: { $exists: false }, rateCount: { $gte: 5 } },
+          { validRateCount: { $gte: 5 } },
+        ];
+      }
 
       // Atlas Search 优先，用于替换 regex 方案
       const pipeline: Document[] = [];
@@ -134,7 +143,7 @@ export const scenarioRouter = createTRPCRouter({
         {
           $facet: {
             data: [
-              { $sort: trimmedKeyword ? sort : { _id: -1, ...sort } },
+              { $sort: trimmedKeyword ? sort : { ...sort, _id: -1 } },
               { $skip: (page - 1) * pageSize },
               { $limit: pageSize },
               {
