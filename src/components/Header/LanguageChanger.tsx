@@ -10,12 +10,14 @@ const LanguageKey = {
   en: "en",
   zh: "zh",
   ja: "ja",
+  ko: "ko",
 } as const;
 
 const LanguageLabel = {
   [LanguageKey.en]: "English",
   [LanguageKey.zh]: "简体中文",
   [LanguageKey.ja]: "日本語",
+  [LanguageKey.ko]: "한국어",
 };
 
 export const LanguageChanger = () => {

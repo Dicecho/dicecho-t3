@@ -1,4 +1,10 @@
-import type { languages } from "@/lib/i18n/settings"
+import * as languages from '@cospired/i18n-iso-languages';
+
+// Register locales for browser environment
+languages.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'));
+languages.registerLocale(require('@cospired/i18n-iso-languages/langs/zh.json'));
+languages.registerLocale(require('@cospired/i18n-iso-languages/langs/ja.json'));
+languages.registerLocale(require('@cospired/i18n-iso-languages/langs/ko.json'));
 
 export enum LanguageCodes {
   AF = 'af',
@@ -47,149 +53,41 @@ export enum LanguageCodes {
   VI = 'vi',
 }
 
-const LanguageCodesZHMAP = {
-  [LanguageCodes.AF]: '南非荷兰语',
-  [LanguageCodes.SQ]: '阿尔巴尼亚语',
-  [LanguageCodes.AR]: '阿拉伯语',
-  [LanguageCodes.EU]: '巴斯克语',
-  [LanguageCodes.BG]: '保加利亚语',
-  [LanguageCodes.CA]: '加泰罗尼亚语',
-  [LanguageCodes.ZHCN]: '简体中文',
-  [LanguageCodes.ZHTW]: '繁体中文',
-  [LanguageCodes.HR]: '克罗地亚语',
-  [LanguageCodes.CS]: '捷克语',
-  [LanguageCodes.DA]: '丹麦语',
-  [LanguageCodes.NL]: '荷兰语',
-  [LanguageCodes.EN]: '英语',
-  [LanguageCodes.ET]: '爱沙尼亚语',
-  [LanguageCodes.FI]: '芬兰语',
-  [LanguageCodes.FR]: '法语',
-  [LanguageCodes.DE]: '德语',
-  [LanguageCodes.EL]: '希腊语',
-  [LanguageCodes.HE]: '希伯来语',
-  [LanguageCodes.HI]: '北印度语',
-  [LanguageCodes.HU]: '匈牙利语',
-  [LanguageCodes.IS]: '冰岛语',
-  [LanguageCodes.IN]: '印度尼西亚语',
-  [LanguageCodes.IT]: '意大利语',
-  [LanguageCodes.JA]: '日语',
-  [LanguageCodes.KO]: '韩语',
-  [LanguageCodes.LV]: '拉脱维亚语',
-  [LanguageCodes.LT]: '立陶宛语',
-  [LanguageCodes.MK]: '马其顿语',
-  [LanguageCodes.MS]: '马来语',
-  [LanguageCodes.NO]: '挪威语',
-  [LanguageCodes.PL]: '波兰语',
-  [LanguageCodes.PT]: '葡萄牙语',
-  [LanguageCodes.RM]: '罗曼斯方言',
-  [LanguageCodes.RO]: '罗马尼亚语',
-  [LanguageCodes.RU]: '俄语',
-  [LanguageCodes.SR]: '塞尔维亚语',
-  [LanguageCodes.SL]: '斯洛伐克语',
-  [LanguageCodes.SK]: '斯洛文尼亚语',
-  [LanguageCodes.ES]: '西班牙语',
-  [LanguageCodes.SV]: '瑞典语',
-  [LanguageCodes.TR]: '泰语',
-  [LanguageCodes.TH]: '土耳其语',
-  [LanguageCodes.VI]: '越南语',
+function getLanguageName(code: string, locale: string): string {
+  const normalizedLocale = locale === 'zh' ? 'zh-CN' : locale;
+  
+  // Handle special cases
+  if (code === 'zh-CN') {
+    if (locale === 'zh') return '简体中文';
+    if (locale === 'ja') return '中国語簡体字';
+    if (locale === 'ko') return '중국어 간체';
+    return 'Chinese Simplified';
+  }
+  if (code === 'zh-TW') {
+    if (locale === 'zh') return '繁体中文';
+    if (locale === 'ja') return '中国語繁体字';
+    if (locale === 'ko') return '중국어 번체';
+    return 'Chinese Traditional';
+  }
+  
+  // Map 'in' to 'id' for Indonesian (ISO 639-1 uses 'id')
+  const normalizedCode = code === 'in' ? 'id' : code;
+  
+  const name = languages.getName(normalizedCode, normalizedLocale);
+  return name || code;
 }
 
-const LanguageCodesENMap = {
-  [LanguageCodes.AF]: 'Afrikaans',
-  [LanguageCodes.SQ]: 'Albanian',
-  [LanguageCodes.AR]: 'Arabic',
-  [LanguageCodes.EU]: 'Basque',
-  [LanguageCodes.BG]: 'Bulgarian',
-  [LanguageCodes.CA]: 'Catalan',
-  [LanguageCodes.ZHCN]: 'Chinese Simplified',
-  [LanguageCodes.ZHTW]: 'Chinese Traditional',
-  [LanguageCodes.HR]: 'Croatian',
-  [LanguageCodes.CS]: 'Czech',
-  [LanguageCodes.DA]: 'Danish',
-  [LanguageCodes.NL]: 'Dutch',
-  [LanguageCodes.EN]: 'English',
-  [LanguageCodes.ET]: 'Estonian',
-  [LanguageCodes.FI]: 'Finnish',
-  [LanguageCodes.FR]: 'French',
-  [LanguageCodes.DE]: 'German',
-  [LanguageCodes.EL]: 'Greek',
-  [LanguageCodes.HE]: 'Hebrew',
-  [LanguageCodes.HI]: 'Hindi',
-  [LanguageCodes.HU]: 'Hungarian',
-  [LanguageCodes.IS]: 'Icelandic',
-  [LanguageCodes.IN]: 'Indonesian',
-  [LanguageCodes.IT]: 'Italian',
-  [LanguageCodes.JA]: 'Japanese',
-  [LanguageCodes.KO]: 'Korean',
-  [LanguageCodes.LV]: 'Latvian',
-  [LanguageCodes.LT]: 'Lithuanian',
-  [LanguageCodes.MK]: 'Macedonian',
-  [LanguageCodes.MS]: 'Malay',
-  [LanguageCodes.NO]: 'Norwegian',
-  [LanguageCodes.PL]: 'Polish',
-  [LanguageCodes.PT]: 'Portuguese',
-  [LanguageCodes.RM]: 'Romansh',
-  [LanguageCodes.RO]: 'Romanian',
-  [LanguageCodes.RU]: 'Russian',
-  [LanguageCodes.SR]: 'Serbian',
-  [LanguageCodes.SL]: 'Slovak',
-  [LanguageCodes.SK]: 'Slovenian',
-  [LanguageCodes.ES]: 'Spanish',
-  [LanguageCodes.SV]: 'Swedish',
-  [LanguageCodes.TR]: 'Turkish',
-  [LanguageCodes.TH]: 'Thai',
-  [LanguageCodes.VI]: 'Vietnamese',
-}
-
-const LanguageCodesJAMap = {
-  [LanguageCodes.AF]: 'アフリカーンス語',
-  [LanguageCodes.SQ]: 'アルバニア語',
-  [LanguageCodes.AR]: 'アラビア語',
-  [LanguageCodes.EU]: 'バスク語',
-  [LanguageCodes.BG]: 'ブルガリア語',
-  [LanguageCodes.CA]: 'カタロニア語',
-  [LanguageCodes.ZHCN]: '中国語簡体字',
-  [LanguageCodes.ZHTW]: '中国語繁体字',
-  [LanguageCodes.HR]: 'クロアチア語',
-  [LanguageCodes.CS]: 'チェコ語',
-  [LanguageCodes.DA]: 'デンマーク語',
-  [LanguageCodes.NL]: 'オランダ語',
-  [LanguageCodes.EN]: '英語',
-  [LanguageCodes.ET]: 'エストニア語',
-  [LanguageCodes.FI]: 'フィンランド語',
-  [LanguageCodes.FR]: 'フランス語',
-  [LanguageCodes.DE]: 'ドイツ語',
-  [LanguageCodes.EL]: 'ギリシャ語',
-  [LanguageCodes.HE]: 'ヘブライ語',
-  [LanguageCodes.HI]: 'ヒンディー語',
-  [LanguageCodes.HU]: 'ハンガリー語',
-  [LanguageCodes.IS]: 'アイスランド語',
-  [LanguageCodes.IN]: 'インドネシア語',
-  [LanguageCodes.IT]: 'イタリア語',
-  [LanguageCodes.JA]: '日本語',
-  [LanguageCodes.KO]: '韓国語',
-  [LanguageCodes.LV]: 'ラトビア語',
-  [LanguageCodes.LT]: 'リトアニア語',
-  [LanguageCodes.MK]: 'マケドニア語',
-  [LanguageCodes.MS]: 'マレー語',
-  [LanguageCodes.NO]: 'ノルウェー語',
-  [LanguageCodes.PL]: 'ポーランド語',
-  [LanguageCodes.PT]: 'ポルトガル語',
-  [LanguageCodes.RM]: 'ロマンシュ語',
-  [LanguageCodes.RO]: 'ルーマニア語',
-  [LanguageCodes.RU]: 'ロシア語',
-  [LanguageCodes.SR]: 'セルビア語',
-  [LanguageCodes.SL]: 'スロバキア語',
-  [LanguageCodes.SK]: 'スロベニア語',
-  [LanguageCodes.ES]: 'スペイン語',
-  [LanguageCodes.SV]: 'スウェーデン語',
-  [LanguageCodes.TR]: 'トルコ語',
-  [LanguageCodes.TH]: 'タイ語',
-  [LanguageCodes.VI]: 'ベトナム語',
+function createLanguageMap(locale: string): Record<LanguageCodes, string> {
+  const map = {} as Record<LanguageCodes, string>;
+  for (const code of Object.values(LanguageCodes)) {
+    map[code as LanguageCodes] = getLanguageName(code, locale);
+  }
+  return map;
 }
 
 export const LanguageCodeMap: Record<string, Record<LanguageCodes, string>> = {
-  'zh': LanguageCodesZHMAP,
-  'en': LanguageCodesENMap,
-  'ja': LanguageCodesJAMap,
-}
+  'zh': createLanguageMap('zh'),
+  'en': createLanguageMap('en'),
+  'ja': createLanguageMap('ja'),
+  'ko': createLanguageMap('ko'),
+};
