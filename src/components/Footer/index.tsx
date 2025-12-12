@@ -7,10 +7,12 @@ import { House, BookText, MessagesSquare, Tv, User } from "lucide-react";
 import { LinkWithLng, isUrlMatched } from "@/components/Link";
 import { useTranslation } from "@/lib/i18n/react";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export type MobileProps = ComponentProps<"div">;
 
 export const MobileFooter = ({ className, ...props }: MobileProps) => {
+  const { data: session } = useSession();
   const { t } = useTranslation();
   const pathname = usePathname();
 
@@ -41,7 +43,7 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
     },
     {
       title: t("my"),
-      link: "/account",
+      link: session?.user ? `/account/${session?.user?._id}` : "/account",
       exact: false,
       icon: User,
     },

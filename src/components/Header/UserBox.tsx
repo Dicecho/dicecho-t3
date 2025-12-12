@@ -20,7 +20,7 @@ const UserBoxItem: React.FC<PropsWithChildren<ComponentProps<"div">>> = ({
   return (
     <div
       className={clsx(
-        "flex cursor-pointer items-center gap-4 rounded-md px-4 py-2 transition-all hover:bg-muted",
+        "hover:bg-muted flex cursor-pointer items-center gap-4 rounded-md px-4 py-2 transition-all",
         className,
       )}
       {...props}
@@ -59,7 +59,7 @@ export const UserBox: React.FC<UserBoxProps> = ({ user }) => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="border-b py-4 text-center text-muted-foreground">
+      <div className="text-muted-foreground border-b py-4 text-center">
         {user.nickName}
       </div>
 
@@ -72,7 +72,10 @@ export const UserBox: React.FC<UserBoxProps> = ({ user }) => {
         </LinkWithLng>
       ))}
 
-      <UserBoxItem className="hover:text-destructive" onClick={() => signOut()}>
+      <UserBoxItem
+        className="hover:text-destructive"
+        onClick={() => signOut({ redirect: false })}
+      >
         <LogOut size={16} />
         {t("sign_out")}
       </UserBoxItem>

@@ -4,12 +4,13 @@ import { PropsWithChildren, Suspense } from "react";
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
 import { HeaderSearch } from "@/components/Header/HeaderSearch";
+import { NotificationReminder } from "@/components/Header/notification-reminder";
 import { MobileFooter } from "@/components/Footer";
 
 export default function layout({ children }: PropsWithChildren) {
   return (
     <>
-      <MobileHeader left={<HeaderMenu />}>
+      <MobileHeader left={<HeaderMenu />} right={<NotificationReminder />}>
         <HeaderSearch />
       </MobileHeader>
 

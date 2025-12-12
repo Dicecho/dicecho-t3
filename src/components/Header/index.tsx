@@ -3,8 +3,6 @@ import { type ComponentProps } from "react";
 import Link from "next/link";
 import DicechoLogo from "./dicecho.svg";
 import { LanguageChanger } from "./LanguageChanger";
-import { UserBox } from "./UserBox";
-import { UserAvatar } from "@/components/User/Avatar";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 
 import {
@@ -14,17 +12,11 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { AuthDialog } from "@/components/Auth/AuthDialog";
 import { getServerAuthSession } from "@/server/auth";
 import { getTranslation } from "@/lib/i18n";
-import { Button } from "@/components/ui/button";
 import { ColorModeSwitcher } from "../color-mode-switcher";
 import { SearchInput } from "@/components/Search/SearchInput";
+import { HeaderAccount } from "./header-account";
 
 export type HeaderProps = ComponentProps<"div"> & {
   lng: string;
@@ -96,32 +88,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
             <LanguageChanger />
             <ColorModeSwitcher />
             <ThemeSwitcher />
-            {authSession ? (
-              <Popover>
-                <PopoverTrigger>
-                  <Link href={`/${lng}/account/${authSession.user._id}`}>
-                    <UserAvatar
-                      user={authSession.user}
-                      className="h-10 w-10 cursor-pointer rounded-full border"
-                    />
-                  </Link>
-                </PopoverTrigger>
-                <PopoverContent align="end">
-                  <UserBox
-                    user={{
-                      id: authSession.user._id,
-                      nickName: authSession.user.nickName,
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <AuthDialog>
-                <Button className="capitalize" size="sm" color="primary">
-                  {t("sign_in")}
-                </Button>
-              </AuthDialog>
-            )}
+            <HeaderAccount />
           </div>
         </div>
       </div>

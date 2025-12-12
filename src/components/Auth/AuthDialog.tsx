@@ -15,30 +15,29 @@ import type { FC } from "react";
 import { Button } from "../ui/button";
 import { useTranslation } from "@/lib/i18n/react";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 
 export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
   const { t } = useTranslation();
 
-  const handleSignIn = async (data: { email: string; password: string }) => {
-    const result = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    });
-
-    if (result?.error) {
-      toast.error(t("sign_in_failed"), {
-        description: result.error,
+  const { mutate: signInMutation, isPending } = useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      return signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
       });
-    } else if (result?.ok) {
-      // 登录成功，关闭对话框
-      if (props.onOpenChange) {
-        props.onOpenChange(false);
-      }
-      // 刷新页面以更新 session
-      window.location.reload();
-    }
-  };
+    },
+    onSuccess: () => {
+      toast.success(t("sign_in_success"));
+    },
+    onError: (error) => {
+      toast.error(t("sign_in_failed"), {
+        description: error.message,
+      });
+    },
+  });
 
   return (
     <Dialog {...props}>
@@ -49,12 +48,24 @@ export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
 
           <Tabs defaultValue="signin">
             <TabsList>
-              <TabsTrigger value="signin" className="capitalize">{t("sign_in")}</TabsTrigger>
-              <TabsTrigger value="signup" className="capitalize">{t("sign_up")}</TabsTrigger>
+              <TabsTrigger value="signin" className="capitalize">
+                {t("sign_in")}
+              </TabsTrigger>
+              <TabsTrigger value="signup" className="capitalize">
+                {t("sign_up")}
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="signin">
-              <SigninForm onSubmit={handleSignIn}>
-                <Button className="w-full" type="submit" color="primary">
+              <SigninForm onSubmit={signInMutation}>
+                <Button
+                  disabled={isPending}
+                  className="w-full"
+                  type="submit"
+                  color="primary"
+                >
+                  {isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : null}
                   {t("sign_in")}
                 </Button>
               </SigninForm>

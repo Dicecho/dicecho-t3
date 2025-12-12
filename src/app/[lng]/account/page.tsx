@@ -2,6 +2,7 @@ import { getServerAuthSession } from "@/server/auth";
 import { MobileFooter } from "@/components/Footer";
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
+import { NotificationReminder } from "@/components/Header/notification-reminder";
 import { redirect } from "next/navigation";
 import { SignIn } from "./SignIn";
 
@@ -23,7 +24,7 @@ export default async function AccountPage(
 
   return (
     <>
-      <MobileHeader left={<HeaderMenu />}>
+      <MobileHeader left={<HeaderMenu />} right={<NotificationReminder />}>
       </MobileHeader>
       <main className="flex min-h-screen items-center justify-center w-full">
         <SignIn />

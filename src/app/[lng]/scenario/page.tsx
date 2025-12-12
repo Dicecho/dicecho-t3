@@ -15,6 +15,7 @@ import { ScenarioSearchParamsFilter } from "@/components/Scenario/search-params-
 import { RandomButton } from "@/components/Scenario/random-button";
 import qs from "qs";
 import Link from "next/link";
+import { NotificationReminder } from "@/components/Header/notification-reminder";
 
 export const dynamic = "auto";
 export const dynamicParams = true;
@@ -34,7 +35,7 @@ const ScenarioPage = async ({
 
   return (
     <>
-      <MobileHeader left={<HeaderMenu />}>
+      <MobileHeader left={<HeaderMenu />} right={<NotificationReminder />}>
         <HeaderSearch />
       </MobileHeader>
 

@@ -58,11 +58,13 @@ export const HeaderMenuDrawer: FC<PropsWithChildren> = ({ children }) => {
           <DrawerHeader className="mb-4 flex gap-4 border-b border-solid p-0 pb-4">
             {isAuthenticated ? (
               <UserAvatar
-                user={account}
+                user={{
+                  avatarUrl: account.avatarUrl,
+                }}
                 className="h-10 w-10"
               />
             ) : (
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
+              <div className="bg-secondary flex h-10 w-10 items-center justify-center rounded-full">
                 <UserPlus size={16} className="text-secondary-foreground" />
               </div>
             )}
@@ -70,7 +72,7 @@ export const HeaderMenuDrawer: FC<PropsWithChildren> = ({ children }) => {
               <DrawerTitle className="text-base font-normal">
                 {isAuthenticated ? account.nickName : t("not_sign_in")}
               </DrawerTitle>
-              <DrawerDescription className="flex items-center text-sm text-muted-foreground">
+              <DrawerDescription className="text-muted-foreground flex items-center text-sm">
                 {t("profile_and_account")} <ChevronRight size={16} />
               </DrawerDescription>
             </div>
@@ -89,7 +91,7 @@ export const HeaderMenuDrawer: FC<PropsWithChildren> = ({ children }) => {
 
           {isAuthenticated && (
             <div
-              className="flex items-center gap-2 p-2 text-destructive"
+              className="text-destructive flex items-center gap-2 p-2"
               onClick={() => signOut()}
             >
               <LogOut size={16} />

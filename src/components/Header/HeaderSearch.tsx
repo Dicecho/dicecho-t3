@@ -6,13 +6,13 @@ import { Suspense } from "react";
 
 export const HeaderSearch: FC<ComponentProps<typeof SearchInput>> = (props) => {
   return (
-    <Suspense fallback={<Skeleton className="w-[75vw] text-sm h-8 rounded-full" />}>
+    <Suspense
+      fallback={<Skeleton className="h-8 w-[75vw] rounded-full text-sm" />}
+    >
       <SearchInput
+        className="w-[calc(100vw-var(--spacing)*32)]"
         {...props}
-        inputClassName={cn(
-          "w-[75vw] text-sm h-8 rounded-full",
-          props.className,
-        )}
+        inputClassName={cn("text-sm h-8 rounded-full", props.className)}
       />
     </Suspense>
   );

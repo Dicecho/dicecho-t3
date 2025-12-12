@@ -34,6 +34,11 @@ import type {
 import type { CommentQuery, CommentRepliesQuery, ParentCommentDto, ReplyDto } from "@/types/comment";
 import type { ITag, TagQuery } from "@/types/tag";
 import type { ITopicDto, TopicListQuery } from "@/types/topic";
+import type {
+  INotificationDto,
+  NotificationListQuery,
+  NotificationPaginatedResponse,
+} from "@/types/notification";
 
 export function isBackendError(
   err: unknown,
@@ -555,6 +560,21 @@ export class DicechoApi extends APIClient {
         `/api/log/${targetName}/${targetId}/?${qs.stringify(query)}`,
         "GET",
       ),
+  };
+
+  notification = {
+    list: (params: Partial<NotificationListQuery> = {}) =>
+      this.request<Empty, NotificationPaginatedResponse<INotificationDto>>(
+        `/api/notification?${qs.stringify(params)}`,
+        "GET",
+      ),
+    markRead: (uuid: string) =>
+      this.request<Empty, INotificationDto>(
+        `/api/notification/${uuid}/mark`,
+        "POST",
+      ),
+    markAllRead: () =>
+      this.request<Empty, Empty>(`/api/notification/markAll`, "POST"),
   };
 }
 

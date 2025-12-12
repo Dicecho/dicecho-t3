@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ModSortKey } from "@dicecho/types";
 import type { BannerDto } from "@/utils/api";
+import { NotificationReminder } from "@/components/Header/notification-reminder";
 
 const DEFAULT_BANNER: BannerDto = {
   priority: 0,
@@ -69,11 +70,11 @@ export default async function Home(props: {
 
   return (
     <>
-      <MobileHeader left={<HeaderMenu />}>
+      <MobileHeader left={<HeaderMenu />} right={<NotificationReminder />}>
         <HeaderSearch />
       </MobileHeader>
 
-      <main className="container py-6">
+      <main className="container pt-6 pb-24">
         {/* Desktop Layout */}
         <div className="hidden md:grid md:grid-cols-12 md:gap-6">
           {/* Main Content - Left Side (2/3) */}
