@@ -1,7 +1,6 @@
 "use client";
 import React, { useCallback } from "react";
 import { TagFilterMode, type ModFilterConfig } from "@dicecho/types";
-import { type LanguageCodes, LanguageCodeMap } from "@/utils/language";
 import { XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -164,7 +163,7 @@ export function ScenarioFilter({
           <SelectContent>
             {config?.languages.map((language) => (
               <SelectItem key={language._id} value={language._id}>
-                {LanguageCodeMap[i18n.language]![language._id as LanguageCodes]}
+                {t(`language_codes.${language._id}`)}
                 ({language.count})
               </SelectItem>
             ))}

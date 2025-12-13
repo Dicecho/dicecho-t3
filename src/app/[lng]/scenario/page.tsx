@@ -39,10 +39,10 @@ const ScenarioPage = async ({
         <HeaderSearch />
       </MobileHeader>
 
-      <div className="container pt-4">
+      <div className="container md:pt-4 mb-24">
         <div className="grid grid-cols-6 gap-8">
           <div className="col-span-6 md:col-span-4">
-            <ScenarioSearchInput className="mb-2" />
+            <ScenarioSearchInput className="max-md:hidden" />
 
             <Suspense
               key={queryKey}

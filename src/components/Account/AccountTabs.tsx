@@ -77,7 +77,7 @@ export const AccountTabs = ({ user, lng, userId }: AccountTabsProps) => {
   ].filter((tab) => isSelf || tab.value !== "setting");
 
   return (
-    <div className="sticky top-14 md:top-16 z-10 border-b border-border/60 bg-background/95 px-4 backdrop-blur supports-backdrop-filter:bg-background/70">
+    <div className="sticky top-0 md:top-16 z-10 border-b border-border/60 bg-background/95 px-4 backdrop-blur supports-backdrop-filter:bg-background/70">
       <div className="container">
         <Tabs value={getActiveTab()} onValueChange={handleTabChange}>
           <TabsList className="flex h-12 w-full justify-start gap-2 overflow-x-auto rounded-none border-0 bg-transparent p-0">
@@ -85,7 +85,7 @@ export const AccountTabs = ({ user, lng, userId }: AccountTabsProps) => {
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="rounded-none border-b-2 border-transparent px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                className="rounded-none h-full border-b-2 border-transparent px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 {tab.label}
               </TabsTrigger>

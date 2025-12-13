@@ -14,21 +14,22 @@ export default async function AccountDetailPage(
   const { lng, id } = params;
 
   const api = await getDicechoServerApi();
+  const user = await api.user.profile(id).catch(() => {
+    return null;
+  });
 
-  try {
-    const user = await api.user.profile(id);
-
-    return (
-      <>
-        <AccountHeader user={user} lng={lng} />
-        <AccountTabs user={user} lng={lng} userId={id} />
-        <div className="container py-4">
-          <AccountHome user={user} />
-        </div>
-        <MobileFooter />
-      </>
-    );
-  } catch (error) {
-    notFound();
+  if (!user) {
+    return notFound();
   }
+
+  return (
+    <>
+      <AccountHeader user={user} lng={lng} />
+      <AccountTabs user={user} lng={lng} userId={id} />
+      <div className="container py-4 pb-24">
+        <AccountHome user={user} />
+      </div>
+      <MobileFooter />
+    </>
+  );
 }

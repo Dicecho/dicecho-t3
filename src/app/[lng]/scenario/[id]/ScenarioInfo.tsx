@@ -3,10 +3,8 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import { Trans } from "react-i18next";
 import { useTranslation } from "@/lib/i18n/react";
-import { LanguageCodeMap } from "@/utils/language";
 import { UserAvatar } from "@/components/User/Avatar";
 
-import type { LanguageCodes } from "@/utils/language";
 import type { ComponentProps, FC, PropsWithChildren } from "react";
 import type { IModDto } from "@dicecho/types";
 
@@ -74,7 +72,7 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
           <div className="flex items-center gap-2">
             {scenario.languages.map((language) => (
               <span key={language}>
-                {LanguageCodeMap[i18n.language]![language as LanguageCodes]}
+                {t(`language_codes.${language}`)}
               </span>
             ))}
           </div>

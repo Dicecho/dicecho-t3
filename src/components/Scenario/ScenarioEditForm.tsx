@@ -24,14 +24,10 @@ import {
 import CoverUpload from "@/components/ui/cover-upload";
 import { useTranslation } from "@/lib/i18n/react";
 import type { IModDto, ModFilterConfig } from "@dicecho/types";
-import { Card } from "@/components/ui/card";
 import TableUpload from "@/components/file-upload/table-upload";
 import type { FileMetadata } from "@/hooks/use-file-upload";
-import MultipleSelector, {
-  type Option,
-} from "@/components/ui/multiple-selector";
+import MultipleSelector from "@/components/ui/multiple-selector";
 import { useDicecho } from "@/hooks/useDicecho";
-import { LanguageCodeMap, LanguageCodes } from "@/utils/language";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const relatedLinkSchema = z.object({
@@ -203,11 +199,11 @@ export function ScenarioEditForm({
                 options={(config?.languages ?? []).map((lang) => ({
                   value: lang._id,
                   label:
-                    LanguageCodeMap[i18n.language]![lang._id as LanguageCodes],
+                    t(`language_codes.${lang._id}`),
                 }))}
                 value={(field.value ?? []).map((v) => ({
                   value: v,
-                  label: LanguageCodeMap[i18n.language]![v as LanguageCodes],
+                  label: t(`language_codes.${v}`),
                 }))}
                 onChange={(opts) => field.onChange(opts.map((o) => o.value))}
                 placeholder={t("select_languages")}
