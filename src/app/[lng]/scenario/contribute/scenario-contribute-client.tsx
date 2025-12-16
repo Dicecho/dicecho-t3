@@ -3,10 +3,20 @@
 import { ScenarioContributeForm } from "@/components/Scenario/ScenarioContributeForm";
 import type { ModFilterConfig } from "@dicecho/types";
 import { Card } from "@/components/ui/card";
+import {
+  Alert,
+  AlertContent,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from "@/components/ui/alert";
 import { useTranslation } from "@/lib/i18n/react";
+import { Trans } from "react-i18next";
 import { useDicecho } from "@/hooks/useDicecho";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Users } from "lucide-react";
 
 interface Props {
   lng: string;
@@ -20,6 +30,27 @@ export function ScenarioContributePageClient({ lng, config }: Props) {
 
   return (
     <div className="container mt-16 pb-12">
+      <Alert variant="warning" appearance="outline" className="mb-4">
+        <AlertIcon>
+          <Users />
+        </AlertIcon>
+        <AlertContent>
+          <AlertTitle>{t("scenario_contribute_alert_title")}</AlertTitle>
+          <AlertDescription>
+            <Trans
+              i18nKey="scenario_contribute_alert_desc"
+              t={t}
+              components={[
+                <Link
+                  key="link"
+                  href={`/${lng}/scenario/publish`}
+                  className="underline font-medium text-primary cursor-pointer"
+                />,
+              ]}
+            />
+          </AlertDescription>
+        </AlertContent>
+      </Alert>
       <Card className="p-6">
         <ScenarioContributeForm
           config={config}

@@ -24,6 +24,7 @@ export interface FilterValue {
   tags?: string[];
   tagsMode?: TagFilterMode;
   players?: number[];
+  isForeign?: boolean;
 }
 
 export interface ScenarioFilterProps {
@@ -47,6 +48,7 @@ export function ScenarioFilter({
       tags: undefined,
       tagsMode: undefined,
       players: undefined,
+      isForeign: undefined,
     });
   };
 
@@ -124,6 +126,35 @@ export function ScenarioFilter({
 
   return (
     <div className="space-y-4">
+      <div className="space-y-2">
+        <ButtonGroup orientation="horizontal" className="w-full">
+          <Button
+            type="button"
+            variant={value.isForeign === undefined ? "default" : "outline"}
+            onClick={() => onChange({ ...value, isForeign: undefined })}
+            className="flex-1"
+          >
+            {t("filter_all")}
+          </Button>
+          <Button
+            type="button"
+            variant={value.isForeign === false ? "default" : "outline"}
+            onClick={() => onChange({ ...value, isForeign: false })}
+            className="flex-1"
+          >
+            {t("filter_submissions")}
+          </Button>
+          <Button
+            type="button"
+            variant={value.isForeign === true ? "default" : "outline"}
+            onClick={() => onChange({ ...value, isForeign: true })}
+            className="flex-1"
+          >
+            {t("filter_entries")}
+          </Button>
+        </ButtonGroup>
+      </div>
+
       <ButtonGroup orientation="horizontal" className="w-full min-w-0">
         <Select
           key={value.rule || "empty"}

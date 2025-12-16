@@ -32,21 +32,21 @@ export function queryToFormData(query: Partial<IModListQuery>): FilterValue {
       minPlayer: query.minPlayer,
       maxPlayer: query.maxPlayer,
     }),
+    isForeign: query.filter?.isForeign,
   };
 }
 
 export function formDataToQuery(data: FilterValue): Partial<IModListQuery> {
   const query: Partial<IModListQuery> = {};
 
-  // Always set filter, even if empty (to explicitly remove it from URL)
-  if (data.rule) {
-    Object.assign(query, {
-      filter: {
-        moduleRule: data.rule,
-      },
-    });
+  // Build filter object with both moduleRule and isForeign
+  const filter: { moduleRule?: string; isForeign?: boolean } = {};
+  if (data.rule) filter.moduleRule = data.rule;
+  if (data.isForeign !== undefined) filter.isForeign = data.isForeign;
+
+  if (Object.keys(filter).length > 0) {
+    Object.assign(query, { filter });
   } else {
-    // Explicitly set to undefined to remove from URL
     Object.assign(query, { filter: undefined });
   }
 
@@ -91,10 +91,13 @@ export function getScenarioFilterQuery(
     decoder(value, defaultDecoder) {
       // First decode the URL-encoded value
       const decoded = defaultDecoder(value);
-      // Then convert numeric strings to numbers
+      // Convert numeric strings to numbers
       if (/^-?\d+$/.test(decoded)) {
         return parseInt(decoded, 10);
       }
+      // Convert boolean strings to booleans
+      if (decoded === "true") return true;
+      if (decoded === "false") return false;
       return decoded;
     },
   });
