@@ -84,11 +84,6 @@ export function formDataToQuery(data: FilterValue): Partial<IModListQuery> {
   return query;
 }
 
-const DEFAULT_QUERY: Partial<IModListQuery> = {
-  sort: { lastRateAt: -1 },
-  pageSize: 12,
-};
-
 export function getScenarioFilterQuery(
   searchParams: string,
 ): Partial<IModListQuery> {
@@ -105,7 +100,6 @@ export function getScenarioFilterQuery(
   });
 
   return {
-    ...DEFAULT_QUERY,
     ...parsedParams,
   };
 }

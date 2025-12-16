@@ -8,6 +8,13 @@ import type {
   UserRef,
 } from "@/server/db/schemas/scenario.types";
 
+export const BooleanStringZod = z.union([
+  z.literal('true').transform(() => true),
+  z.literal('false').transform(() => false),
+  z.boolean(),
+]);
+
+
 const DEFAULT_COVER_URL =
   "https://file.dicecho.com/images/95AB141E8F2D6985E038CB3D97DB2BBF.png";
 
@@ -75,7 +82,7 @@ export const scenarioRouter = createTRPCRouter({
               })
               .optional(),
             author: z.string().optional(),
-            isForeign: z.boolean().optional(),
+            isForeign: BooleanStringZod.optional(),
           })
           .optional(),
       }),
@@ -111,7 +118,7 @@ export const scenarioRouter = createTRPCRouter({
       if (filter?.origin) match.origin = filter.origin;
       if (filter?.rateCount) match.rateCount = filter.rateCount;
       if (filter?.author) match.author = filter.author;
-      if (filter?.isForeign) match.isForeign = filter.isForeign;
+      if (filter?.isForeign !== undefined) match.isForeign = filter.isForeign;
       if (
         sort &&
         Object.keys(sort).findIndex((key) => key === "rateAvg") !== -1

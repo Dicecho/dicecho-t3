@@ -39,14 +39,14 @@ const ScenarioPage = async ({
         <HeaderSearch />
       </MobileHeader>
 
-      <div className="container md:pt-4 mb-24">
+      <div className="container md:pt-4 pb-24">
         <div className="grid grid-cols-6 gap-8">
           <div className="col-span-6 md:col-span-4">
             <ScenarioSearchInput className="max-md:hidden" />
 
             <Suspense
               key={queryKey}
-              fallback={<ScenarioListSkeleton count={query.pageSize ?? 12} />}
+              fallback={<ScenarioListSkeleton query={query} count={query.pageSize ?? 12} />}
             >
               <ScenarioListServer query={query} />
             </Suspense>

@@ -22,7 +22,7 @@ export const CollectionCard: FC<CollectionCardProps> = ({
             backgroundImage: `url(${collection.coverUrl})`,
           }}
         />
-        <div className="text-sm line-clamp-1">{collection.name}</div>
+        <div className="text-sm line-clamp-2">{collection.name}</div>
       </div>
     </LinkWithLng>
   );

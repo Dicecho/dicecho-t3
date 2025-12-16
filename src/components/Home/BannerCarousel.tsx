@@ -38,7 +38,7 @@ const Banner: FC<BannerProps> = ({ banner }) => {
     <div
       onClick={handleClick}
       className={cn(
-        "relative aspect-[21/9] w-full bg-cover bg-center rounded-lg overflow-hidden",
+        "relative aspect-[21/9] w-full bg-cover bg-center overflow-hidden",
         banner.action === "" ? "cursor-default" : "cursor-pointer"
       )}
       style={{

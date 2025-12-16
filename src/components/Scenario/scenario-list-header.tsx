@@ -8,8 +8,9 @@ import { FilterIcon, Loader2 } from "lucide-react";
 import { ScenarioSort } from "./scenario-sort";
 import { ScenarioFilterDrawer } from "./scenario-filter-drawer";
 import { Button } from "@/components/ui/button";
-import { useScenarioFilterParams } from "./use-scenario-filter-params";
+import { getScenarioFilterQuery } from "@/components/Scenario/utils";
 import { cn } from "@/lib/utils";
+import qs from "qs";
 
 interface ScenarioListProps extends ComponentProps<"div"> {
   totalCount?: number;
@@ -24,8 +25,8 @@ export const ScenarioListHeader: FC<ScenarioListProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const filterQuery = useScenarioFilterParams();
-  const isFilterApplied = Object.keys(filterQuery).length > 2;
+  const filterQuery = getScenarioFilterQuery(qs.stringify(query));
+  const isFilterApplied = Object.keys(filterQuery).filter(key => key !== "sort").length > 0;
 
   return (
     <div

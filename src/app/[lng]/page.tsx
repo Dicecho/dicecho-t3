@@ -8,7 +8,9 @@ import { HeaderSearch } from "@/components/Header/HeaderSearch";
 import { getTranslation } from "@/lib/i18n";
 import { BannerCarousel } from "@/components/Home/BannerCarousel";
 import { ScenarioCardGrid } from "@/components/Home/ScenarioCardGrid";
+import { ScenarioCardCarousel } from "@/components/Home/ScenarioCardCarousel";
 import { CollectionCard } from "@/components/Home/CollectionCard";
+import { CollectionCardCarousel } from "@/components/Home/CollectionCardCarousel";
 import { HomepageProfile } from "@/components/Home/HomepageProfile";
 import { HomepageActions } from "@/components/Home/HomepageActions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { ModSortKey } from "@dicecho/types";
 import type { BannerDto } from "@/utils/api";
 import { NotificationReminder } from "@/components/Header/notification-reminder";
+import qs from "qs";
 
 const DEFAULT_BANNER: BannerDto = {
   priority: 0,
@@ -74,13 +77,13 @@ export default async function Home(props: {
         <HeaderSearch />
       </MobileHeader>
 
-      <main className="container pt-6 pb-24">
+      <main className="container md:pt-6 pb-24">
         {/* Desktop Layout */}
         <div className="hidden md:grid md:grid-cols-12 md:gap-6">
           {/* Main Content - Left Side (2/3) */}
           <div className="md:col-span-8">
             {/* Banner */}
-            <BannerCarousel banners={banners} className="mb-6" />
+            <BannerCarousel banners={banners} className="mb-6 rounded-lg overflow-hidden" />
 
             {/* Recommended Collections */}
             <Card className="mb-6">
@@ -170,60 +173,53 @@ export default async function Home(props: {
         </div>
 
         {/* Mobile Layout */}
-        <div className="md:hidden space-y-4">
+        <div className="md:hidden space-y-4 -mx-4">
           {/* Banner */}
           <BannerCarousel banners={banners} />
 
           {/* Recommended Collections */}
           <div>
-            <h2 className="text-xl font-semibold mb-3">{t("home_recommended_collections")}</h2>
-            <div className="grid grid-cols-2 gap-10">
-              {collections.slice(0, 4).map((collection) => (
-                <CollectionCard
-                  key={collection._id}
-                  collection={collection}
-                />
-              ))}
-            </div>
+            <h2 className=" mb-3 px-4">{t("home_recommended_collections")}</h2>
+            <CollectionCardCarousel collections={collections} />
           </div>
 
           {/* Recent Submissions */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xl font-semibold">{t("home_recent_submissions")}</h2>
-              <Link href={`/${lng}/scenario?filter[isForeign]=false&sort[createdAt]=-1`}>
+            <div className="flex items-center justify-between mb-3 px-4">
+              <h2 className="">{t("home_recent_submissions")}</h2>
+              <Link href={`/${lng}/scenario?${qs.stringify({ filter: { isForeign: false }, sort: { createdAt: -1 } })}`}>
                 <Button variant="link" size="sm" className="px-0">
                   {t("home_view_more")}
                 </Button>
               </Link>
             </div>
-            <ScenarioCardGrid scenarios={recentMods.slice(0, 6)} lng={lng} />
+            <ScenarioCardCarousel scenarios={recentMods} lng={lng} />
           </div>
 
           {/* Hot Scenarios */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xl font-semibold">{t("home_hot_scenarios")}</h2>
+            <div className="flex items-center justify-between mb-3 px-4">
+              <h2 className="">{t("home_hot_scenarios")}</h2>
               <Link href={`/${lng}/scenario`}>
                 <Button variant="link" size="sm" className="px-0">
                   {t("home_view_more")}
                 </Button>
               </Link>
             </div>
-            <ScenarioCardGrid scenarios={hotMods.slice(0, 6)} lng={lng} />
+            <ScenarioCardCarousel scenarios={hotMods} lng={lng} />
           </div>
 
           {/* Foreign Mods */}
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xl font-semibold">{t("home_new_entries")}</h2>
-              <Link href={`/${lng}/scenario?filter[isForeign]=true&sort[createdAt]=-1`}>
+            <div className="flex items-center justify-between mb-3 px-4">
+              <h2 className="">{t("home_new_entries")}</h2>
+              <Link href={`/${lng}/scenario?${qs.stringify({ filter: { isForeign: true }, sort: { createdAt: -1 } })}`}>
                 <Button variant="link" size="sm" className="px-0">
                   {t("home_view_more")}
                 </Button>
               </Link>
             </div>
-            <ScenarioCardGrid scenarios={foreignMods.slice(0, 6)} lng={lng} />
+            <ScenarioCardCarousel scenarios={foreignMods} lng={lng} />
           </div>
         </div>
       </main>

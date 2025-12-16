@@ -1,22 +1,20 @@
 import { ScenarioCardSkeleton } from "@/components/Scenario/ScenarioCardSkeleton";
-import { Separator } from "@/components/ui/separator";
-import { ScenarioSort } from "./scenario-sort";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "../ui/button";
-import { FilterIcon } from "lucide-react";
 import { ScenarioListHeader } from "@/components/Scenario/scenario-list-header";
+import { IModListQuery } from "@dicecho/types";
 
 interface ScenarioListSkeletonProps {
   count?: number;
+  query?: Partial<IModListQuery>;
 }
 
 export async function ScenarioListSkeleton({
+  query,
   count = 12,
 }: ScenarioListSkeletonProps) {
   return (
     <>
-      <ScenarioListHeader />
-      <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4">
+      <ScenarioListHeader query={query} />
+      <div className="grid grid-cols-3 gap-8 md:grid-cols-4 lg:grid-cols-5">
         {new Array(count).fill(0).map((_, index) => (
           <ScenarioCardSkeleton key={index} />
         ))}

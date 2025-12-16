@@ -8,6 +8,7 @@ interface ScenarioListServerProps {
 }
 
 export async function ScenarioListServer({ query }: ScenarioListServerProps) {
+  console.log('query', query);
 	const initialData = await api.scenario.list(query);
 
   return (
