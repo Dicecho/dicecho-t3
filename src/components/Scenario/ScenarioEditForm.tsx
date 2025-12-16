@@ -29,6 +29,7 @@ import type { FileMetadata } from "@/hooks/use-file-upload";
 import MultipleSelector from "@/components/ui/multiple-selector";
 import { useDicecho } from "@/hooks/useDicecho";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useScenarioConfig } from "@/hooks/use-scenario-config";
 
 const relatedLinkSchema = z.object({
   name: z.string().min(1, "必填"),
@@ -63,19 +64,19 @@ export type ScenarioEditFormValues = z.infer<typeof baseSchema>;
 
 interface ScenarioEditFormProps {
   scenario?: IModDto;
-  config?: ModFilterConfig;
   onSubmit: (values: ScenarioEditFormValues) => Promise<void> | void;
   submitText?: string;
 }
 
 export function ScenarioEditForm({
   scenario,
-  config,
   onSubmit,
   submitText,
 }: ScenarioEditFormProps) {
   const { t, i18n } = useTranslation();
   const { api } = useDicecho();
+
+  const { data: config } = useScenarioConfig();
 
   const form = useForm<ScenarioEditFormValues>({
     resolver: zodResolver(baseSchema),

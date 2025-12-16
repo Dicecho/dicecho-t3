@@ -14,10 +14,9 @@ import { Upload } from "lucide-react";
 
 interface Props {
   lng: string;
-  config: ModFilterConfig;
 }
 
-export function ScenarioPublishPageClient({ lng, config }: Props) {
+export function ScenarioPublishPageClient({ lng }: Props) {
   const { t } = useTranslation(lng);
   const { api } = useDicecho();
   const router = useRouter();
@@ -43,8 +42,7 @@ export function ScenarioPublishPageClient({ lng, config }: Props) {
       </Alert>
       <Card className="p-6">
         <ScenarioEditForm
-          config={config}
-          submitText={t("scenario_upload")}
+          submitText={t("publish_scenario")}
           onSubmit={async (values) => {
             const created = await api.module.publish({
               ...values,

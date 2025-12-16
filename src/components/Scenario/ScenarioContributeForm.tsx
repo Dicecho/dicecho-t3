@@ -35,6 +35,7 @@ import dayjs from "dayjs";
 import MultipleSelector from "@/components/ui/multiple-selector";
 import { useDicecho } from "@/hooks/useDicecho";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useScenarioConfig } from "@/hooks/use-scenario-config";
 
 const relatedLinkSchema = z.object({
   name: z.string().min(1, "必填"),
@@ -62,19 +63,19 @@ export type ScenarioContributeFormValues = z.infer<typeof contributeSchema>;
 
 interface ScenarioContributeFormProps {
   scenario?: IModDto;
-  config?: ModFilterConfig;
   onSubmit: (values: ScenarioContributeFormValues) => Promise<void> | void;
   submitText?: string;
 }
 
 export function ScenarioContributeForm({
   scenario,
-  config,
   onSubmit,
   submitText,
 }: ScenarioContributeFormProps) {
   const { t } = useTranslation();
   const { api } = useDicecho();
+
+  const { data: config } = useScenarioConfig();
 
   const form = useForm<ScenarioContributeFormValues>({
     resolver: zodResolver(contributeSchema),

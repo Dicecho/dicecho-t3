@@ -61,7 +61,7 @@ const ScenarioPage = async ({
             <Link href={`/${lng}/scenario/contribute`}>
               <Button className="w-full capitalize">
                 <Plus size={16} />
-                {t("commit_scenario_page")}
+                {t("contribute_community_scenario")}
               </Button>
             </Link>
 

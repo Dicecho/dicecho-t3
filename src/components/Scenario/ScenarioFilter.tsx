@@ -16,7 +16,7 @@ import MultipleSelector, {
   type Option,
 } from "@/components/ui/multiple-selector";
 import { useDicecho } from "@/hooks/useDicecho";
-import { Slider } from "@/components/ui/slider";
+import { DebouncedSlider } from "@/components/ui/slider";
 
 export interface FilterValue {
   rule?: string;
@@ -100,10 +100,8 @@ export function ScenarioFilter({
     if (min === undefined || max === undefined) return;
 
     if (min === 1 && max === 10) {
-      // Full range [1,10] = no filter
       onChange({ ...value, players: undefined });
     } else {
-      // Generate array from min to max
       const players = Array.from({ length: max - min + 1 }, (_, i) => min + i);
       onChange({ ...value, players });
     }
@@ -142,7 +140,7 @@ export function ScenarioFilter({
             onClick={() => onChange({ ...value, isForeign: false })}
             className="flex-1"
           >
-            {t("filter_submissions")}
+            {t("filter_published_scenario")}
           </Button>
           <Button
             type="button"
@@ -150,7 +148,7 @@ export function ScenarioFilter({
             onClick={() => onChange({ ...value, isForeign: true })}
             className="flex-1"
           >
-            {t("filter_entries")}
+            {t("filter_community_scenario")}
           </Button>
         </ButtonGroup>
       </div>
@@ -274,7 +272,7 @@ export function ScenarioFilter({
             )}
           </div>
         </div>
-        <Slider
+        <DebouncedSlider
           value={playerRange}
           onValueChange={handlePlayerRangeChange}
           min={1}

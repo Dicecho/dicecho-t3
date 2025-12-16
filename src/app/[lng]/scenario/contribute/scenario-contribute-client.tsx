@@ -20,10 +20,9 @@ import { Users } from "lucide-react";
 
 interface Props {
   lng: string;
-  config: ModFilterConfig;
 }
 
-export function ScenarioContributePageClient({ lng, config }: Props) {
+export function ScenarioContributePageClient({ lng }: Props) {
   const { t } = useTranslation(lng);
   const { api } = useDicecho();
   const router = useRouter();
@@ -53,8 +52,7 @@ export function ScenarioContributePageClient({ lng, config }: Props) {
       </Alert>
       <Card className="p-6">
         <ScenarioContributeForm
-          config={config}
-          submitText={t("scenario_upload")}
+          submitText={t("contribute_community_scenario")}
           onSubmit={async (values) => {
             const created = await api.module.contribute({
               ...values,

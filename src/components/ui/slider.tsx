@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import * as SliderPrimitive from "@radix-ui/react-slider"
+import debounce from "lodash/debounce"
 
 import { cn } from "@/lib/utils"
 
@@ -35,4 +36,40 @@ const Slider = React.forwardRef<
 })
 Slider.displayName = SliderPrimitive.Root.displayName
 
-export { Slider }
+interface DebouncedSliderProps
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>,
+    "value" | "onValueChange"
+  > {
+  value: number[]
+  onValueChange: (value: number[]) => void
+  debounceMs?: number
+}
+
+function DebouncedSlider({
+  value,
+  onValueChange,
+  debounceMs = 300,
+  ...props
+}: DebouncedSliderProps) {
+  const [internalValue, setInternalValue] = React.useState(value)
+
+  const debouncedOnChange = React.useMemo(
+    () => debounce(onValueChange, debounceMs),
+    [onValueChange, debounceMs],
+  )
+
+  // Sync internal state when external value changes
+  React.useEffect(() => {
+    setInternalValue(value)
+  }, [value])
+
+  const handleValueChange = (newValue: number[]) => {
+    setInternalValue(newValue)
+    debouncedOnChange(newValue)
+  }
+
+  return <Slider {...props} value={internalValue} onValueChange={handleValueChange} />
+}
+
+export { Slider, DebouncedSlider }
