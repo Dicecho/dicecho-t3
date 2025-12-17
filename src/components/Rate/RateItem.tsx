@@ -71,15 +71,17 @@ export const RateItem: React.FunctionComponent<IProps> = ({
   return (
     <div className={"flex flex-col gap-4"}>
       <div className={"flex items-center gap-2"}>
-        <UserAvatarPopover userId={rate.user._id}>
-          <UserAvatar
-            className="h-6 w-6 cursor-pointer rounded-full"
-            user={rate.user}
-          />
-        </UserAvatarPopover>
-        <div className="flex flex-1 items-baseline gap-2">
-          <div>{rate.user.nickName}</div>
-          <div className="text-muted-foreground text-sm">
+        <div className="flex flex-1 items-center gap-2">
+          <UserAvatarPopover userId={rate.user._id}>
+            <div className="flex items-center gap-2">
+              <UserAvatar
+                className="h-6 w-6 cursor-pointer rounded-full"
+                user={rate.user}
+              />
+              <div>{rate.user.nickName}</div>
+            </div>
+          </UserAvatarPopover>
+          <div className="text-muted-foreground">
             {rate.type === RateType.Rate
               ? t("Rate.type_rate")
               : t("Rate.type_mark")}

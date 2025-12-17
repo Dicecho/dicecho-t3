@@ -287,8 +287,8 @@ export function createDicechoApi(opts: DicechoApiOptions) {
     user: {
       me: () => request<Empty, IUserDto>(`/api/user/profile`, "GET"),
       profile: (uuid: string) => request<Empty, IUserDto>(`/api/user/${uuid}/profile`, "GET"),
-      follow: (uuid: string) => request<Empty, IUserDto>(`/api/user/${uuid}/follow`, "POST"),
-      unfollow: (uuid: string) => request<Empty, IUserDto>(`/api/user/${uuid}/unfollow`, "POST"),
+      follow: (uuid: string) => request<Empty, Empty>(`/api/user/${uuid}/follow`, "POST"),
+      unfollow: (uuid: string) => request<Empty, Empty>(`/api/user/${uuid}/unfollow`, "POST"),
       updateProfile: (dto: UpdateProfileDto) => request<UpdateProfileDto, IUserDto>(`/api/user/profile`, "PUT", dto),
       changePassword: (dto: ChangePasswordDto) => request<ChangePasswordDto, Empty>(`/api/user/password`, "PUT", dto),
       followers: (uuid: string, query: Partial<PageableQuery> = {}) =>

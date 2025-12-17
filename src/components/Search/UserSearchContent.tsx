@@ -1,12 +1,15 @@
 "use client";
 
-import { UserCard } from "@/components/Search/UserCard";
-import { UserCardSkeleton } from "@/components/Search/UserCardSkeleton";
+// import { UserCard } from "@/components/Search/UserCard";
+// import { UserCardSkeleton } from "@/components/Search/UserCardSkeleton";
+import { UserInfoCard } from "@/components/User/user-info-card";
+import { UserInfoCardSkeleton } from "@/components/User/user-info-card-skeleton";
 import { Empty } from "@/components/Empty";
 import { useTranslation } from "@/lib/i18n/react";
 import { useDicecho } from "@/hooks/useDicecho";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export function UserSearchContent() {
   const params = useParams();
@@ -27,7 +30,7 @@ export function UserSearchContent() {
     return (
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 12 }).map((_, i) => (
-          <UserCardSkeleton key={i} />
+          <UserInfoCardSkeleton key={i} />
         ))}
       </div>
     );
@@ -40,7 +43,9 @@ export function UserSearchContent() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {usersData.data.map((user) => (
-        <UserCard key={user._id} user={user} lng={lng} />
+        <Link key={user._id} href={`/${lng}/account/${user._id}`}>
+          <UserInfoCard user={user} className="shadow-md hover:shadow-lg" />
+        </Link>
       ))}
     </div>
   );

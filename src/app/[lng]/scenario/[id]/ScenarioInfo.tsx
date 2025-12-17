@@ -7,13 +7,14 @@ import { UserAvatar } from "@/components/User/Avatar";
 
 import type { ComponentProps, FC, PropsWithChildren } from "react";
 import type { IModDto } from "@dicecho/types";
+import { UserAvatarPopover } from "@/components/User/UserAvatarPopover";
 
 const InfoItem: FC<
   PropsWithChildren<ComponentProps<"div"> & { title: string }>
 > = ({ title, className, children, ...props }) => {
   return (
     <div className="flex items-start gap-2" {...props}>
-      <div className="font-bold capitalize text-opacity-highlight">{title}</div>
+      <div className="text-opacity-highlight font-bold capitalize">{title}</div>
       <div className={clsx("flex-1", className)}>{children}</div>
     </div>
   );
@@ -33,16 +34,31 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
 
   return (
     <>
-      <InfoItem className="flex items-center" title={t("author")}>
-        <span className="mr-2 inline-block">
-          <UserAvatar
-            user={scenario.author}
-            className="h-5 w-5 rounded-full"
-          />
-        </span>
-        <span className="flex-1">{scenario.author.nickName}</span>
-      </InfoItem>
-
+      {scenario.author.isForeign ? (
+        <InfoItem className="flex items-center" title={t("author")}>
+          <span className="mr-2 inline-block">
+            <UserAvatar
+              user={scenario.author}
+              className="h-5 w-5 rounded-full"
+            />
+          </span>
+          <span className="flex-1">{scenario.author.nickName}</span>
+        </InfoItem>
+      ) : (
+        <InfoItem className="flex items-center" title={t("author")}>
+          <UserAvatarPopover userId={scenario.author._id}>
+            <div className="flex items-center cursor-pointer">
+              <span className="mr-2 inline-block">
+                <UserAvatar
+                  user={scenario.author}
+                  className="h-5 w-5 rounded-full"
+                />
+              </span>
+              <span className="flex-1">{scenario.author.nickName}</span>
+            </div>
+          </UserAvatarPopover>
+        </InfoItem>
+      )}
       {scenario.isForeign && scenario.contributors.length > 0 && (
         <InfoItem title={t("contributors")}>
           <div className="flex items-center gap-2">
@@ -59,7 +75,7 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
 
       {scenario.tags.length > 0 && (
         <InfoItem title={t("tags")}>
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-wrap items-center gap-2">
             {scenario.tags.map((tag) => (
               <span key={tag}>{tag}</span>
             ))}
@@ -71,19 +87,15 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
         <InfoItem title={t("languages")}>
           <div className="flex items-center gap-2">
             {scenario.languages.map((language) => (
-              <span key={language}>
-                {t(`language_codes.${language}`)}
-              </span>
+              <span key={language}>{t(`language_codes.${language}`)}</span>
             ))}
           </div>
         </InfoItem>
       )}
 
-      <InfoItem title={t("rule")}>
-        {scenario.moduleRule}
-      </InfoItem>
+      <InfoItem title={t("rule")}>{scenario.moduleRule}</InfoItem>
 
-      <div className="text-sm text-muted-foreground">
+      <div className="text-muted-foreground text-sm">
         <Trans
           i18nKey="publish_at"
           t={t}

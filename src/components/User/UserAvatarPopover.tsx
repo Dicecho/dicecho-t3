@@ -4,16 +4,27 @@ import { type ReactNode, type FC, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+  DrawerDescription,
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { UserInfoCard, UserInfoCardSkeleton } from "./UserInfoCard";
+import { UserInfoCard, MobileUserInfoCard } from "./user-info-card";
+import {
+  UserInfoCardSkeleton,
+  MobileUserInfoCardSkeleton,
+} from "./user-info-card-skeleton";
+import { useTranslation } from "@/lib/i18n/react";
 import { useDicecho } from "@/hooks/useDicecho";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { cn } from "@/lib/utils";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Loader2 } from "lucide-react";
 
 type UserAvatarPopoverProps = {
   userId: string;
@@ -32,14 +43,16 @@ export const UserAvatarPopover: FC<UserAvatarPopoverProps> = ({
   userId,
   children,
 }) => {
+  const { t } = useTranslation();
   const { data: session } = useSession();
+  const isSelf = session?.user?._id === userId;
   const { api } = useDicecho();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
 
   // React Query 自动处理一切
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading, isFetching } = useQuery({
     queryKey: ["user", userId],
     queryFn: () => api.user.profile(userId),
     enabled: isOpen,
@@ -49,91 +62,94 @@ export const UserAvatarPopover: FC<UserAvatarPopoverProps> = ({
   // 关注操作
   const followMutation = useMutation({
     mutationFn: () => api.user.follow(userId),
-    onSuccess: (updatedUser) => {
-      queryClient.setQueryData(["user", userId], updatedUser);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", userId] });
     },
   });
 
   // 取关操作
   const unfollowMutation = useMutation({
     mutationFn: () => api.user.unfollow(userId),
-    onSuccess: (updatedUser) => {
-      queryClient.setQueryData(["user", userId], updatedUser);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", userId] });
     },
   });
 
   const isFollowLoading =
-    followMutation.isPending || unfollowMutation.isPending;
+    followMutation.isPending || unfollowMutation.isPending || isFetching;
   const isFollowed = user?.isFollowed;
 
-  // 操作按钮 (传递给 UserInfoCard)
-  const actions =
-    session?.user?._id === userId ? null : (
-      <div className="flex gap-2">
-        {isFollowed ? (
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1"
-            disabled={isFollowLoading}
-            onClick={() => unfollowMutation.mutate()}
-          >
-            取消关注
-          </Button>
-        ) : (
-          <Button
-            variant="default"
-            size="sm"
-            className="flex-1"
-            disabled={isFollowLoading}
-            onClick={() => followMutation.mutate()}
-          >
-            关注
-          </Button>
-        )}
-      </div>
-    );
+  // 操作按钮 (桌面传递给 UserInfoCard)
+  const actions = isSelf ? null : (
+    <div className="flex gap-2">
+      {isFollowed ? (
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex-1"
+          disabled={isFollowLoading}
+          onClick={() => unfollowMutation.mutate()}
+        >
+          {isFollowLoading && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          {t("unfollow")}
+        </Button>
+      ) : (
+        <Button
+          variant="default"
+          size="sm"
+          className="flex-1"
+          disabled={isFollowLoading}
+          onClick={() => followMutation.mutate()}
+        >
+          {isFollowLoading && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          {t("follow")}
+        </Button>
+      )}
+    </div>
+  );
 
   const cardContent =
     isLoading || !user ? (
-      <UserInfoCardSkeleton className={cn({ ["w-full"]: isMobile })} />
+      <UserInfoCardSkeleton className="max-md:w-full" />
     ) : (
-      <UserInfoCard
-        user={user}
-        actions={actions}
-        className={cn({ ["w-full"]: isMobile })}
-      />
+      <UserInfoCard user={user} actions={actions} className="max-md:w-full" />
     );
 
-  // 移动端: Drawer
+  // // // 移动端: Drawer
   if (isMobile) {
+    const mobileContent =
+      isLoading || !user ? (
+        <MobileUserInfoCardSkeleton />
+      ) : (
+        <MobileUserInfoCard user={user} actions={actions} />
+      );
+
     return (
-      <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      <Drawer onOpenChange={setIsOpen}>
         <DrawerTrigger asChild>{children}</DrawerTrigger>
-        <DrawerContent className="h-auto w-full border-0 rounded-t-lg overflow-hidden">{cardContent}</DrawerContent>
+        <DrawerContent className="h-auto w-full overflow-hidden rounded-t-lg border-0 outline-none">
+          <DrawerTitle className="hidden">{user?.nickName}</DrawerTitle>
+          <DrawerDescription className="hidden">{user?.note}</DrawerDescription>
+          {mobileContent}
+        </DrawerContent>
       </Drawer>
     );
   }
 
-  // 桌面: Popover (hover + click)
+  // 桌面: HoverCard（悬浮卡片）
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger
-        asChild
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
-      >
-        {children}
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-auto border-0 bg-transparent p-0 shadow-none"
+    <HoverCard onOpenChange={setIsOpen} openDelay={0}>
+      <HoverCardTrigger asChild>{children}</HoverCardTrigger>
+      <HoverCardContent
+        className="w-100 border-0 bg-transparent p-0"
         align="start"
-        sideOffset={8}
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
       >
-        <div className="bg-card rounded-lg border">{cardContent}</div>
-      </PopoverContent>
-    </Popover>
+        {cardContent}
+      </HoverCardContent>
+    </HoverCard>
   );
 };
