@@ -312,7 +312,8 @@ export function createDicechoApi(opts: DicechoApiOptions) {
         request<Empty, ModFilterConfig>(`/api/mod/config`, "GET", {}, { revalidate: options?.revalidate ?? 3600 }),
       random: (params: Partial<IModListQuery> = {}) =>
         request<Empty, ModRetrieveApiResponse>(`/api/mod/random?${qs.stringify(params)}`, "GET"),
-      hot: () => request<Empty, PaginatedResponse<IModDto>>(`/api/mod/hot`, "GET"),
+      hot: (options?: { revalidate?: number | false }) =>
+        request<Empty, PaginatedResponse<IModDto>>(`/api/mod/hot`, "GET", {}, { revalidate: options?.revalidate ?? 300 }),
       publish: (payload: PublishModPayload) =>
         request<PublishModPayload & { isForeign: false }, IModDto>(`/api/mod`, "POST", { ...payload, isForeign: false }),
       contribute: (payload: ContributeModPayload) =>
@@ -323,10 +324,10 @@ export function createDicechoApi(opts: DicechoApiOptions) {
 
     collection: {
       mine: () => request<Empty, Array<CollectionDto>>(`/api/collection/mine`, "GET"),
-      list: (params: Partial<CollectionListQuery> = {}) => {
+      list: (params: Partial<CollectionListQuery> = {}, options?: { revalidate?: number | false }) => {
         const query = qs.stringify(params);
         const endpoint = query ? `/api/collection?${query}` : `/api/collection`;
-        return request<Empty, CollectionListResponse>(endpoint, "GET");
+        return request<Empty, CollectionListResponse>(endpoint, "GET", {}, { revalidate: options?.revalidate ?? 300 });
       },
       detail: (uuid: string) => request<Empty, CollectionDto>(`/api/collection/${uuid}`, "GET"),
       items: (uuid: string) => request<Empty, CollectionItemsResponse>(`/api/collection/${uuid}/items`, "GET"),
@@ -387,7 +388,8 @@ export function createDicechoApi(opts: DicechoApiOptions) {
     },
 
     config: {
-      banner: () => request<Empty, BannerDto[]>(`/api/config/banner`, "GET"),
+      banner: (options?: { revalidate?: number | false }) =>
+        request<Empty, BannerDto[]>(`/api/config/banner`, "GET", {}, { revalidate: options?.revalidate ?? 300 }),
     },
 
     file: {

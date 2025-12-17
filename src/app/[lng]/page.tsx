@@ -1,31 +1,25 @@
-import Link from "next/link";
+import { Suspense } from "react";
 import { getServerAuthSession } from "@/server/auth";
-import { getDicechoServerApi } from "@/server/dicecho";
 import { MobileFooter } from "@/components/Footer";
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
 import { HeaderSearch } from "@/components/Header/HeaderSearch";
 import { getTranslation } from "@/lib/i18n";
-import { BannerCarousel } from "@/components/Home/BannerCarousel";
-import { ScenarioCardGrid } from "@/components/Home/ScenarioCardGrid";
-import { ScenarioCardCarousel } from "@/components/Home/ScenarioCardCarousel";
-import { CollectionCard } from "@/components/Home/CollectionCard";
-import { CollectionCardCarousel } from "@/components/Home/CollectionCardCarousel";
+import { BannerServer, BannerSkeleton } from "@/components/Home/BannerServer";
+import { CollectionsServer, MobileCollectionsServer } from "@/components/Home/CollectionsServer";
+import { ScenarioSectionServer, MobileScenarioSectionServer } from "@/components/Home/ScenarioSectionServer";
 import { HomepageProfile } from "@/components/Home/HomepageProfile";
 import { HomepageActions } from "@/components/Home/HomepageActions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ModSortKey } from "@dicecho/types";
-import type { BannerDto } from "@/utils/api";
 import { NotificationReminder } from "@/components/Header/notification-reminder";
-import qs from "qs";
+import { CollectionGridSkeleton } from "@/components/Home/CollectionGridSkeleton";
+import { ScenarioSectionSkeleton } from "@/components/Home/ScenarioSectionSkeleton";
+import { MobileScenarioCarouselSkeleton } from "@/components/Home/MobileScenarioCarouselSkeleton";
+import { MobileCollectionCarouselSkeleton } from "@/components/Home/MobileCollectionCarouselSkeleton";
 
-const DEFAULT_BANNER: BannerDto = {
-  priority: 0,
-  action: "",
-  imageUrl: "https://file.dicecho.com/mod/600af94a44f096001d6e49df/2021033103382254.png",
-  link: "",
-};
+// ISR with 60 seconds revalidation
+export const revalidate = 60;
 
 export default async function Home(props: {
   params: Promise<{ lng: string }>;
@@ -35,41 +29,6 @@ export default async function Home(props: {
 
   const { t } = await getTranslation(lng);
   const session = await getServerAuthSession();
-  const api = await getDicechoServerApi({ withToken: true });
-
-  // Fetch all home page data in parallel
-  const [bannersData, hotModsData, recentModsData, foreignModsData, collectionsData] = 
-    await Promise.all([
-      api.config.banner().catch(() => [DEFAULT_BANNER]),
-      api.module.hot().catch(() => ({ data: [] })),
-      api.module
-        .list({
-          pageSize: 8,
-          filter: { isForeign: false },
-          sort: { [ModSortKey.CREATED_AT]: -1 },
-        })
-        .catch(() => ({ data: [] })),
-      api.module
-        .list({
-          pageSize: 8,
-          filter: { isForeign: true },
-          sort: { [ModSortKey.CREATED_AT]: -1 },
-        })
-        .catch(() => ({ data: [] })),
-      api.collection
-        .list({
-          pageSize: 6,
-          filter: { isRecommend: true },
-          sort: { createdAt: -1 },
-        })
-        .catch(() => ({ data: [] })),
-    ]);
-
-  const banners = bannersData.length > 0 ? bannersData : [DEFAULT_BANNER];
-  const hotMods = hotModsData.data || [];
-  const recentMods = recentModsData.data || [];
-  const foreignMods = foreignModsData.data || [];
-  const collections = collectionsData.data || [];
 
   return (
     <>
@@ -83,69 +42,29 @@ export default async function Home(props: {
           {/* Main Content - Left Side (2/3) */}
           <div className="md:col-span-8">
             {/* Banner */}
-            <BannerCarousel banners={banners} className="mb-6 rounded-lg overflow-hidden" />
+            <Suspense fallback={<BannerSkeleton className="mb-6" />}>
+              <BannerServer className="mb-6 rounded-lg overflow-hidden" />
+            </Suspense>
 
             {/* Recommended Collections */}
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>{t("home_recommended_collections")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-4 gap-10">
-                  {collections.map((collection) => (
-                    <CollectionCard
-                      key={collection._id}
-                      collection={collection}
-                    />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <Suspense fallback={<CollectionGridSkeleton />}>
+              <CollectionsServer lng={lng} />
+            </Suspense>
 
             {/* Recent Submissions */}
-            <Card className="mb-6">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>{t("home_recent_submissions")}</CardTitle>
-                <Link href={`/${lng}/scenario?filter[isForeign]=false&sort[createdAt]=-1`}>
-                  <Button variant="link" size="sm">
-                    {t("home_view_more")}
-                  </Button>
-                </Link>
-              </CardHeader>
-              <CardContent>
-                <ScenarioCardGrid scenarios={recentMods} lng={lng} />
-              </CardContent>
-            </Card>
+            <Suspense fallback={<ScenarioSectionSkeleton className="mb-6" />}>
+              <ScenarioSectionServer lng={lng} type="recent" className="mb-6" />
+            </Suspense>
 
             {/* Hot Scenarios */}
-            <Card className="mb-6">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>{t("home_hot_scenarios")}</CardTitle>
-                <Link href={`/${lng}/scenario`}>
-                  <Button variant="link" size="sm">
-                    {t("home_view_more")}
-                  </Button>
-                </Link>
-              </CardHeader>
-              <CardContent>
-                <ScenarioCardGrid scenarios={hotMods} lng={lng} />
-              </CardContent>
-            </Card>
+            <Suspense fallback={<ScenarioSectionSkeleton className="mb-6" />}>
+              <ScenarioSectionServer lng={lng} type="hot" className="mb-6" />
+            </Suspense>
 
             {/* Foreign Mods */}
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>{t("home_new_entries")}</CardTitle>
-                <Link href={`/${lng}/scenario?filter[isForeign]=true&sort[createdAt]=-1`}>
-                  <Button variant="link" size="sm">
-                    {t("home_view_more")}
-                  </Button>
-                </Link>
-              </CardHeader>
-              <CardContent>
-                <ScenarioCardGrid scenarios={foreignMods} lng={lng} />
-              </CardContent>
-            </Card>
+            <Suspense fallback={<ScenarioSectionSkeleton />}>
+              <ScenarioSectionServer lng={lng} type="foreign" />
+            </Suspense>
           </div>
 
           {/* Sidebar - Right Side (1/3) */}
@@ -175,52 +94,29 @@ export default async function Home(props: {
         {/* Mobile Layout */}
         <div className="md:hidden space-y-4 -mx-4">
           {/* Banner */}
-          <BannerCarousel banners={banners} />
+          <Suspense fallback={<BannerSkeleton />}>
+            <BannerServer />
+          </Suspense>
 
           {/* Recommended Collections */}
-          <div>
-            <h2 className=" mb-3 px-4">{t("home_recommended_collections")}</h2>
-            <CollectionCardCarousel collections={collections} />
-          </div>
+          <Suspense fallback={<MobileCollectionCarouselSkeleton />}>
+            <MobileCollectionsServer lng={lng} />
+          </Suspense>
 
           {/* Recent Submissions */}
-          <div>
-            <div className="flex items-center justify-between mb-3 px-4">
-              <h2 className="">{t("home_recent_submissions")}</h2>
-              <Link href={`/${lng}/scenario?${qs.stringify({ filter: { isForeign: false }, sort: { createdAt: -1 } })}`}>
-                <Button variant="link" size="sm" className="px-0">
-                  {t("home_view_more")}
-                </Button>
-              </Link>
-            </div>
-            <ScenarioCardCarousel scenarios={recentMods} lng={lng} />
-          </div>
+          <Suspense fallback={<MobileScenarioCarouselSkeleton />}>
+            <MobileScenarioSectionServer lng={lng} type="recent" />
+          </Suspense>
 
           {/* Hot Scenarios */}
-          <div>
-            <div className="flex items-center justify-between mb-3 px-4">
-              <h2 className="">{t("home_hot_scenarios")}</h2>
-              <Link href={`/${lng}/scenario`}>
-                <Button variant="link" size="sm" className="px-0">
-                  {t("home_view_more")}
-                </Button>
-              </Link>
-            </div>
-            <ScenarioCardCarousel scenarios={hotMods} lng={lng} />
-          </div>
+          <Suspense fallback={<MobileScenarioCarouselSkeleton />}>
+            <MobileScenarioSectionServer lng={lng} type="hot" />
+          </Suspense>
 
           {/* Foreign Mods */}
-          <div>
-            <div className="flex items-center justify-between mb-3 px-4">
-              <h2 className="">{t("home_new_entries")}</h2>
-              <Link href={`/${lng}/scenario?${qs.stringify({ filter: { isForeign: true }, sort: { createdAt: -1 } })}`}>
-                <Button variant="link" size="sm" className="px-0">
-                  {t("home_view_more")}
-                </Button>
-              </Link>
-            </div>
-            <ScenarioCardCarousel scenarios={foreignMods} lng={lng} />
-          </div>
+          <Suspense fallback={<MobileScenarioCarouselSkeleton />}>
+            <MobileScenarioSectionServer lng={lng} type="foreign" />
+          </Suspense>
         </div>
       </main>
 
