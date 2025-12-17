@@ -1,11 +1,10 @@
 "use client";
-import { MinidenticonImg } from "@/components/MinidenticonImg";
 import { Rate } from "@/components/ui/rate";
 import { Star } from "lucide-react";
 import clsx from "clsx";
-import Image from "next/image";
 import { useTranslation } from "@/lib/i18n/react";
 import { Badge } from "../ui/badge";
+import { UserAvatar } from "../User/Avatar";
 
 interface ScenarioCardProps {
   scenario: {
@@ -73,20 +72,12 @@ export function ScenarioCard({ scenario, compact = false }: ScenarioCardProps) {
       <div className="flex items-center">
         <div className="mr-2">
           <div className="w-4 overflow-hidden rounded-lg">
-            {scenario.author.avatarUrl ? (
-              <Image
-                className="h-4 w-4"
-                width={16}
-                height={16}
-                src={scenario.author.avatarUrl}
-                alt={scenario.author.nickName}
-              />
-            ) : (
-              <MinidenticonImg
-                username={scenario.author.nickName}
-                className="h-4 w-4"
-              />
-            )}
+            <UserAvatar className="h-4 w-4"
+              user={{
+                avatarUrl: scenario.author.avatarUrl,
+                nickName: scenario.author.nickName,
+              }}
+            />
           </div>
         </div>
         <span className="text-muted-foreground truncate text-sm text-nowrap">

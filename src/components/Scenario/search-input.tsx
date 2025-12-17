@@ -50,7 +50,7 @@ export function ScenarioSearchInput({ className }: { className?: string }) {
     // Players badge
     const [minPlayer, maxPlayer] = getPlayerRange(
       params.minPlayer,
-      params.maxPlayer
+      params.maxPlayer,
     );
     if (params.minPlayer !== null || params.maxPlayer !== null) {
       const playerLabel =
@@ -62,7 +62,9 @@ export function ScenarioSearchInput({ className }: { className?: string }) {
         value,
         label: `${t("player_count")}: ${playerLabel}`,
       });
-      handlers.set(value, () => setParams({ minPlayer: null, maxPlayer: null }));
+      handlers.set(value, () =>
+        setParams({ minPlayer: null, maxPlayer: null }),
+      );
     }
 
     // Tags badges
@@ -76,7 +78,7 @@ export function ScenarioSearchInput({ className }: { className?: string }) {
         handlers.set(value, () =>
           setParams({
             tags: params.tags?.filter((t) => t !== tag) ?? null,
-          })
+          }),
         );
       });
     }

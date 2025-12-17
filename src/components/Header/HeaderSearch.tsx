@@ -12,7 +12,7 @@ export const HeaderSearch: FC<ComponentProps<typeof SearchInput>> = (props) => {
       <SearchInput
         className="w-[calc(100vw-var(--spacing)*32)]"
         {...props}
-        inputClassName={cn("text-sm h-8 rounded-full", props.className)}
+        inputClassName={cn("text-base h-8 rounded-full", props.className)}
       />
     </Suspense>
   );

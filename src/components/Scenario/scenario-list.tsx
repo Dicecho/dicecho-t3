@@ -87,7 +87,7 @@ export const ScenarioList: FC<ScenarioListProps> = ({
           ))}
 
           {new Array(2).fill(0).map((_, index) => (
-            <ScenarioCardSkeleton className="hidden md:block" key={index} />
+            <ScenarioCardSkeleton className="max-md:hidden" key={`lg-${index}`} />
           ))}
         </div>
       )}

@@ -68,8 +68,6 @@ const ScenarioPage = async ({
       <div className="container md:pt-4 pb-24">
         <div className="grid grid-cols-6 gap-8">
           <div className="col-span-6 md:col-span-4">
-            <ScenarioSearchInput className="max-md:hidden" />
-
             <Suspense
               key={queryKey}
               fallback={<ScenarioListSkeleton count={query.pageSize ?? 12} />}
