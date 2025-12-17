@@ -12,7 +12,7 @@ export async function ScenarioListServer({ query }: ScenarioListServerProps) {
 
   return (
     <HydrateClient>
-      <ScenarioListHeader totalCount={initialData.totalCount} query={query} />
+      <ScenarioListHeader totalCount={initialData.totalCount} />
       <ScenarioList initialData={initialData} query={query} />
     </HydrateClient>
   );

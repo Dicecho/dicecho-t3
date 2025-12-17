@@ -2,16 +2,15 @@
 
 import { PropsWithChildren, useState } from "react";
 import type { ModFilterConfig } from "@dicecho/types";
-import { queryToFormData, formDataToQuery } from "@/components/Scenario/utils";
-import {
-  ScenarioFilter,
-  type FilterValue,
-} from "@/components/Scenario/ScenarioFilter";
-import qs from "qs";
-import { usePathname, useRouter } from "next/navigation";
+import { ScenarioFilter } from "@/components/Scenario/ScenarioFilter";
 import { useQuery } from "@tanstack/react-query";
 import { useDicecho } from "@/hooks/useDicecho";
-import { useScenarioFilterParams } from "@/components/Scenario/use-scenario-filter-params";
+import {
+  useScenarioSearchParams,
+  paramsToFilterValue,
+  filterValueToParams,
+  type FilterValue,
+} from "@/components/Scenario/use-scenario-search-params";
 import {
   Drawer,
   DrawerContent,
@@ -30,13 +29,11 @@ export function ScenarioFilterDrawer({
   children,
 }: PropsWithChildren<ScenarioFilterDrawerProps>) {
   const { t } = useTranslation();
-  const pathname = usePathname();
-  const router = useRouter();
-  const filterQuery = useScenarioFilterParams();
+  const [params, setParams] = useScenarioSearchParams();
   const { api } = useDicecho();
 
   const [pendingValue, setPendingValue] = useState<FilterValue>(() =>
-    queryToFormData(filterQuery),
+    paramsToFilterValue(params)
   );
 
   const { data: config } = useQuery({
@@ -45,25 +42,17 @@ export function ScenarioFilterDrawer({
     initialData: initialConfig,
   });
 
-  const applyFilter = (value: FilterValue) => {
-    const newQuery = {
-      ...filterQuery,
-      ...formDataToQuery(value),
-    };
-
-    router.push(`${pathname}?${qs.stringify(newQuery)}`);
-  };
-
   const handleOpenChange = (open: boolean) => {
     if (open) {
-      setPendingValue(queryToFormData(filterQuery));
+      // Sync pending value with current params when opening
+      setPendingValue(paramsToFilterValue(params));
     } else {
-      const currentValue = queryToFormData(filterQuery);
+      // Apply pending value when closing
+      const currentValue = paramsToFilterValue(params);
       const pendingValueStr = JSON.stringify(pendingValue);
       const currentValueStr = JSON.stringify(currentValue);
       if (pendingValueStr !== currentValueStr) {
-        applyFilter(pendingValue);
-        return;
+        setParams(filterValueToParams(pendingValue));
       }
     }
   };

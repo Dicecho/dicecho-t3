@@ -12,18 +12,13 @@ const ScenarioEditPage = async ({
   const { lng, id } = await params;
   const api = await getDicechoServerApi();
   const scenario = await api.module.detail(id);
-  const config = await api.module.config();
-
-  // if (!scenario.canEdit && !scenario.isForeign) {
-  //   redirect(`/${lng}/scenario/${id}`);
-  // }
 
   const { t } = await getTranslation(lng);
 
   return (
     <>
       <ScenarioDetailHeader title={t("scenario_edit")} />
-      <ScenarioEditPageClient lng={lng} scenario={scenario} config={config} />
+      <ScenarioEditPageClient lng={lng} scenario={scenario} />
     </>
   );
 };

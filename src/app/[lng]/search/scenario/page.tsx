@@ -1,11 +1,14 @@
 import { ScenarioListServer } from "@/components/Scenario/scenario-list-server";
 import { ScenarioListSkeleton } from "@/components/Scenario/scenario-list-skeleton";
 import { ScenarioSearchParamsFilter } from "@/components/Scenario/search-params-filter";
-import qs from "qs";
 import { getTranslation } from "@/lib/i18n";
 import { Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getScenarioFilterQuery } from "@/components/Scenario/utils";
+import {
+  scenarioSearchParamsCache,
+  paramsToQuery,
+  serializeScenarioParams,
+} from "@/components/Scenario/scenario-search-params";
 
 export const dynamic = "auto";
 export const dynamicParams = true;
@@ -18,8 +21,9 @@ const ScenarioSearchPage = async (props: {
   const searchParams = await props.searchParams;
   const { t } = await getTranslation(params.lng);
 
-  const query = getScenarioFilterQuery(qs.stringify(searchParams));
-  const queryKey = qs.stringify(query);
+  const parsedParams = scenarioSearchParamsCache.parse(searchParams ?? {});
+  const query = paramsToQuery(parsedParams);
+  const queryKey = serializeScenarioParams(parsedParams);
 
   return (
     <div className="grid grid-cols-6 gap-8">

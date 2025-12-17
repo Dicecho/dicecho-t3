@@ -13,10 +13,9 @@ import { useRouter } from "next/navigation";
 interface Props {
   lng: string;
   scenario: IModDto;
-  config: ModFilterConfig;
 }
 
-export function ScenarioEditPageClient({ lng, scenario, config }: Props) {
+export function ScenarioEditPageClient({ lng, scenario }: Props) {
   const { t } = useTranslation(lng);
   const { api } = useDicecho();
   const router = useRouter();
@@ -40,14 +39,12 @@ export function ScenarioEditPageClient({ lng, scenario, config }: Props) {
           {scenario.isForeign ? (
             <ScenarioContributeForm
               scenario={scenario}
-              config={config}
               submitText={t("save")}
               onSubmit={handleUpdate}
             />
           ) : (
             <ScenarioEditForm
               scenario={scenario}
-              config={config}
               submitText={t("save")}
               onSubmit={handleUpdate}
             />

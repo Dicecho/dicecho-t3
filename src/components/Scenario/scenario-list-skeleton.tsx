@@ -1,19 +1,16 @@
 import { ScenarioCardSkeleton } from "@/components/Scenario/ScenarioCardSkeleton";
 import { ScenarioListHeader } from "@/components/Scenario/scenario-list-header";
-import { IModListQuery } from "@dicecho/types";
 
 interface ScenarioListSkeletonProps {
   count?: number;
-  query?: Partial<IModListQuery>;
 }
 
 export async function ScenarioListSkeleton({
-  query,
   count = 12,
 }: ScenarioListSkeletonProps) {
   return (
     <>
-      <ScenarioListHeader query={query} />
+      <ScenarioListHeader />
       <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-4">
         {new Array(count).fill(0).map((_, index) => (
           <ScenarioCardSkeleton key={index} />

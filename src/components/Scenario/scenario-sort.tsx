@@ -11,10 +11,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "@/lib/i18n/react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import qs from "qs";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { ComponentProps } from "react";
+import { useScenarioSearchParams } from "./use-scenario-search-params";
 
 const SortKeys = [
   ModSortKey.RELEASE_DATE,
@@ -30,49 +29,19 @@ export interface ScenarioSortProps extends ComponentProps<"div"> {}
 
 export function ScenarioSort({ className }: ScenarioSortProps) {
   const { t } = useTranslation();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [params, setParams] = useScenarioSearchParams();
 
-  const query = qs.parse(searchParams.toString());
+  const sortKey = params.sortKey;
+  const sortOrder = params.sortOrder;
 
-  const sortKey = query.sort
-    ? (Object.keys(query.sort)[0] as ModSortKey)
-    : ModSortKey.LAST_RATE_AT;
-  const sortOrder = query.sort ? Object.values(query.sort)[0] : SortOrder.DESC;
-
-  const handleSortKeyChange = (newSortKey: ModSortKey) => {
-    const currentQuery = qs.parse(searchParams.toString());
-
-    const newQuery = {
-      ...currentQuery,
-      sort: {
-        [newSortKey]: sortOrder,
-      },
-    };
-
-    // Use current pathname, not hardcoded path
-    router.push(`${pathname}?${qs.stringify(newQuery)}`);
+  const handleSortKeyChange = (newSortKey: string) => {
+    setParams({ sortKey: newSortKey as ModSortKey });
   };
 
   const handleSortOrderToggle = () => {
     const newSortOrder =
-      sortOrder === SortOrder.DESC.toString()
-        ? SortOrder.ASC.toString()
-        : SortOrder.DESC.toString();
-
-    // Parse current query params
-    const currentQuery = qs.parse(searchParams.toString());
-
-    // Update only the sort order
-    const newQuery = {
-      ...currentQuery,
-      sort: {
-        [sortKey]: newSortOrder,
-      },
-    };
-
-    router.push(`${pathname}?${qs.stringify(newQuery)}`);
+      sortOrder === SortOrder.DESC ? SortOrder.ASC : SortOrder.DESC;
+    setParams({ sortOrder: newSortOrder });
   };
 
   return (
@@ -90,12 +59,8 @@ export function ScenarioSort({ className }: ScenarioSortProps) {
         </SelectContent>
       </Select>
 
-      <Button
-        size="sm"
-        variant="outline"
-        onClick={handleSortOrderToggle}
-      >
-        {sortOrder === SortOrder.DESC.toString() ? (
+      <Button size="sm" variant="outline" onClick={handleSortOrderToggle}>
+        {sortOrder === SortOrder.DESC ? (
           <ArrowDownNarrowWide size={16} />
         ) : (
           <ArrowUpNarrowWide size={16} />

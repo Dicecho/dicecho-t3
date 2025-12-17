@@ -6,19 +6,44 @@ import { ScenarioListSkeleton } from "@/components/Scenario/scenario-list-skelet
 import { Suspense } from "react";
 import { HeaderSearch } from "@/components/Header/HeaderSearch";
 import { getTranslation } from "@/lib/i18n";
-import { getScenarioFilterQuery } from "@/components/Scenario/utils";
+import {
+  scenarioSearchParamsCache,
+  paramsToQuery,
+  serializeScenarioParams,
+} from "@/components/Scenario/scenario-search-params";
 import { Upload, Plus } from "lucide-react";
 import { ScenarioSearchInput } from "@/components/Scenario/search-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScenarioSearchParamsFilter } from "@/components/Scenario/search-params-filter";
 import { RandomButton } from "@/components/Scenario/random-button";
-import qs from "qs";
 import Link from "next/link";
 import { NotificationReminder } from "@/components/Header/notification-reminder";
+import { Metadata } from "next";
 
 export const dynamic = "auto";
 export const dynamicParams = true;
+
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> }
+): Promise<Metadata> {
+  const { locale } = await params;
+
+  const basePath = `/${locale}/scenario`;
+
+  return {
+    alternates: {
+      canonical: basePath,
+      languages: {
+        en: "/en/scenario",
+        ja: "/ja/scenario",
+        zh: "/zh/scenario",
+        ko: "/ko/scenario",
+      },
+    },
+  };
+}
 
 const ScenarioPage = async ({
   searchParams,
@@ -29,8 +54,9 @@ const ScenarioPage = async ({
 }) => {
   const { lng } = await params;
   const resolvedSearchParams = await searchParams;
-  const query = getScenarioFilterQuery(qs.stringify(resolvedSearchParams));
-  const queryKey = qs.stringify(query);
+  const parsedParams = scenarioSearchParamsCache.parse(resolvedSearchParams);
+  const query = paramsToQuery(parsedParams);
+  const queryKey = serializeScenarioParams(parsedParams);
   const { t } = await getTranslation(lng);
 
   return (
@@ -46,7 +72,7 @@ const ScenarioPage = async ({
 
             <Suspense
               key={queryKey}
-              fallback={<ScenarioListSkeleton query={query} count={query.pageSize ?? 12} />}
+              fallback={<ScenarioListSkeleton count={query.pageSize ?? 12} />}
             >
               <ScenarioListServer query={query} />
             </Suspense>

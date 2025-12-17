@@ -84,6 +84,10 @@ interface MultipleSelectorProps {
   queryKeyBase?: string;
   /** stale time for cached search results */
   staleTime?: number;
+  /** Default value for the input field */
+  defaultInputValue?: string;
+  /** Callback when Enter key is pressed in input */
+  onInputKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export interface MultipleSelectorRef {
@@ -188,6 +192,8 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       hideClearAllButton = false,
       queryKeyBase = 'multiple-selector',
       staleTime = 5 * 60 * 1000,
+      defaultInputValue = '',
+      onInputKeyDown,
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>,
   ) => {
@@ -197,7 +203,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
     const dropdownRef = React.useRef<HTMLDivElement>(null);
 
     const [selected, setSelected] = React.useState<Option[]>(value || []);
-    const [inputValue, setInputValue] = React.useState('');
+    const [inputValue, setInputValue] = React.useState(defaultInputValue);
     const debouncedSearchTerm = useDebounce(inputValue, delay || 500);
 
     React.useImperativeHandle(
@@ -443,10 +449,16 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
           )}
           onClick={() => {
             if (disabled) return;
-            inputRef?.current?.focus();
+            const input = inputRef?.current;
+            if (input) {
+              input.focus();
+              // Move cursor to end of input
+              const len = input.value.length;
+              input.setSelectionRange(len, len);
+            }
           }}
         >
-          <div className="relative flex flex-wrap gap-1">
+          <div className="relative flex flex-wrap gap-1 w-full">
             {selected.map((option) => {
               return (
                 <Badge
@@ -501,6 +513,10 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               onFocus={(event) => {
                 setOpen(true);
                 inputProps?.onFocus?.(event);
+              }}
+              onKeyDown={(e) => {
+                onInputKeyDown?.(e);
+                inputProps?.onKeyDown?.(e);
               }}
               placeholder={hidePlaceholderWhenSelected && selected.length !== 0 ? '' : placeholder}
               className={cn(

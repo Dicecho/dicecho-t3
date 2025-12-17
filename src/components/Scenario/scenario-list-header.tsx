@@ -2,31 +2,34 @@
 import { Trans } from "react-i18next";
 import { useTranslation } from "@/lib/i18n/react";
 
-import type { IModListQuery } from "@dicecho/types";
 import type { ComponentProps, FC } from "react";
 import { FilterIcon, Loader2 } from "lucide-react";
 import { ScenarioSort } from "./scenario-sort";
 import { ScenarioFilterDrawer } from "./scenario-filter-drawer";
 import { Button } from "@/components/ui/button";
-import { getScenarioFilterQuery } from "@/components/Scenario/utils";
+import { useScenarioSearchParams } from "@/components/Scenario/use-scenario-search-params";
 import { cn } from "@/lib/utils";
-import qs from "qs";
 
 interface ScenarioListProps extends ComponentProps<"div"> {
   totalCount?: number;
-  query?: Partial<IModListQuery>;
 }
 
 export const ScenarioListHeader: FC<ScenarioListProps> = ({
   totalCount,
-  query = {},
   className,
   ...props
 }) => {
   const { t } = useTranslation();
+  const [params] = useScenarioSearchParams();
 
-  const filterQuery = getScenarioFilterQuery(qs.stringify(query));
-  const isFilterApplied = Object.keys(filterQuery).filter(key => key !== "sort").length > 0;
+  // Check if any filter (excluding sort) is applied
+  const isFilterApplied =
+    params.rule !== null ||
+    params.language !== null ||
+    params.tags !== null ||
+    params.minPlayer !== null ||
+    params.maxPlayer !== null ||
+    params.isForeign !== null;
 
   return (
     <div

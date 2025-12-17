@@ -1,16 +1,15 @@
 "use client";
 
 import type { ModFilterConfig } from "@dicecho/types";
-import { queryToFormData, formDataToQuery } from "@/components/Scenario/utils";
-import {
-  ScenarioFilter,
-  type FilterValue,
-} from "@/components/Scenario/ScenarioFilter";
-import qs from "qs";
-import { usePathname, useRouter } from "next/navigation";
+import { ScenarioFilter } from "@/components/Scenario/ScenarioFilter";
 import { useQuery } from "@tanstack/react-query";
 import { useDicecho } from "@/hooks/useDicecho";
-import { useScenarioFilterParams } from "@/components/Scenario/use-scenario-filter-params";
+import {
+  useScenarioSearchParams,
+  paramsToFilterValue,
+  filterValueToParams,
+  type FilterValue,
+} from "@/components/Scenario/use-scenario-search-params";
 
 interface ScenarioFilterWrapperProps {
   initialConfig?: ModFilterConfig;
@@ -19,9 +18,7 @@ interface ScenarioFilterWrapperProps {
 export function ScenarioSearchParamsFilter({
   initialConfig,
 }: ScenarioFilterWrapperProps) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const filterQuery = useScenarioFilterParams();
+  const [params, setParams] = useScenarioSearchParams();
   const { api } = useDicecho();
 
   const { data: config } = useQuery({
@@ -31,18 +28,13 @@ export function ScenarioSearchParamsFilter({
   });
 
   const handleFilterChange = (filterValue: FilterValue) => {
-    const newQuery = {
-      ...filterQuery,
-      ...formDataToQuery(filterValue),
-    };
-
-    router.push(`${pathname}?${qs.stringify(newQuery)}`);
+    setParams(filterValueToParams(filterValue));
   };
 
   return (
     <ScenarioFilter
       config={config}
-      value={queryToFormData(filterQuery)}
+      value={paramsToFilterValue(params)}
       onChange={handleFilterChange}
     />
   );

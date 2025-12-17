@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import "@/styles/components.css";
 
 import { GeistSans } from "geist/font/sans";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { dir } from "i18next";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/Header";
@@ -44,13 +45,15 @@ export default async function RootLayout(props: {
         <ThemeScript />
       </head>
       <body className="bg-custom-gradient min-h-screen overflow-x-hidden bg-no-repeat">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <AppLayout>
-            <Header lng={lng} />
-            {children}
-            <Toaster richColors position="top-center" />
-          </AppLayout>
-        </ThemeProvider>
+        <NuqsAdapter>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <AppLayout>
+              <Header lng={lng} />
+              {children}
+              <Toaster richColors position="top-center" />
+            </AppLayout>
+          </ThemeProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

@@ -17,15 +17,7 @@ import MultipleSelector, {
 } from "@/components/ui/multiple-selector";
 import { useDicecho } from "@/hooks/useDicecho";
 import { DebouncedSlider } from "@/components/ui/slider";
-
-export interface FilterValue {
-  rule?: string;
-  language?: string;
-  tags?: string[];
-  tagsMode?: TagFilterMode;
-  players?: number[];
-  isForeign?: boolean;
-}
+import { type FilterValue } from "./use-scenario-search-params";
 
 export interface ScenarioFilterProps {
   config?: ModFilterConfig;
