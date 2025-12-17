@@ -23,11 +23,17 @@ export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
 
   const { mutate: signInMutation, isPending } = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
-      return signIn("credentials", {
+      const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
       });
+
+      if (!result?.ok || result.error) {
+        throw new Error(result?.error ?? t("sign_in_failed"));
+      }
+
+      return result;
     },
     onSuccess: () => {
       toast.success(t("sign_in_success"));

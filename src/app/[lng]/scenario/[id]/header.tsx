@@ -18,7 +18,7 @@ export const ScenarioDetailHeader = ({ title }: { title: string }) => {
         ["bg-transparent text-primary-foreground shadow-none"]: y < 160,
       })}
     >
-      <div className={cn("text-sm", { ["opacity-0"]: y < 160 })}>
+      <div className={cn("text-sm text-center", { ["opacity-0"]: y < 160 })}>
         {title}
       </div>
     </MobileHeader>

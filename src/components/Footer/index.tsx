@@ -50,38 +50,44 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
   ];
 
   return (
-    <div
-      className={clsx(
-        "md:hidden container fixed bottom-0 z-10 flex justify-between bg-footer py-4 px-4 shadow-[0_-8px_10px_-1px_rgba(0,0,0,0.25)]",
-        className,
-      )}
-      {...props}
-    >
-      {menus.map((menu) => {
-        const matched = isUrlMatched({
-          url: menu.link,
-          path: pathname,
-          exact: menu.exact,
-        });
+    <div className="md:hidden bg-footer fixed bottom-0 left-0 right-0 z-10 flex justify-between px-4 py-4 shadow-[0_-8px_10px_-1px_rgba(0,0,0,0.25)]">
+      <div
+        className={clsx(
+          "container flex justify-between",
+          className,
+        )}
+        {...props}
+      >
+        {menus.map((menu) => {
+          const matched = isUrlMatched({
+            url: menu.link,
+            path: pathname,
+            exact: menu.exact,
+          });
 
-        return (
-          <LinkWithLng href={menu.link} key={menu.link}>
-            <div
-              className={clsx("flex flex-col items-center")}
-            >
-              <div
-                className={clsx(
-                  "flex items-center justify-center w-10 h-10",
-                  {['rounded-full bg-input/60 text-input-foreground']: !matched },
-                  {['rounded-lg bg-primary text-primary-foreground']: matched },
-                )}
-              >
-                <menu.icon size={16} />
+          return (
+            <LinkWithLng href={menu.link} key={menu.link}>
+              <div className={clsx("flex flex-col items-center")}>
+                <div
+                  className={clsx(
+                    "flex h-10 w-10 items-center justify-center",
+                    {
+                      ["bg-input/60 text-input-foreground rounded-full"]:
+                        !matched,
+                    },
+                    {
+                      ["bg-primary text-primary-foreground rounded-lg"]:
+                        matched,
+                    },
+                  )}
+                >
+                  <menu.icon size={16} />
+                </div>
               </div>
-            </div>
-          </LinkWithLng>
-        );
-      })}
+            </LinkWithLng>
+          );
+        })}
+      </div>
     </div>
   );
 };

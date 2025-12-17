@@ -28,9 +28,16 @@ interface SigninFormProps
 
 export function SigninForm({ onSubmit, children, ...props }: SigninFormProps) {
   const { t } = useTranslation();
+  const { defaultValues, ...rest } = props;
+
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    ...props,
+    defaultValues: {
+      email: "",
+      password: "",
+      ...defaultValues,
+    },
+    ...rest,
   });
 
   const handleSubmit = async (data: FormData) => {

@@ -10,7 +10,7 @@ export const HeaderSearch: FC<ComponentProps<typeof SearchInput>> = (props) => {
       fallback={<Skeleton className="h-8 w-[75vw] rounded-full text-sm" />}
     >
       <SearchInput
-        className="w-[calc(100vw-var(--spacing)*32)]"
+        className="w-full"
         {...props}
         inputClassName={cn("text-base h-8 rounded-full", props.className)}
       />

@@ -3,13 +3,14 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import type { IUserDto } from '@dicecho/types'
+import { AuthErrorCode, type IUserDto } from "@dicecho/types";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "@/env";
-import { DicechoApi, isBackendError } from "@/utils/api";
+import { createDicechoApi, isBackendError } from "@/utils/api";
 import { getTranslation } from "@/lib/i18n";
 import { fallbackLng, languages } from "@/lib/i18n/settings";
 import acceptLanguage from "accept-language";
+import { jwtDecode } from "jwt-decode";
 
 /**s
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -31,6 +32,7 @@ declare module "next-auth" {
     // role: UserRole;
     accessToken?: string;
     refreshToken?: string;
+    authError?: "refresh_failed" | "refresh_token_disabled";
   }
 
   interface JWTRes {
@@ -47,13 +49,48 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       // 首次登录时，user 对象存在，保存用户数据和 token
       if (user) {
         return { ...token, ...user };
       }
-      // 后续请求时，user 为 undefined，返回现有 token
-      return token;
+      if (trigger === "update" && session) {
+        return { ...token, ...session };
+      }
+
+      // 后续请求时，user 为 undefined：这里负责 token 生命周期（必要时刷新）
+      const accessToken = token.accessToken as string | undefined;
+      const refreshToken = token.refreshToken as string | undefined;
+      if (!accessToken || !refreshToken) {
+        return token;
+      }
+
+      try {
+        const decoded = jwtDecode<{ exp?: number }>(accessToken);
+        const expMs = decoded.exp ? decoded.exp * 1000 : undefined;
+        if (expMs && expMs > Date.now() + 30_000) {
+          return token;
+        }
+      } catch {
+        return token;
+      }
+
+      try {
+        const api = createDicechoApi({ origin: env.NEXT_PUBLIC_DICECHO_API_ENDPOINT });
+        const refreshed = await api.auth.refreshToken(refreshToken);
+        return { ...token, ...refreshed, authError: undefined };
+      } catch (err) {
+        const authError =
+          isBackendError(err) && err.body.code === AuthErrorCode.REFRESH_TOKEN_DISABLES
+            ? "refresh_token_disabled"
+            : "refresh_failed";
+        return {
+          ...token,
+          accessToken: undefined,
+          refreshToken: undefined,
+          authError,
+        };
+      }
     },
     session: ({ session, token }) => {
       return {
@@ -77,8 +114,12 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const api = new DicechoApi({
+        let accessToken: string | undefined;
+        const api = createDicechoApi({
           origin: env.NEXT_PUBLIC_DICECHO_API_ENDPOINT,
+          auth: {
+            getAccessToken: async () => accessToken,
+          },
         });
 
         const email = credentials?.email;
@@ -140,7 +181,7 @@ export const authOptions: NextAuthOptions = {
         try {
           const token = await api.auth.local({ email, password });
 
-          api.setToken(token);
+          accessToken = token.accessToken;
           const user = await api.user.me();
 
           if (token && user) {
