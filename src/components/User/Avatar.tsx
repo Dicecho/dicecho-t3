@@ -26,7 +26,7 @@ export const UserAvatarPendant: FC<
   }
 
   return (
-    <span className={cn("relative inline-block leading-none")}>
+    <span className={cn("relative")}>
       <span
         className="pointer-events-none absolute top-1/2 left-1/2 z-1 h-[150%] w-[150%] -translate-x-1/2 -translate-y-1/2 bg-cover bg-center"
         style={{ backgroundImage: `url(${pendantUrl})` }}

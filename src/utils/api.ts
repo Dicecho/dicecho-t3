@@ -286,15 +286,16 @@ export function createDicechoApi(opts: DicechoApiOptions) {
 
     user: {
       me: () => request<Empty, IUserDto>(`/api/user/profile`, "GET"),
-      profile: (uuid: string) => request<Empty, IUserDto>(`/api/user/${uuid}/profile`, "GET"),
+      profile: (uuid: string, options?: { revalidate?: number | false }) =>
+        request<Empty, IUserDto>(`/api/user/${uuid}/profile`, "GET", {}, { revalidate: options?.revalidate ?? 60 }),
       follow: (uuid: string) => request<Empty, Empty>(`/api/user/${uuid}/follow`, "POST"),
       unfollow: (uuid: string) => request<Empty, Empty>(`/api/user/${uuid}/unfollow`, "POST"),
       updateProfile: (dto: UpdateProfileDto) => request<UpdateProfileDto, IUserDto>(`/api/user/profile`, "PUT", dto),
       changePassword: (dto: ChangePasswordDto) => request<ChangePasswordDto, Empty>(`/api/user/password`, "PUT", dto),
-      followers: (uuid: string, query: Partial<PageableQuery> = {}) =>
-        request<Empty, PaginatedResponse<IUserDto>>(`/api/user/${uuid}/followers?${qs.stringify(query)}`, "GET"),
-      followings: (uuid: string, query: Partial<PageableQuery> = {}) =>
-        request<Empty, PaginatedResponse<IUserDto>>(`/api/user/${uuid}/followings?${qs.stringify(query)}`, "GET"),
+      followers: (uuid: string, query: Partial<PageableQuery> = {}, options?: { revalidate?: number | false }) =>
+        request<Empty, PaginatedResponse<IUserDto>>(`/api/user/${uuid}/followers?${qs.stringify(query)}`, "GET", {}, { revalidate: options?.revalidate ?? 60 }),
+      followings: (uuid: string, query: Partial<PageableQuery> = {}, options?: { revalidate?: number | false }) =>
+        request<Empty, PaginatedResponse<IUserDto>>(`/api/user/${uuid}/followings?${qs.stringify(query)}`, "GET", {}, { revalidate: options?.revalidate ?? 60 }),
     },
 
     pendant: {

@@ -16,16 +16,14 @@ import { useTranslation } from "@/lib/i18n/react";
 import type { IUserDto } from "@dicecho/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { LinkWithLng } from "@/components/Link";
 
 type FollowListProps = {
   userId: string;
   type: "followers" | "followings";
 };
 
-export const AccountFollowList = ({
-  userId,
-  type,
-}: FollowListProps) => {
+export const AccountFollowList = ({ userId, type }: FollowListProps) => {
   const { api, initialized } = useDicecho();
   const { account, isAuthenticated } = useAccount();
   const { t } = useTranslation();
@@ -68,7 +66,9 @@ export const AccountFollowList = ({
         await api.user.unfollow(targetId);
         toast.success(t("unfollow_success"));
       }
-      await queryClient.invalidateQueries({ queryKey: ["account", type, userId, account?._id] });
+      await queryClient.invalidateQueries({
+        queryKey: ["account", type, userId, account?._id],
+      });
       await queryClient.invalidateQueries({
         queryKey: ["user", "profile", targetId],
       });
@@ -107,28 +107,28 @@ export const AccountFollowList = ({
               {entries.map((item) => (
                 <div
                   key={item._id}
-                  className="flex flex-col gap-3 px-4 py-4 text-sm sm:flex-row sm:items-center"
+                  className="flex flex-row gap-3 px-4 py-4 text-sm sm:flex-row sm:items-center"
                 >
-                  {/* <LinkWithLng href={`/account/${item._id}`}> */}
-                  <div className="flex items-center gap-3">
-                    <UserAvatar
-                      user={item}
-                      className="h-12 w-12 rounded-full"
-                    />
-                    <div>
-                      <div className="leading-tight font-medium">
-                        {item.nickName}
+                  <LinkWithLng href={`/account/${item._id}`}>
+                    <div className="flex items-center gap-3">
+                      <UserAvatar
+                        user={item}
+                        className="h-12 w-12 rounded-full"
+                      />
+                      <div>
+                        <div className="leading-tight font-medium">
+                          {item.nickName}
+                        </div>
+                        {item.note && (
+                          <p className="text-muted-foreground line-clamp-1">
+                            {item.note}
+                          </p>
+                        )}
                       </div>
-                      {item.note && (
-                        <p className="text-muted-foreground line-clamp-1">
-                          {item.note}
-                        </p>
-                      )}
                     </div>
-                  </div>
-                  {/* </LinkWithLng> */}
+                  </LinkWithLng>
                   {canInteract(item) && (
-                    <div className="flex items-center gap-2 sm:ml-auto">
+                    <div className="ml-auto flex items-center gap-2">
                       <Button
                         variant={item.isFollowed ? "outline" : "default"}
                         size="sm"

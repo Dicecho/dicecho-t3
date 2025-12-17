@@ -65,7 +65,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
               <NavigationMenuList>
                 {menus.map((menu) => (
                   <NavigationMenuItem key={menu.link}>
-                    <NavigationMenuLink
+                    <Link
                       href={`/${lng}${menu.link}`}
                       className={clsx(
                         navigationMenuTriggerStyle(),
@@ -73,7 +73,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
                       )}
                     >
                       {menu.title}
-                    </NavigationMenuLink>
+                    </Link>
                   </NavigationMenuItem>
                 ))}
               </NavigationMenuList>

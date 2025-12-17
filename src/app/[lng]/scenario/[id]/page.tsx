@@ -21,14 +21,14 @@ export async function generateMetadata({
   const scenario = await api.module.detail(id, { revalidate: 300 }).catch(() => null);
   if (!scenario) {
     return {
-      title: "Scenario - DiceEcho",
-      description: "TRPG scenario on DiceEcho",
+      title: "Scenario - Dicecho",
+      description: "TRPG scenario on Dicecho",
     };
   }
 
   const title = scenario.originTitle || scenario.title;
   const baseDescription =
-    scenario.description || `${scenario.title} - TRPG scenario on DiceEcho`;
+    scenario.description || `${scenario.title} - TRPG scenario on Dicecho`;
 
   // Add rating info to description for OG
   const ratingInfo =
@@ -58,7 +58,7 @@ export async function generateMetadata({
           ]
         : [],
       type: "article",
-      siteName: "DiceEcho",
+      siteName: "Dicecho",
     },
     twitter: {
       card: "summary_large_image",

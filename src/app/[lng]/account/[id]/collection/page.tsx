@@ -1,39 +1,61 @@
+import { Suspense } from "react";
 import { getServerAuthSession } from "@/server/auth";
-import { getDicechoServerApi } from "@/server/dicecho";
-import { AccountHeader } from "@/components/Account/AccountHeader";
-import { AccountTabs } from "@/components/Account/AccountTabs";
+import { AccountPageServer } from "@/components/Account/AccountPageServer";
+import { AccountPageSkeleton } from "@/components/Account/AccountPageSkeleton";
 import { MobileFooter } from "@/components/Footer";
 import { AccountCollection } from "@/components/Account/AccountCollection";
-import { notFound } from "next/navigation";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function AccountCollectionPage(
-  props: {
-    params: Promise<{ lng: string; id: string }>;
-  }
-) {
+// ISR with 60 seconds revalidation
+export const revalidate = 60;
+
+const CollectionContentSkeleton = () => (
+  <div className="container py-4">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <Card key={i}>
+          <CardHeader>
+            <Skeleton className="h-5 w-32" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="mb-2 h-4 w-full" />
+            <Skeleton className="h-4 w-2/3" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  </div>
+);
+
+export default async function AccountCollectionPage(props: {
+  params: Promise<{ lng: string; id: string }>;
+}) {
   const params = await props.params;
   const { lng, id } = params;
 
   const session = await getServerAuthSession();
-  const api = await getDicechoServerApi();
+  const isSelf = session?.user?._id === id;
 
-  try {
-    const user = await api.user.profile(id);
-
-    const isSelf = session?.user?._id === id;
-
-    return (
-      <>
-        <AccountHeader user={user} lng={lng} />
-        <AccountTabs user={user} lng={lng} userId={id} />
-        <div className="container py-4">
-          <AccountCollection userId={id} isSelf={isSelf} />
-        </div>
-        <MobileFooter />
-      </>
-    );
-  } catch (error) {
-    notFound();
-  }
+  return (
+    <>
+      <Suspense
+        key={id}
+        fallback={
+          <AccountPageSkeleton>
+            <CollectionContentSkeleton />
+          </AccountPageSkeleton>
+        }
+      >
+        <AccountPageServer userId={id} lng={lng}>
+          {() => (
+            <div className="container py-4">
+              <AccountCollection userId={id} isSelf={isSelf} />
+            </div>
+          )}
+        </AccountPageServer>
+      </Suspense>
+      <MobileFooter />
+    </>
+  );
 }
-

@@ -1,9 +1,11 @@
 import Link, { type LinkProps } from "next/link";
-import type { FC, PropsWithChildren } from "react";
+import type { AnchorHTMLAttributes } from "react";
 import { useTranslation } from "@/lib/i18n/react";
 import { removeLngFromPathname } from "@/lib/i18n/utils";
 
-export const LinkWithLng: FC<PropsWithChildren<LinkProps>> = ({ href, ...props }) => {
+type LinkWithLngProps = LinkProps & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps>;
+
+export const LinkWithLng = ({ href, ...props }: LinkWithLngProps) => {
   const { i18n } = useTranslation();
 
   const to = (() => {

@@ -13,9 +13,9 @@ interface HomepageProfileProps {
 export const HomepageProfile: FC<HomepageProfileProps> = ({ user, lng }) => {
   return (
     <div className="flex flex-col items-center">
-      <UserAvatar user={user} className="h-16 w-16 mb-4" />
+      <UserAvatar user={user} className="h-16 w-16" />
 
-      <div className="text-lg font-semibold mb-2 text-center">{user.nickName}</div>
+      <div className="text-lg font-semibold mb-2 text-center mt-4">{user.nickName}</div>
 
       {user.note && (
         <div className="text-sm text-muted-foreground mb-4 text-center">
