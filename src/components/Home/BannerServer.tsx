@@ -7,7 +7,7 @@ import { HTMLAttributes, HTMLProps } from "react";
 const DEFAULT_BANNER: BannerDto = {
   priority: 0,
   action: "",
-  imageUrl: "https://file.dicecho.com/mod/600af94a44f096001d6e49df/2021033103382254.png",
+  imageUrl: "https://file.dicecho.com/mod/600af94a44f096001d6e49df/2021033103382254.png?width=600&height=300",
   link: "",
 };
 

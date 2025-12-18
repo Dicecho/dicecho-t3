@@ -1,8 +1,8 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 @import "./components.css";
 
 @plugin "tailwind-scrollbar-hide";
+@plugin "tailwindcss-animate";
 @custom-variant dark (&:is(.dark *));
 
 :root {

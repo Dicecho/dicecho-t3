@@ -1,5 +1,4 @@
 import "@/styles/globals.css";
-import "@/styles/components.css";
 
 import { GeistSans } from "geist/font/sans";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
