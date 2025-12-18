@@ -3,6 +3,7 @@ import "@/styles/components.css";
 
 import { GeistSans } from "geist/font/sans";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Analytics } from "@vercel/analytics/next";
 import { dir } from "i18next";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/Header";
@@ -50,6 +51,7 @@ export default async function RootLayout(props: {
             <AppLayout>
               <Header lng={lng} />
               {children}
+              <Analytics />
               <Toaster richColors position="top-center" />
             </AppLayout>
           </ThemeProvider>
