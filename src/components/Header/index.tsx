@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import { type ComponentProps } from "react";
 import Link from "next/link";
 import DicechoLogo from "./dicecho.svg";
@@ -8,22 +7,20 @@ import { ThemeSwitcher } from "@/components/theme-switcher";
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { getServerAuthSession } from "@/server/auth";
 import { getTranslation } from "@/lib/i18n";
 import { ColorModeSwitcher } from "../color-mode-switcher";
 import { SearchInput } from "@/components/Search/SearchInput";
 import { HeaderAccount } from "./header-account";
+import { cn } from "@/lib/utils";
 
 export type HeaderProps = ComponentProps<"div"> & {
   lng: string;
 };
 
 export const Header = async ({ lng, ...props }: HeaderProps) => {
-  const authSession = await getServerAuthSession();
   const { t } = await getTranslation(lng);
 
   const menus = [
@@ -44,7 +41,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
   return (
     <div
       {...props}
-      className={clsx(
+      className={cn(
         "bg-header sticky top-0 right-0 left-0 z-10 shadow-xl max-md:hidden",
       )}
     >
@@ -67,7 +64,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
                   <NavigationMenuItem key={menu.link}>
                     <Link
                       href={`/${lng}${menu.link}`}
-                      className={clsx(
+                      className={cn(
                         navigationMenuTriggerStyle(),
                         "capitalize",
                       )}

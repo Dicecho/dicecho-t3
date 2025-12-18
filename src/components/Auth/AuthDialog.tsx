@@ -17,6 +17,7 @@ import { useTranslation } from "@/lib/i18n/react";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import DicechoLogo from "./dicecho.svg";
 
 export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
   const { t } = useTranslation();
@@ -48,16 +49,19 @@ export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogContent className="p-4" showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle>{t("sign_in_to_dicecho")}</DialogTitle>
+          <DialogTitle className="hidden">{t("sign_in_to_dicecho")}</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center w-full gap-8">
+          <DicechoLogo className="text-primary" width={100} height={100} />
 
-          <Tabs defaultValue="signin">
-            <TabsList>
-              <TabsTrigger value="signin" className="capitalize">
+          <Tabs defaultValue="signin" className="w-full">
+            <TabsList className="w-full">
+              <TabsTrigger value="signin" className="flex-1 capitalize">
                 {t("sign_in")}
               </TabsTrigger>
-              <TabsTrigger value="signup" className="capitalize">
+              <TabsTrigger value="signup" className="flex-1 capitalize">
                 {t("sign_up")}
               </TabsTrigger>
             </TabsList>
@@ -78,7 +82,7 @@ export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
             </TabsContent>
             <TabsContent value="signup">working...</TabsContent>
           </Tabs>
-        </DialogHeader>
+        </div>
       </DialogContent>
     </Dialog>
   );

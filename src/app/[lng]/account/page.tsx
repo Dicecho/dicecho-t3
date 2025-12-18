@@ -26,7 +26,7 @@ export default async function AccountPage(
     <>
       <MobileHeader left={<HeaderMenu />} right={<NotificationReminder />}>
       </MobileHeader>
-      <main className="flex min-h-screen items-center justify-center w-full">
+      <main className="flex justify-center w-full">
         <SignIn />
       </main>
       <MobileFooter />
