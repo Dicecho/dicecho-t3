@@ -29,18 +29,18 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
       exact: false,
       icon: BookText,
     },
-    {
-      title: t("forum"),
-      link: "/forum",
-      exact: false,
-      icon: MessagesSquare,
-    },
-    {
-      title: t("replay"),
-      link: "/replay",
-      exact: false,
-      icon: Tv,
-    },
+    // {
+    //   title: t("forum"),
+    //   link: "/forum",
+    //   exact: false,
+    //   icon: MessagesSquare,
+    // },
+    // {
+    //   title: t("replay"),
+    //   link: "/replay",
+    //   exact: false,
+    //   icon: Tv,
+    // },
     {
       title: t("my"),
       link: session?.user ? `/account/${session?.user?._id}` : "/account",
@@ -50,10 +50,10 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
   ];
 
   return (
-    <div className="md:hidden bg-footer fixed bottom-0 left-0 right-0 z-10 flex justify-between px-4 py-4 shadow-[0_-8px_10px_-1px_rgba(0,0,0,0.25)]">
+    <div className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-10 flex justify-between px-2 py-2 supports-backdrop-filter:bg-background/80 backdrop-blur-xs shadow-lg shadow-black/40 rounded-full ring-1 ring-black/20">
       <div
         className={clsx(
-          "container flex justify-between",
+          "flex gap-4",
           className,
         )}
         {...props}
@@ -70,18 +70,14 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
               <div className={clsx("flex flex-col items-center")}>
                 <div
                   className={clsx(
-                    "flex h-10 w-10 items-center justify-center",
+                    "flex flex-col h-12 w-12 items-center justify-center transition-all rounded-full",
                     {
-                      ["bg-input/60 text-input-foreground rounded-full"]:
-                        !matched,
-                    },
-                    {
-                      ["bg-primary text-primary-foreground rounded-lg"]:
+                      ["bg-primary text-primary-foreground shadow-primary/50 shadow-md"]:
                         matched,
                     },
                   )}
                 >
-                  <menu.icon size={16} />
+                  <menu.icon size={18} />
                 </div>
               </div>
             </LinkWithLng>
