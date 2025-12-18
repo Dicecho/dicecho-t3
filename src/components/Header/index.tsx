@@ -1,4 +1,4 @@
-import { type ComponentProps } from "react";
+import { Suspense, type ComponentProps } from "react";
 import Link from "next/link";
 import DicechoLogo from "./dicecho.svg";
 import { LanguageChanger } from "./LanguageChanger";
@@ -64,10 +64,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
                   <NavigationMenuItem key={menu.link}>
                     <Link
                       href={`/${lng}${menu.link}`}
-                      className={cn(
-                        navigationMenuTriggerStyle(),
-                        "capitalize",
-                      )}
+                      className={cn(navigationMenuTriggerStyle(), "capitalize")}
                     >
                       {menu.title}
                     </Link>
@@ -78,7 +75,12 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
           </div>
 
           <div className="hidden flex-1 md:flex">
-            <SearchInput placeholder={t("search_placeholder")} className="max-w-md" />
+            <Suspense>
+              <SearchInput
+                placeholder={t("search_placeholder")}
+                className="max-w-md"
+              />
+            </Suspense>
           </div>
 
           <div className="ml-auto flex items-center gap-2 capitalize">
