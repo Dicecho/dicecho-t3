@@ -9,6 +9,7 @@ import type {
   NotificationListQuery,
   NotificationType,
 } from "@/types/notification";
+import { useSession } from "next-auth/react";
 
 // Build notification query object
 function buildNotificationQuery(
@@ -58,13 +59,14 @@ interface UseNotificationsOptions {
 export function useNotifications(options: UseNotificationsOptions = {}) {
   const { api, initialized } = useDicecho();
   const { type, refetchInterval = 60000, enabled = true } = options;
+  const { data: session } = useSession();
 
   const query = buildNotificationQuery(type);
 
   const notificationsQuery = useQuery({
     queryKey: ["notifications", query],
     queryFn: () => api.notification.list(query),
-    enabled: initialized && enabled,
+    enabled: initialized && enabled && session?.user?._id !== undefined,
     refetchInterval,
     staleTime: 30000,
   });
@@ -94,14 +96,14 @@ export function useInfiniteNotifications(
 ) {
   const { api, initialized } = useDicecho();
   const { type, pageSize = 20, enabled = true } = options;
-
+  const { data: session } = useSession();
   const query = buildNotificationQuery(type, pageSize);
 
   const notificationsQuery = useInfiniteQuery({
     queryKey: ["notifications", "infinite", query],
     queryFn: ({ pageParam = 1 }) =>
       api.notification.list({ ...query, page: pageParam }),
-    enabled: initialized && enabled,
+    enabled: initialized && enabled && session?.user?._id !== undefined,
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (!lastPage.hasNext) return undefined;
