@@ -17,6 +17,7 @@ import MultipleSelector, {
 } from "@/components/ui/multiple-selector";
 import { useDicecho } from "@/hooks/useDicecho";
 import { DebouncedSlider } from "@/components/ui/slider";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { type FilterValue } from "./use-scenario-search-params";
 
 export interface ScenarioFilterProps {
@@ -32,6 +33,7 @@ export function ScenarioFilter({
 }: ScenarioFilterProps) {
   const { t, i18n } = useTranslation();
   const { api } = useDicecho();
+  const isMobile = useIsMobile();
 
   const handleReset = () => {
     onChange({
@@ -120,16 +122,13 @@ export function ScenarioFilter({
         <ButtonGroup orientation="horizontal" className="w-full">
           <Button
             type="button"
-            variant={value.isForeign === undefined ? "default" : "outline"}
-            onClick={() => onChange({ ...value, isForeign: undefined })}
-            className="flex-1"
-          >
-            {t("filter_all")}
-          </Button>
-          <Button
-            type="button"
             variant={value.isForeign === false ? "default" : "outline"}
-            onClick={() => onChange({ ...value, isForeign: false })}
+            onClick={() =>
+              onChange({
+                ...value,
+                isForeign: value.isForeign === false ? undefined : false,
+              })
+            }
             className="flex-1"
           >
             {t("filter_published_scenario")}
@@ -137,7 +136,12 @@ export function ScenarioFilter({
           <Button
             type="button"
             variant={value.isForeign === true ? "default" : "outline"}
-            onClick={() => onChange({ ...value, isForeign: true })}
+            onClick={() =>
+              onChange({
+                ...value,
+                isForeign: value.isForeign === true ? undefined : true,
+              })
+            }
             className="flex-1"
           >
             {t("filter_community_scenario")}
@@ -184,8 +188,7 @@ export function ScenarioFilter({
           <SelectContent>
             {config?.languages.map((language) => (
               <SelectItem key={language._id} value={language._id}>
-                {t(`language_codes.${language._id}`)}
-                ({language.count})
+                {t(`language_codes.${language._id}`)}({language.count})
               </SelectItem>
             ))}
           </SelectContent>
@@ -213,6 +216,9 @@ export function ScenarioFilter({
           hideClearAllButton
           hidePlaceholderWhenSelected
           placeholder={t("select_tags")}
+          inputProps={{
+            className: "text-base",
+          }}
           triggerSearchOnFocus
           emptyIndicator={
             <p className="text-muted-foreground text-center text-sm">
@@ -231,7 +237,7 @@ export function ScenarioFilter({
                 : TagFilterMode.IN;
             onChange({ ...value, tagsMode: newTagsMode });
           }}
-          className="shrink-0"
+          className="h-10 shrink-0"
           title={
             value.tagsMode === TagFilterMode.IN
               ? t("tag_filter_mode_in")
@@ -244,7 +250,7 @@ export function ScenarioFilter({
         </Button>
       </ButtonGroup>
 
-      <div className="space-y-2 mb-4">
+      <div className="mb-4 space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
             {t("player_number_range")}
