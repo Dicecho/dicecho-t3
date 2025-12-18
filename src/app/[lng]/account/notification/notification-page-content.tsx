@@ -10,6 +10,7 @@ import { NotificationItem } from "@/components/notification/notification-item";
 import { useInfiniteNotifications } from "@/hooks/use-notifications";
 import { NotificationType } from "@/types/notification";
 import { useInView } from "react-intersection-observer";
+import { useSession } from "next-auth/react";
 
 const NOTIFICATIONS_NAVIGATION = [
   {
@@ -35,6 +36,8 @@ const NOTIFICATIONS_NAVIGATION = [
 export function NotificationPageContent() {
   const { lng } = useParams<{ lng: string }>();
   const { t } = useTranslation(lng);
+  const { data: session } = useSession();
+  const isAuthenticated = !!session?.user;
   const [activeTab, setActiveTab] = useState("all");
   const { ref, inView } = useInView();
 
@@ -103,6 +106,10 @@ export function NotificationPageContent() {
       </>
     );
   };
+
+  if (!isAuthenticated) {
+    return <div>Please sign in to view your notifications.</div>;
+  }
 
   return (
     <>
