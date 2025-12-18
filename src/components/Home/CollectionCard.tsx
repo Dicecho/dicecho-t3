@@ -19,7 +19,7 @@ export const CollectionCard: FC<CollectionCardProps> = ({
         <div
           className="aspect-square w-full bg-cover bg-center rounded-sm"
           style={{
-            backgroundImage: `url(${collection.coverUrl}?w=300&h=300)`,
+            backgroundImage: `url(${collection.coverUrl}?width=300&height=300)`,
           }}
         />
         <div className="text-sm line-clamp-2">{collection.name}</div>
