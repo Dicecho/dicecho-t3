@@ -23,6 +23,16 @@ export const env = createEnv({
       process.env.VERCEL ? z.string() : z.string().url()
     ),
     MONGO_URI: z.string().url(),
+    // AI Configuration
+    AI_PROVIDER: z.enum(["openai", "azure"]).default("azure"),
+    OPENAI_API_KEY: z.string().optional(),
+    OPENAI_BASE_URL: z.string().optional(),
+    OPENAI_MODEL: z.string().optional(),
+    // Azure OpenAI Configuration
+    AZURE_OPENAI_API_KEY: z.string().optional(),
+    AZURE_OPENAI_ENDPOINT: z.string().optional(),
+    AZURE_OPENAI_DEPLOYMENT: z.string().optional(),
+    AZURE_OPENAI_API_VERSION: z.string().optional(),
   },
 
   /**
@@ -46,6 +56,16 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXT_PUBLIC_DICECHO_API_ENDPOINT: process.env.NEXT_PUBLIC_DICECHO_API_ENDPOINT,
     MONGO_URI: process.env.MONGO_URI,
+    // AI Configuration
+    AI_PROVIDER: process.env.AI_PROVIDER,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    OPENAI_BASE_URL: process.env.OPENAI_BASE_URL,
+    OPENAI_MODEL: process.env.OPENAI_MODEL,
+    // Azure OpenAI Configuration
+    AZURE_OPENAI_API_KEY: process.env.AZURE_OPENAI_API_KEY,
+    AZURE_OPENAI_ENDPOINT: process.env.AZURE_OPENAI_ENDPOINT,
+    AZURE_OPENAI_DEPLOYMENT: process.env.AZURE_OPENAI_DEPLOYMENT,
+    AZURE_OPENAI_API_VERSION: process.env.AZURE_OPENAI_API_VERSION,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

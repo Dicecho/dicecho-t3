@@ -221,6 +221,9 @@ importers:
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.1)
+      franc-min:
+        specifier: ^6.2.0
+        version: 6.2.0
       geist:
         specifier: ^1.5.1
         version: 1.5.1(next@16.0.7(@babel/core@7.28.5)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.51.0))
@@ -4538,6 +4541,9 @@ packages:
   codem-isoboxer@0.3.10:
     resolution: {integrity: sha512-eNk3TRV+xQMJ1PEj0FQGY8KD4m0GPxT487XJ+Iftm7mVa9WpPFDMWqPt+46buiP5j5Wzqe5oMIhqBcAeKfygSA==}
 
+  collapse-white-space@2.1.0:
+    resolution: {integrity: sha512-loKTxY1zCOuG4j9f6EPnuyyYkf58RnhhWTvRoZEokgB+WbdXehfjFviyOVYkqzEWz1Q5kRiZdBYS5SwxbQYwzw==}
+
   collect-v8-coverage@1.0.3:
     resolution: {integrity: sha512-1L5aqIkwPfiodaMgQunkF1zRhNqifHBmtbbbxcr6yVxxBnliw4TDOW6NxpO8DJLgJ16OT+Y4ztZqP6p/FtXnAw==}
 
@@ -5302,6 +5308,9 @@ packages:
   fractional-indexing@3.2.0:
     resolution: {integrity: sha512-PcOxmqwYCW7O2ovKRU8OoQQj2yqTfEB/yeTYk4gPid6dN5ODRfU1hXd9tTVZzax/0NkO7AxpHykvZnT1aYp/BQ==}
     engines: {node: ^14.13.1 || >=16.0.0}
+
+  franc-min@6.2.0:
+    resolution: {integrity: sha512-1uDIEUSlUZgvJa2AKYR/dmJC66v/PvGQ9mWfI9nOr/kPpMFyvswK0gPXOwpYJYiYD008PpHLkGfG58SPjQJFxw==}
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
@@ -6616,6 +6625,9 @@ packages:
   mux-embed@5.9.0:
     resolution: {integrity: sha512-wmunL3uoPhma/tWy8PrDPZkvJpXvSFBwbD3KkC4PG8Ztjfb1X3hRJwGUAQyRz7z99b/ovLm2UTTitrkvStjH4w==}
 
+  n-gram@2.0.2:
+    resolution: {integrity: sha512-S24aGsn+HLBxUGVAUFOwGpKs7LBcG4RudKU//eWzt/mQ97/NMKQxDWHyHx63UNWk/OOdihgmzoETn1tf5nQDzQ==}
+
   nano-css@5.6.2:
     resolution: {integrity: sha512-+6bHaC8dSDGALM1HJjOHVXpuastdu2xFoZlC77Jh4cg+33Zcgm+Gxd+1xsnpZK14eyHObSp82+ll5y3SX75liw==}
     peerDependencies:
@@ -7755,6 +7767,9 @@ packages:
   tr46@5.1.1:
     resolution: {integrity: sha512-hdF5ZgjTqgAntKkklYw0R03MG2x/bSzTtkxmIRw/sTNV8YXsCJ1tfLAX23lhxhHJlEf3CRCOCGGWw3vI3GaSPw==}
     engines: {node: '>=18'}
+
+  trigram-utils@2.0.1:
+    resolution: {integrity: sha512-nfWIXHEaB+HdyslAfMxSqWKDdmqY9I32jS7GnqpdWQnLH89r6A5sdk3fDVYqGAZ0CrT8ovAFSAo6HRiWcWNIGQ==}
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
@@ -13169,6 +13184,8 @@ snapshots:
 
   codem-isoboxer@0.3.10: {}
 
+  collapse-white-space@2.1.0: {}
+
   collect-v8-coverage@1.0.3: {}
 
   color-convert@2.0.1:
@@ -14098,6 +14115,10 @@ snapshots:
       signal-exit: 4.1.0
 
   fractional-indexing@3.2.0: {}
+
+  franc-min@6.2.0:
+    dependencies:
+      trigram-utils: 2.0.1
 
   fs.realpath@1.0.0: {}
 
@@ -15984,6 +16005,8 @@ snapshots:
 
   mux-embed@5.9.0: {}
 
+  n-gram@2.0.2: {}
+
   nano-css@5.6.2(react-dom@19.2.1(react@19.2.1))(react@19.2.1):
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
@@ -17235,6 +17258,11 @@ snapshots:
   tr46@5.1.1:
     dependencies:
       punycode: 2.3.1
+
+  trigram-utils@2.0.1:
+    dependencies:
+      collapse-white-space: 2.1.0
+      n-gram: 2.0.2
 
   trim-lines@3.0.1: {}
 

@@ -213,7 +213,13 @@
     "latest_rate": "newest",
     "oldest_rate": "oldest",
     "empty_placeholder_action": "Come leave a review!",
-    "text_length": "full text {{count}} words"
+    "text_length": "full text {{count}} words",
+    "translate_to": "Translate to {{language}}",
+    "show_original": "Show original",
+    "translated": "Translated",
+    "hide_translation": "Hide translation",
+    "translated_content": "Translated content",
+    "translate_error": "Translation failed, please try again later"
   },
   "rate_score": "Rating",
   "rate_click_to_rate": "Click stars to rate",
@@ -348,6 +354,12 @@
   "filter_all": "All",
   "filter_published_scenario": "Published",
   "filter_community_scenario": "Community",
+  "language": {
+    "zh": "Chinese",
+    "en": "English",
+    "ja": "Japanese",
+    "ko": "Korean"
+  },
   "language_codes": {
     "af": "Afrikaans",
     "sq": "Albanian",

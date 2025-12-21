@@ -185,7 +185,13 @@
     "latest_rate": "新しさ順",
     "oldest_rate": "古さ順",
     "empty_placeholder_action": "レビューを書いてください！",
-    "text_length": "全文 {{count}} ワード"
+    "text_length": "全文 {{count}} ワード",
+    "translate_to": "{{language}}に翻訳",
+    "show_original": "原文を表示",
+    "translated": "翻訳済み",
+    "hide_translation": "翻訳を隠す",
+    "translated_content": "翻訳内容",
+    "translate_error": "翻訳に失敗しました。後でもう一度お試しください"
   },
   "rate_score": "評価",
   "rate_click_to_rate": "星をクリックして評価",
@@ -349,6 +355,12 @@
   "filter_all": "すべて",
   "filter_published_scenario": "公開",
   "filter_community_scenario": "コミュニティ",
+  "language": {
+    "zh": "中国語",
+    "en": "英語",
+    "ja": "日本語",
+    "ko": "韓国語"
+  },
   "language_codes": {
     "af": "アフリカーンス語",
     "sq": "アルバニア語",

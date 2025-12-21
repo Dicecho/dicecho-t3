@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { franc } from 'franc-min';
 import { UserAvatar } from "@/components/User/Avatar";
 import { UserAvatarPopover } from "@/components/User/UserAvatarPopover";
 import { RateView, RateType, RemarkContentType } from "@dicecho/types";
@@ -17,6 +18,8 @@ import { MessageCircle, Edit, Trash2 } from "lucide-react";
 import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
+import { RateTranslateButton, type TranslationResult } from "./rate-translate-button";
+import { isDifferentLanguage } from "@/utils/language";
 
 interface IProps {
   rate: IRateDto;
@@ -27,8 +30,57 @@ export const RateItem: React.FunctionComponent<IProps> = ({
   rate,
   onDeleted,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n: { language } } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
+  const [translation, setTranslation] = useState<TranslationResult | null>(null);
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [showTranslateButton, setShowTranslateButton] = useState(false);
+
+  const detectedLang = useMemo(() => {
+    if (rate.remarkLength === 0) {
+      return null;
+    }
+
+    let rateContent = "";
+    if (rate.remarkType === RemarkContentType.Markdown) {
+      rateContent = rate.remark || "";
+    } else if (rate.remarkType === RemarkContentType.Richtext) {
+      // combine text from rich text state (platejs format)
+      const texts: string[] = [];
+      const traverse = (nodes: any[]) => {
+        nodes.forEach((node) => {
+          if (typeof node.text === "string") {
+            texts.push(node.text);
+          }
+          if (typeof node.summary === "string") {
+            texts.push(node.summary);
+          }
+          if (node.children && Array.isArray(node.children)) {
+            traverse(node.children);
+          }
+        });
+      };
+      traverse(rate.richTextState || []);
+      rateContent = texts.join(" ");
+    }
+
+    return franc(rateContent, { minLength: 3 });
+  }, [rate.remarkLength, rate.remarkType, rate.remark, rate.richTextState]);
+
+  useEffect(() => {
+    if (rate.remarkLength === 0) {
+      return;
+    }
+    if (translation) {
+      return;
+    }
+
+    if (isDifferentLanguage(detectedLang, language)) {
+      setShowTranslateButton(true);
+    } else {
+      setShowTranslateButton(false);
+    }
+  }, [rate, translation, language, detectedLang]);
 
   const { data: session, status } = useSession();
   const canEdit =
@@ -48,6 +100,15 @@ export const RateItem: React.FunctionComponent<IProps> = ({
   const renderRateContent = () => {
     if (rate.remarkLength === 0) {
       return null;
+    }
+
+    if (showTranslation && translation && translation.translatedText) {
+      return (
+        <RichTextPreview
+          id={`rate-item-translated-${rate._id}`}
+          markdown={translation.translatedText}
+        />
+      );
     }
 
     if (rate.remarkType === RemarkContentType.Richtext) {
@@ -97,21 +158,28 @@ export const RateItem: React.FunctionComponent<IProps> = ({
       )}
 
       {(rate.type === RateType.Rate || rate.remarkLength > 50) && (
-        <div className="flex gap-2">
-          {rate.type === RateType.Rate && (
-            <Badge variant="muted">{RATE_VIEW_MAP[rate.view]}</Badge>
-          )}
-          {rate.remarkLength > 50 && (
-            <Badge variant="outline">
-              <Trans
-                i18nKey="Rate.text_length"
-                t={t}
-                values={{
-                  count: rate.remarkLength,
-                }}
-              />
+        <div className="flex justify-between">
+          <div className="flex gap-2">
+            {rate.type === RateType.Rate && (
+              <Badge variant="muted">{RATE_VIEW_MAP[rate.view]}</Badge>
+            )}
+            {rate.remarkLength > 50 && (
+              <Badge variant="outline">
+                <Trans
+                  i18nKey="Rate.text_length"
+                  t={t}
+                  values={{
+                    count: rate.remarkLength,
+                  }}
+                />
+              </Badge>
+            )}
+          </div>
+          {showTranslation && translation &&
+            <Badge variant="outline" className="text-xs">
+              {t("Rate.translated")}
             </Badge>
-          )}
+          }
         </div>
       )}
 
@@ -135,7 +203,21 @@ export const RateItem: React.FunctionComponent<IProps> = ({
           <ShareButton url={rateUrl} variant="secondary" size="sm">
             {t("share")}
           </ShareButton>
-
+          {
+            showTranslateButton && (
+              <RateTranslateButton
+                rateId={rate._id}
+                hasContent={rate.remarkLength > 0}
+                isTranslated={showTranslation && translation !== null}
+                onTranslated={(result) => {
+                  setTranslation(result);
+                  setShowTranslation(true);
+                }}
+                onToggle={() => setShowTranslation((prev) => !prev)}
+              />
+            )
+          }
+          
           {canEdit && (
             <>
               <RateEditDialog rate={rate}>

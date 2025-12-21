@@ -83,6 +83,7 @@
     "dayjs": "^1.11.19",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "franc-min": "^6.2.0",
     "geist": "^1.5.1",
     "hast-util-to-mdast": "^10.1.2",
     "html2canvas-pro": "^1.5.13",

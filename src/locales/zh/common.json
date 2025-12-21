@@ -213,7 +213,13 @@
     "latest_rate": "最新评价",
     "oldest_rate": "最早评价",
     "empty_placeholder_action": "来留下一篇评价吧！",
-    "text_length": "全文 {{count}} 字"
+    "text_length": "全文 {{count}} 字",
+    "translate_to": "翻译为{{language}}",
+    "show_original": "显示原文",
+    "translated": "已翻译",
+    "hide_translation": "隐藏翻译",
+    "translated_content": "翻译内容",
+    "translate_error": "翻译失败，请稍后重试"
   },
   "rate_score": "评分",
   "rate_click_to_rate": "点击星星评分",
@@ -348,6 +354,12 @@
   "filter_all": "全部",
   "filter_published_scenario": "投稿",
   "filter_community_scenario": "词条",
+  "language": {
+    "zh": "中文",
+    "en": "英语",
+    "ja": "日语",
+    "ko": "韩语"
+  },
   "language_codes": {
     "af": "南非荷兰语",
     "sq": "阿尔巴尼亚语",
