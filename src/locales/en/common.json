@@ -354,12 +354,6 @@
   "filter_all": "All",
   "filter_published_scenario": "Published",
   "filter_community_scenario": "Community",
-  "language": {
-    "zh": "Chinese",
-    "en": "English",
-    "ja": "Japanese",
-    "ko": "Korean"
-  },
   "language_codes": {
     "af": "Afrikaans",
     "sq": "Albanian",
@@ -367,6 +361,7 @@
     "eu": "Basque",
     "bg": "Bulgarian",
     "ca": "Catalan",
+    "zh": "Chinese",
     "zh-CN": "Chinese Simplified",
     "zh-TW": "Chinese Traditional",
     "hr": "Croatian",

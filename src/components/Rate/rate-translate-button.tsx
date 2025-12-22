@@ -69,7 +69,7 @@ export function RateTranslateButton({
       <span>
         {isTranslated
           ? t("Rate.show_original")
-          : t("Rate.translate_to", { language: t(`language.${currentLanguage}`) })}
+          : t("Rate.translate_to", { language: t(`language_codes.${currentLanguage}`) })}
       </span>
     </Button>
   );

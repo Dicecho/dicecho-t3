@@ -354,12 +354,6 @@
   "filter_all": "전체",
   "filter_published_scenario": "게시된",
   "filter_community_scenario": "커뮤니티",
-  "language": {
-    "zh": "중국어",
-    "en": "영어",
-    "ja": "일본어",
-    "ko": "한국어"
-  },
   "language_codes": {
     "af": "아프리칸스어",
     "sq": "알바니아어",
@@ -367,6 +361,7 @@
     "eu": "바스크어",
     "bg": "불가리아어",
     "ca": "카탈로니아어",
+    "zh": "중국어",
     "zh-CN": "중국어 간체",
     "zh-TW": "중국어 번체",
     "hr": "크로아티아어",

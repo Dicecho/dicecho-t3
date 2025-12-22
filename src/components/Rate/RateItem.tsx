@@ -80,7 +80,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     } else {
       setShowTranslateButton(false);
     }
-  }, [rate, translation, language, detectedLang]);
+  }, [rate.remarkLength, translation, language, detectedLang]);
 
   const { data: session, status } = useSession();
   const canEdit =

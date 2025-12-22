@@ -355,12 +355,6 @@
   "filter_all": "すべて",
   "filter_published_scenario": "公開",
   "filter_community_scenario": "コミュニティ",
-  "language": {
-    "zh": "中国語",
-    "en": "英語",
-    "ja": "日本語",
-    "ko": "韓国語"
-  },
   "language_codes": {
     "af": "アフリカーンス語",
     "sq": "アルバニア語",
@@ -368,6 +362,7 @@
     "eu": "バスク語",
     "bg": "ブルガリア語",
     "ca": "カタロニア語",
+    "zh": "中国語",
     "zh-CN": "中国語簡体字",
     "zh-TW": "中国語繁体字",
     "hr": "クロアチア語",

@@ -45,7 +45,7 @@ export enum LanguageCodes {
   VI = 'vi',
 }
 
-export const map639_3to1: Record<string, LanguageCodes> = {
+const map639_3to1: Record<string, LanguageCodes> = {
   'eng': LanguageCodes.EN, // English
   'cmn': LanguageCodes.ZHCN, // Mandarin Chinese
   'zho': LanguageCodes.ZHCN, // Chinese (Macro)
@@ -66,17 +66,23 @@ export const map639_3to1: Record<string, LanguageCodes> = {
   'tha': LanguageCodes.TH, // Thai
 };
 
-export function getIso639_1Code(iso639_3code: string): LanguageCodes | null {
+function getIso639_1Code(iso639_3code: string): LanguageCodes | null {
   return map639_3to1[iso639_3code] || null;
 }
 
-export function isDifferentLanguage(iso639_3code: string | null, targetLang: string): boolean {
-  if (!iso639_3code) {
+export function isDifferentLanguage(language_code: string | null, targetLang: string): boolean {
+  if (!language_code) {
+    return true;
+  }
+
+  if (language_code === targetLang) {
     return false;
   }
-  const langCode = getIso639_1Code(iso639_3code);
+
+  const langCode = getIso639_1Code(language_code);
   if (!langCode) {
-    return false;
+    return true;
   }
+  
   return !langCode.startsWith(targetLang);
 }

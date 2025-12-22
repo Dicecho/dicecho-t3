@@ -354,12 +354,6 @@
   "filter_all": "全部",
   "filter_published_scenario": "投稿",
   "filter_community_scenario": "词条",
-  "language": {
-    "zh": "中文",
-    "en": "英语",
-    "ja": "日语",
-    "ko": "韩语"
-  },
   "language_codes": {
     "af": "南非荷兰语",
     "sq": "阿尔巴尼亚语",
@@ -367,6 +361,7 @@
     "eu": "巴斯克语",
     "bg": "保加利亚语",
     "ca": "加泰罗尼亚语",
+    "zh": "中文",
     "zh-CN": "简体中文",
     "zh-TW": "繁体中文",
     "hr": "克罗地亚语",

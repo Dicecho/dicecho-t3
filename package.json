@@ -12,6 +12,9 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@ai-sdk/azure": "^3.0.0",
+    "@ai-sdk/openai": "^3.0.0",
+    "@ai-sdk/provider": "^3.0.0",
     "@ariakit/react": "^0.4.20",
     "@aws-sdk/client-s3": "^3.936.0",
     "@dicebear/collection": "^9.2.4",
@@ -76,6 +79,7 @@
     "@uploadthing/react": "7.3.3",
     "@vercel/analytics": "^1.6.1",
     "accept-language": "^3.0.20",
+    "ai": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
