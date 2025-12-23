@@ -4,16 +4,11 @@ import { Languages, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/react";
 import { api } from "@/trpc/react";
-import { useParams } from "next/navigation";
 import { LanguageCodes } from "@/utils/language";
-
-export interface TranslationResult {
-  translatedText: string;
-}
+import type { TranslationResult } from "./use-rate-translation";
 
 interface RateTranslateButtonProps {
   rateId: string;
-  hasContent: boolean;
   isTranslated: boolean;
   onTranslated: (result: TranslationResult) => void;
   onToggle: () => void;
@@ -21,14 +16,12 @@ interface RateTranslateButtonProps {
 
 export function RateTranslateButton({
   rateId,
-  hasContent,
   isTranslated,
   onTranslated,
   onToggle,
 }: RateTranslateButtonProps) {
-  const { t } = useTranslation();
-  const params = useParams<{ lng: LanguageCodes }>();
-  const currentLanguage = params.lng ?? LanguageCodes.EN;
+  const { t, i18n } = useTranslation();
+  const currentLanguage = i18n.language as LanguageCodes ?? LanguageCodes.EN;
 
   const translateMutation = api.rate.translate.useMutation({
     onSuccess: (data) => {
@@ -49,10 +42,6 @@ export function RateTranslateButton({
       targetLanguage: currentLanguage,
     });
   };
-
-  if (!hasContent) {
-    return null;
-  }
 
   return (
     <Button

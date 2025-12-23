@@ -7,7 +7,7 @@
  * 3. Type-safe - full TypeScript type support
  */
 
-import { generateText } from "ai";
+import { generateText, streamText } from "ai";
 import { LanguageModelV3 } from '@ai-sdk/provider';
 import { createAzure } from "@ai-sdk/azure";
 import { createOpenAI } from "@ai-sdk/openai";
@@ -64,7 +64,7 @@ const getModel = (): LanguageModelV3 => {
       apiKey: env.OPENAI_API_KEY,
       baseURL: env.OPENAI_BASE_URL,
     });
-    cachedModel = openai(env.OPENAI_MODEL ?? "gpt-4o-mini");
+    cachedModel = openai.chat(env.OPENAI_MODEL ?? "gpt-4o-mini");
   }
 
   return cachedModel;
@@ -81,12 +81,12 @@ export async function translate({ text, targetLanguage, sourceLanguage }: Transl
   const systemPrompt = `You are a professional translator. Translate the following text to ${targetLanguage}. 
 Only output the translated text, nothing else. Preserve the original formatting and tone.
 ${sourceLanguage ? `The source language is ${sourceLanguage}.` : "Detect the source language automatically."}`;
-
+  
   const { text: translatedText } = await generateText({
     model: getModel(),
     system: systemPrompt,
     prompt: text,
-    temperature: 0.3,
+    maxOutputTokens: 128000
   });
 
   if (!translatedText) {

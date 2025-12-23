@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
-import { franc } from 'franc-min';
+import React, { useState } from "react";
 import { UserAvatar } from "@/components/User/Avatar";
 import { UserAvatarPopover } from "@/components/User/UserAvatarPopover";
 import { RateView, RateType, RemarkContentType } from "@dicecho/types";
@@ -18,8 +17,8 @@ import { MessageCircle, Edit, Trash2 } from "lucide-react";
 import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
-import { RateTranslateButton, type TranslationResult } from "./rate-translate-button";
-import { isDifferentLanguage } from "@/utils/language";
+import { RateTranslateButton } from "./rate-translate-button";
+import { useRateTranslation } from "./use-rate-translation";
 
 interface IProps {
   rate: IRateDto;
@@ -30,57 +29,17 @@ export const RateItem: React.FunctionComponent<IProps> = ({
   rate,
   onDeleted,
 }) => {
-  const { t, i18n: { language } } = useTranslation();
+  const { t } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
-  const [translation, setTranslation] = useState<TranslationResult | null>(null);
-  const [showTranslation, setShowTranslation] = useState(false);
-  const [showTranslateButton, setShowTranslateButton] = useState(false);
 
-  const detectedLang = useMemo(() => {
-    if (rate.remarkLength === 0) {
-      return null;
-    }
-
-    let rateContent = "";
-    if (rate.remarkType === RemarkContentType.Markdown) {
-      rateContent = rate.remark || "";
-    } else if (rate.remarkType === RemarkContentType.Richtext) {
-      // combine text from rich text state (platejs format)
-      const texts: string[] = [];
-      const traverse = (nodes: any[]) => {
-        nodes.forEach((node) => {
-          if (typeof node.text === "string") {
-            texts.push(node.text);
-          }
-          if (typeof node.summary === "string") {
-            texts.push(node.summary);
-          }
-          if (node.children && Array.isArray(node.children)) {
-            traverse(node.children);
-          }
-        });
-      };
-      traverse(rate.richTextState || []);
-      rateContent = texts.join(" ");
-    }
-
-    return franc(rateContent, { minLength: 3 });
-  }, [rate.remarkLength, rate.remarkType, rate.remark, rate.richTextState]);
-
-  useEffect(() => {
-    if (rate.remarkLength === 0) {
-      return;
-    }
-    if (translation) {
-      return;
-    }
-
-    if (isDifferentLanguage(detectedLang, language)) {
-      setShowTranslateButton(true);
-    } else {
-      setShowTranslateButton(false);
-    }
-  }, [rate.remarkLength, translation, language, detectedLang]);
+  const {
+    translation,
+    showTranslation,
+    showTranslateButton,
+    isTranslated,
+    handleTranslated,
+    toggleTranslation,
+  } = useRateTranslation(rate);
 
   const { data: session, status } = useSession();
   const canEdit =
@@ -207,13 +166,9 @@ export const RateItem: React.FunctionComponent<IProps> = ({
             showTranslateButton && (
               <RateTranslateButton
                 rateId={rate._id}
-                hasContent={rate.remarkLength > 0}
-                isTranslated={showTranslation && translation !== null}
-                onTranslated={(result) => {
-                  setTranslation(result);
-                  setShowTranslation(true);
-                }}
-                onToggle={() => setShowTranslation((prev) => !prev)}
+                isTranslated={isTranslated}
+                onTranslated={handleTranslated}
+                onToggle={toggleTranslation}
               />
             )
           }

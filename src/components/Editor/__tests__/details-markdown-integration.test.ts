@@ -59,10 +59,17 @@ describe('Details Markdown 完整转换测试', () => {
       },
     ];
     const markdown = editor.getApi(MarkdownPlugin).markdown.serialize({ value });
-    expect(markdown).toContain('<summary>');
-    expect(markdown).toContain('this is summary');
-    expect(markdown).toContain('</summary>');
-    expect(markdown).toContain('this is children');
+    
+    // 1. "this is summary" 在 <summary></summary> 中间
+    expect(markdown).toMatch(/<summary>[\s\S]*this is summary[\s\S]*<\/summary>/);
+    
+    // 2. "this is children" 不在 <summary></summary> 中间
+    const summaryMatch = markdown.match(/<summary>([\s\S]*?)<\/summary>/);
+    expect(summaryMatch).toBeTruthy();
+    expect(summaryMatch![1]).not.toContain('this is children');
+    
+    // 3. "this is children" 在 <details></details> 中间
+    expect(markdown).toMatch(/<Details>[\s\S]*this is children[\s\S]*<\/Details>/);
   })
 
   describe('Markdown → Slate AST (deserialize)', () => {
