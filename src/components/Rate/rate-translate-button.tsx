@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/react";
 import { api } from "@/trpc/react";
 import { useParams } from "next/navigation";
+import { LanguageCodes } from "@/utils/language";
 
 export interface TranslationResult {
   translatedText: string;
@@ -26,8 +27,8 @@ export function RateTranslateButton({
   onToggle,
 }: RateTranslateButtonProps) {
   const { t } = useTranslation();
-  const params = useParams<{ lng: string }>();
-  const currentLanguage = params.lng ?? "en";
+  const params = useParams<{ lng: LanguageCodes }>();
+  const currentLanguage = params.lng ?? LanguageCodes.EN;
 
   const translateMutation = api.rate.translate.useMutation({
     onSuccess: (data) => {
