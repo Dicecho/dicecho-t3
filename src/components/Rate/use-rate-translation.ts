@@ -5,7 +5,8 @@ import { franc } from "franc-min";
 import { RemarkContentType } from "@dicecho/types";
 import type { IRateDto } from "@dicecho/types";
 import { useTranslation } from "@/lib/i18n/react";
-import { isDifferentLanguage } from "@/utils/language";
+import { isDifferentLanguage, LanguageCodes } from "@/utils/language";
+import { api } from "@/trpc/react";
 
 export interface TranslationResult {
   translatedText: string;
@@ -14,9 +15,17 @@ export interface TranslationResult {
 export function useRateTranslation(rate: IRateDto) {
   const { i18n } = useTranslation();
   const { language } = i18n;
+  const targetLanguage = (language as LanguageCodes) ?? LanguageCodes.EN;
 
   const [translation, setTranslation] = useState<TranslationResult | null>(null);
   const [showTranslation, setShowTranslation] = useState(false);
+
+  const translateMutation = api.rate.translate.useMutation({
+    onSuccess: (data) => {
+      setTranslation({ translatedText: data.translatedText });
+      setShowTranslation(true);
+    },
+  });
 
   const detectedLang = useMemo(() => {
     if (rate.remarkLength === 0) {
@@ -57,14 +66,17 @@ export function useRateTranslation(rate: IRateDto) {
   }, [rate.remarkLength, detectedLang, language]);
 
   const isTranslated = showTranslation && translation !== null;
+  const isTranslating = translateMutation.isPending;
 
-  const handleTranslated = (result: TranslationResult) => {
-    setTranslation(result);
-    setShowTranslation(true);
-  };
-
-  const toggleTranslation = () => {
-    setShowTranslation((prev) => !prev);
+  const translate = () => {
+    if (isTranslated) {
+      setShowTranslation((prev) => !prev);
+      return;
+    }
+    translateMutation.mutate({
+      rateId: rate._id,
+      targetLanguage,
+    });
   };
 
   return {
@@ -72,7 +84,8 @@ export function useRateTranslation(rate: IRateDto) {
     showTranslation,
     showTranslateButton,
     isTranslated,
-    handleTranslated,
-    toggleTranslation,
+    isTranslating,
+    translate,
+    targetLanguage,
   };
 }

@@ -37,8 +37,9 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     showTranslation,
     showTranslateButton,
     isTranslated,
-    handleTranslated,
-    toggleTranslation,
+    isTranslating,
+    translate,
+    targetLanguage,
   } = useRateTranslation(rate);
 
   const { data: session, status } = useSession();
@@ -165,10 +166,10 @@ export const RateItem: React.FunctionComponent<IProps> = ({
           {
             showTranslateButton && (
               <RateTranslateButton
-                rateId={rate._id}
                 isTranslated={isTranslated}
-                onTranslated={handleTranslated}
-                onToggle={toggleTranslation}
+                isTranslating={isTranslating}
+                targetLanguage={targetLanguage}
+                onTranslate={translate}
               />
             )
           }
