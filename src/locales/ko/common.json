@@ -213,7 +213,13 @@
     "latest_rate": "최신 평가",
     "oldest_rate": "가장 오래된 평가",
     "empty_placeholder_action": "리뷰를 남겨주세요!",
-    "text_length": "전체 텍스트 {{count}}단어"
+    "text_length": "전체 텍스트 {{count}}단어",
+    "translate_to": "{{language}}로 번역",
+    "show_original": "원문 보기",
+    "translated": "번역됨",
+    "hide_translation": "번역 숨기기",
+    "translated_content": "번역된 내용",
+    "translate_error": "번역 실패, 나중에 다시 시도해주세요"
   },
   "rate_score": "평점",
   "rate_click_to_rate": "별을 클릭하여 평가",
@@ -355,6 +361,7 @@
     "eu": "바스크어",
     "bg": "불가리아어",
     "ca": "카탈로니아어",
+    "zh": "중국어",
     "zh-CN": "중국어 간체",
     "zh-TW": "중국어 번체",
     "hr": "크로아티아어",

@@ -1,4 +1,5 @@
 import { postRouter } from "@/server/api/routers/post";
+import { rateRouter } from "@/server/api/routers/rate";
 import { scenarioRouter } from "@/server/api/routers/scenario";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 
@@ -9,6 +10,7 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
+  rate: rateRouter,
   scenario: scenarioRouter,
 });
 

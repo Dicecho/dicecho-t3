@@ -47,6 +47,31 @@ describe('Details Markdown 完整转换测试', () => {
     expect(markdown).toContain('background-color: #CC0000');
   })
 
+  describe("serialize summary when summary is an attribute of details", () => {
+    const editor = createTestEditor();
+    const value = [
+      {
+        type: 'details',
+        summary: "this is summary",
+        children: [
+          { text: 'this is children' },
+        ],
+      },
+    ];
+    const markdown = editor.getApi(MarkdownPlugin).markdown.serialize({ value });
+    
+    // 1. "this is summary" 在 <summary></summary> 中间
+    expect(markdown).toMatch(/<summary>[\s\S]*this is summary[\s\S]*<\/summary>/);
+    
+    // 2. "this is children" 不在 <summary></summary> 中间
+    const summaryMatch = markdown.match(/<summary>([\s\S]*?)<\/summary>/);
+    expect(summaryMatch).toBeTruthy();
+    expect(summaryMatch![1]).not.toContain('this is children');
+    
+    // 3. "this is children" 在 <details></details> 中间
+    expect(markdown).toMatch(/<Details>[\s\S]*this is children[\s\S]*<\/Details>/);
+  })
+
   describe('Markdown → Slate AST (deserialize)', () => {
     test('应该正确反序列化简单的 details', () => {
       const editor = createTestEditor();

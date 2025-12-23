@@ -5,6 +5,7 @@ import { BaseCalloutKit } from "./plugins/callout-base-kit";
 import { BaseCodeBlockKit } from "./plugins/code-block-base-kit";
 import { BaseColumnKit } from "./plugins/column-base-kit";
 import { BaseDateKit } from "./plugins/date-base-kit";
+import { BaseDetailsKit } from "./plugins/details-base-kit";
 import { BaseFontKit } from "./plugins/font-base-kit";
 import { BaseLineHeightKit } from "./plugins/line-height-base-kit";
 import { BaseLinkKit } from "./plugins/link-base-kit";
@@ -35,5 +36,6 @@ export const BaseEditorKit = [
   ...BaseListKit,
   ...BaseAlignKit,
   ...BaseLineHeightKit,
+  ...BaseDetailsKit,
   ...MarkdownKit,
 ];

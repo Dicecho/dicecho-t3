@@ -185,7 +185,13 @@
     "latest_rate": "新しさ順",
     "oldest_rate": "古さ順",
     "empty_placeholder_action": "レビューを書いてください！",
-    "text_length": "全文 {{count}} ワード"
+    "text_length": "全文 {{count}} ワード",
+    "translate_to": "{{language}}に翻訳",
+    "show_original": "原文を表示",
+    "translated": "翻訳済み",
+    "hide_translation": "翻訳を隠す",
+    "translated_content": "翻訳内容",
+    "translate_error": "翻訳に失敗しました。後でもう一度お試しください"
   },
   "rate_score": "評価",
   "rate_click_to_rate": "星をクリックして評価",
@@ -356,6 +362,7 @@
     "eu": "バスク語",
     "bg": "ブルガリア語",
     "ca": "カタロニア語",
+    "zh": "中国語",
     "zh-CN": "中国語簡体字",
     "zh-TW": "中国語繁体字",
     "hr": "クロアチア語",

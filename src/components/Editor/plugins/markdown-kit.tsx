@@ -205,6 +205,26 @@ export function deserializeDetails(mdastNode: any, deco: any, options: any) {
 
 export function serializeDetails(slateNode: any, options: SerializeMdOptions) {
   const children = slateNode.children || [];
+  if (slateNode.summary && typeof slateNode.summary === "string") {
+    return {
+      type: "mdxJsxFlowElement",
+      name: "Details",
+      attributes: [],
+      children: [{
+        type: "mdxJsxFlowElement",
+        name: "summary",
+        attributes: [],
+        children:
+          [
+            {
+              type: "text",
+              value: slateNode.summary,
+            },
+          ]
+      },
+      ...convertNodesSerialize(children, options)],
+    };
+  }
   const [summaryNode, ...contentChildren] = children;
   const summaryText = summaryNode
     ? NodeApi.string(summaryNode).replace(/\s+/g, " ").trim()

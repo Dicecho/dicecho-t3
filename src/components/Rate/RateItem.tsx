@@ -13,10 +13,11 @@ import { Badge } from "@/components/ui/badge";
 import { CommentSection } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { MessageCircle, Edit, Trash2 } from "lucide-react";
+import { MessageCircle, Edit, Trash2, Loader2, Languages } from "lucide-react";
 import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
+import { useRateTranslation } from "./use-rate-translation";
 
 interface IProps {
   rate: IRateDto;
@@ -29,6 +30,16 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
+
+  const {
+    translation,
+    showTranslation,
+    showTranslateButton,
+    isTranslated,
+    isTranslating,
+    translate,
+    targetLanguage,
+  } = useRateTranslation(rate);
 
   const { data: session, status } = useSession();
   const canEdit =
@@ -48,6 +59,15 @@ export const RateItem: React.FunctionComponent<IProps> = ({
   const renderRateContent = () => {
     if (rate.remarkLength === 0) {
       return null;
+    }
+
+    if (showTranslation && translation && translation.translatedText) {
+      return (
+        <RichTextPreview
+          id={`rate-item-translated-${rate._id}`}
+          markdown={translation.translatedText}
+        />
+      );
     }
 
     if (rate.remarkType === RemarkContentType.Richtext) {
@@ -97,21 +117,28 @@ export const RateItem: React.FunctionComponent<IProps> = ({
       )}
 
       {(rate.type === RateType.Rate || rate.remarkLength > 50) && (
-        <div className="flex gap-2">
-          {rate.type === RateType.Rate && (
-            <Badge variant="muted">{RATE_VIEW_MAP[rate.view]}</Badge>
-          )}
-          {rate.remarkLength > 50 && (
-            <Badge variant="outline">
-              <Trans
-                i18nKey="Rate.text_length"
-                t={t}
-                values={{
-                  count: rate.remarkLength,
-                }}
-              />
+        <div className="flex justify-between">
+          <div className="flex gap-2">
+            {rate.type === RateType.Rate && (
+              <Badge variant="muted">{RATE_VIEW_MAP[rate.view]}</Badge>
+            )}
+            {rate.remarkLength > 50 && (
+              <Badge variant="outline">
+                <Trans
+                  i18nKey="Rate.text_length"
+                  t={t}
+                  values={{
+                    count: rate.remarkLength,
+                  }}
+                />
+              </Badge>
+            )}
+          </div>
+          {showTranslation && translation &&
+            <Badge variant="outline" className="text-xs">
+              {t("Rate.translated")}
             </Badge>
-          )}
+          }
         </div>
       )}
 
@@ -135,7 +162,29 @@ export const RateItem: React.FunctionComponent<IProps> = ({
           <ShareButton url={rateUrl} variant="secondary" size="sm">
             {t("share")}
           </ShareButton>
-
+          {
+            showTranslateButton && (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={translate}
+                disabled={isTranslating}
+                className="gap-2"
+              >
+                {isTranslating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Languages className="h-4 w-4" />
+                )}
+                <span>
+                  {isTranslated
+                    ? t("Rate.show_original")
+                    : t("Rate.translate_to", { language: t(`language_codes.${targetLanguage}`) })}
+                </span>
+              </Button>
+            )
+          }
+          
           {canEdit && (
             <>
               <RateEditDialog rate={rate}>
