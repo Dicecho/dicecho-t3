@@ -13,11 +13,10 @@ import { Badge } from "@/components/ui/badge";
 import { CommentSection } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { MessageCircle, Edit, Trash2 } from "lucide-react";
+import { MessageCircle, Edit, Trash2, Loader2, Languages } from "lucide-react";
 import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
-import { RateTranslateButton } from "./rate-translate-button";
 import { useRateTranslation } from "./use-rate-translation";
 
 interface IProps {
@@ -165,12 +164,24 @@ export const RateItem: React.FunctionComponent<IProps> = ({
           </ShareButton>
           {
             showTranslateButton && (
-              <RateTranslateButton
-                isTranslated={isTranslated}
-                isTranslating={isTranslating}
-                targetLanguage={targetLanguage}
-                onTranslate={translate}
-              />
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={translate}
+                disabled={isTranslating}
+                className="gap-2"
+              >
+                {isTranslating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Languages className="h-4 w-4" />
+                )}
+                <span>
+                  {isTranslated
+                    ? t("Rate.show_original")
+                    : t("Rate.translate_to", { language: t(`language_codes.${targetLanguage}`) })}
+                </span>
+              </Button>
             )
           }
           
