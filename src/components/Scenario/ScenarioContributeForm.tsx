@@ -228,9 +228,9 @@ export function ScenarioContributeForm({
               <MultipleSelector
                 options={(config?.languages ?? []).map((lang) => ({
                   value: lang._id,
-                  label: lang._id,
+                  label: t(`language_codes.${lang._id}`),
                 }))}
-                value={(field.value ?? []).map((v) => ({ value: v, label: v }))}
+                value={(field.value ?? []).map((v) => ({ value: v, label: t(`language_codes.${v}`) }))}
                 onChange={(opts) => field.onChange(opts.map((o) => o.value))}
                 placeholder={t("select_languages")}
                 creatable={false}
