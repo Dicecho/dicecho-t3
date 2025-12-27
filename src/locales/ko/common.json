@@ -219,7 +219,10 @@
     "translated": "번역됨",
     "hide_translation": "번역 숨기기",
     "translated_content": "번역된 내용",
-    "translate_error": "번역 실패, 나중에 다시 시도해주세요"
+    "translate_error": "번역 실패, 나중에 다시 시도해주세요",
+    "spoiler_warning": "이 리뷰는 스포일러 경고를 여러 번 받아 자동으로 접혀 있습니다",
+    "expand_review": "전체 리뷰 펼치기",
+    "collapse_review": "리뷰 접기"
   },
   "rate_score": "평점",
   "rate_click_to_rate": "별을 클릭하여 평가",

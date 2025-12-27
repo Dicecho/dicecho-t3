@@ -31,8 +31,8 @@ export const RichTextPreview = ({ markdown, ...props }: RichTextPreviewProps) =>
 
   return (
     <Plate editor={editor}>
-      <EditorContainer>
-        <Editor />
+      <EditorContainer className="overflow-y-visible">
+        <Editor variant="ai"/>
       </EditorContainer>
     </Plate>
   );

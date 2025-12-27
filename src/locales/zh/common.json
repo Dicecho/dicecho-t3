@@ -219,7 +219,10 @@
     "translated": "已翻译",
     "hide_translation": "隐藏翻译",
     "translated_content": "翻译内容",
-    "translate_error": "翻译失败，请稍后重试"
+    "translate_error": "翻译失败，请稍后重试",
+    "spoiler_warning": "该评价被多次警告有剧透内容已自动折叠",
+    "expand_review": "展开完整评价",
+    "collapse_review": "折叠评价"
   },
   "rate_score": "评分",
   "rate_click_to_rate": "点击星星评分",

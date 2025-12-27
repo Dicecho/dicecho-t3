@@ -18,11 +18,16 @@ import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
 import { useRateTranslation } from "./use-rate-translation";
+import { SpoilerCollapsible } from "./spoiler-collapsible";
+import { FoldableContent } from "@/components/ui/foldable-content";
 
 interface IProps {
   rate: IRateDto;
   onDeleted?: () => void;
 }
+
+const FOLD_LIMIT = 200;
+const SPOILER_LIMIT = 1;
 
 export const RateItem: React.FunctionComponent<IProps> = ({
   rate,
@@ -30,7 +35,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
-
+  
   const {
     translation,
     showTranslation,
@@ -42,6 +47,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
   } = useRateTranslation(rate);
 
   const { data: session, status } = useSession();
+
   const canEdit =
     status === "authenticated" && rate.user._id === session?.user?._id;
 
@@ -61,11 +67,11 @@ export const RateItem: React.FunctionComponent<IProps> = ({
       return null;
     }
 
-    if (showTranslation && translation && translation.translatedText) {
+    if (showTranslation && isTranslated && translation?.translatedText) {
       return (
         <RichTextPreview
           id={`rate-item-translated-${rate._id}`}
-          markdown={translation.translatedText}
+          markdown={translation.translatedText} 
         />
       );
     }
@@ -81,12 +87,39 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 
     if (rate.remarkType === RemarkContentType.Markdown) {
       return (
-        <RichTextPreview id={`rate-item-${rate._id}`} markdown={rate.remark} />
+        <RichTextPreview
+          id={`rate-item-${rate._id}`}
+          markdown={rate.remark} 
+        />
       );
     }
 
     return null;
   };
+
+  const renderContent = () => {
+    if (rate.spoilerCount > SPOILER_LIMIT) {
+      return (
+        <SpoilerCollapsible title={t("Rate.spoiler_warning")}>
+          {renderRateContent()}
+        </SpoilerCollapsible>
+      );
+    }
+
+    const shouldFold = rate.remarkLength > FOLD_LIMIT;
+
+    return (
+      <FoldableContent
+        foldable={shouldFold}
+        defaultFolded={shouldFold}
+        expandText={t("Rate.expand_review")}
+        collapseText={t("Rate.collapse_review")}
+      >
+        {renderRateContent()}
+      </FoldableContent>
+    );
+  };
+
 
   return (
     <div className={"flex flex-col gap-4"}>
@@ -142,7 +175,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
         </div>
       )}
 
-      {renderRateContent()}
+      {renderContent()}
 
       <>
         <div className="flex flex-wrap gap-2">
