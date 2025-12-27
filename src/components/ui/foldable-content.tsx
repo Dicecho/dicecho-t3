@@ -9,8 +9,10 @@ interface FoldableContentProps {
   foldable?: boolean;
   /** Whether content is folded by default */
   defaultFolded?: boolean;
-  /** Max height when folded (tailwind class, e.g., "max-h-85") */
-  foldedMaxHeight?: string;
+  /** Custom className applied when content is folded (e.g., "max-h-85") */
+  foldedClassName?: string;
+  /** Custom className for the button container when folded (gradient background, etc.) */
+  foldedButtonContainerClassName?: string;
   /** Text for expand button */
   expandText?: string;
   /** Text for collapse button */
@@ -23,7 +25,8 @@ export const FoldableContent: React.FC<FoldableContentProps> = ({
   children,
   foldable = true,
   defaultFolded = true,
-  foldedMaxHeight = "max-h-85",
+  foldedClassName = "max-h-85",
+  foldedButtonContainerClassName = "z-1 -mt-20 mb-0 bg-linear-to-b from-card/30 to-card",
   expandText = "Expand",
   collapseText = "Collapse",
   className,
@@ -39,7 +42,7 @@ export const FoldableContent: React.FC<FoldableContentProps> = ({
       <div
         className={cn(
           "flex w-full",
-          isFolded && [foldedMaxHeight, "overflow-hidden"],
+          isFolded && ["overflow-hidden", foldedClassName],
           className
         )}
       >
@@ -48,7 +51,7 @@ export const FoldableContent: React.FC<FoldableContentProps> = ({
       <div
         className={cn(
           "relative flex h-20 w-full items-center justify-center",
-          isFolded && "z-1 -mt-20 mb-0 bg-linear-to-b from-card/30 to-card"
+          isFolded && foldedButtonContainerClassName
         )}
       >
         <Button onClick={() => setIsFolded((prev) => !prev)}>
