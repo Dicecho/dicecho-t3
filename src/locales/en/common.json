@@ -219,7 +219,10 @@
     "translated": "Translated",
     "hide_translation": "Hide translation",
     "translated_content": "Translated content",
-    "translate_error": "Translation failed, please try again later"
+    "translate_error": "Translation failed, please try again later",
+    "spoiler_warning": "This review has been flagged multiple times for spoilers and is auto-collapsed",
+    "expand_review": "Expand full review",
+    "collapse_review": "Collapse review"
   },
   "rate_score": "Rating",
   "rate_click_to_rate": "Click stars to rate",

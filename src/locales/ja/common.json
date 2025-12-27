@@ -191,7 +191,10 @@
     "translated": "翻訳済み",
     "hide_translation": "翻訳を隠す",
     "translated_content": "翻訳内容",
-    "translate_error": "翻訳に失敗しました。後でもう一度お試しください"
+    "translate_error": "翻訳に失敗しました。後でもう一度お試しください",
+    "spoiler_warning": "このレビューは複数回ネタバレ警告を受けたため自動的に折りたたまれています",
+    "expand_review": "レビュー全文を展開",
+    "collapse_review": "レビューを折りたたむ"
   },
   "rate_score": "評価",
   "rate_click_to_rate": "星をクリックして評価",

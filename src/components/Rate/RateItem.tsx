@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { UserAvatar } from "@/components/User/Avatar";
 import { UserAvatarPopover } from "@/components/User/UserAvatarPopover";
 import { RateView, RateType, RemarkContentType } from "@dicecho/types";
@@ -24,13 +24,18 @@ interface IProps {
   onDeleted?: () => void;
 }
 
+const FOLD_LIMIT = 200;
+const SPOILER_LIMIT = 1;
+
 export const RateItem: React.FunctionComponent<IProps> = ({
   rate,
   onDeleted,
 }) => {
   const { t } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
-
+  const [isFold, setIsFold] = useState(rate.remarkLength > FOLD_LIMIT);
+  const headerRef = useRef<HTMLDivElement>(null);
+  
   const {
     translation,
     showTranslation,
@@ -42,6 +47,59 @@ export const RateItem: React.FunctionComponent<IProps> = ({
   } = useRateTranslation(rate);
 
   const { data: session, status } = useSession();
+
+  const { rateContentType, rateMarkdown, rateRichTextState } = useMemo(() => {
+    if (rate.remarkLength === 0) {
+      return { 
+        rateContentType: rate.remarkType, 
+        rateMarkdown: rate.remark, 
+        rateRichTextState: rate.richTextState 
+      };
+    }
+
+    let rateContentType = RemarkContentType.Markdown;
+    let rateMarkdown: string | undefined;
+    let rateRichTextState: any[] = [];
+
+    if (showTranslation && translation && translation.translatedText) {
+      rateContentType = RemarkContentType.Markdown;
+      rateMarkdown = translation.translatedText;
+    } else {
+      if (rate.remarkType === RemarkContentType.Richtext) {
+        rateContentType = RemarkContentType.Richtext;
+        rateRichTextState = rate.richTextState;
+      }
+
+      if (rate.remarkType === RemarkContentType.Markdown) {
+        rateContentType = RemarkContentType.Markdown;
+        rateMarkdown = rate.remark;
+      }
+    }
+
+    if (rate.spoilerCount > SPOILER_LIMIT) {
+      if (rateContentType === RemarkContentType.Richtext) {
+        // For richtext, we cannot easily convert to markdown, so we just return empty state
+        rateRichTextState = [{ 
+          type:'details' , 
+          children: [
+            { type: 'summary', children: [{ type: 'text', text: t("Rate.spoiler_warning") }] }, 
+            ...rateRichTextState 
+          ] 
+        }];
+      }
+      if (rateContentType === RemarkContentType.Markdown) {
+        rateMarkdown = `
+<details>
+<summary>${t("Rate.spoiler_warning")}</summary>\n
+${rateMarkdown}
+</details>
+`;
+      }
+    }
+
+    return { rateContentType, rateMarkdown, rateRichTextState };
+  }, [rate, showTranslation, translation]);
+
   const canEdit =
     status === "authenticated" && rate.user._id === session?.user?._id;
 
@@ -61,35 +119,70 @@ export const RateItem: React.FunctionComponent<IProps> = ({
       return null;
     }
 
-    if (showTranslation && translation && translation.translatedText) {
-      return (
-        <RichTextPreview
-          id={`rate-item-translated-${rate._id}`}
-          markdown={translation.translatedText}
-        />
-      );
-    }
-
-    if (rate.remarkType === RemarkContentType.Richtext) {
+    if (rateContentType === RemarkContentType.Richtext) {
       return (
         <RichTextPreview
           id={`rate-item-${rate._id}`}
-          value={rate.richTextState}
+          value={rateRichTextState}
         />
       );
     }
 
-    if (rate.remarkType === RemarkContentType.Markdown) {
+    if (rateContentType === RemarkContentType.Markdown) {
       return (
-        <RichTextPreview id={`rate-item-${rate._id}`} markdown={rate.remark} />
+        <RichTextPreview
+          id={`rate-item-${rate._id}`}
+          markdown={rateMarkdown} 
+        />
       );
     }
 
     return null;
   };
 
+  const renderContent = () => {
+    if (rate.spoilerCount > SPOILER_LIMIT) {
+      return renderRateContent();
+    }
+    return (
+      <React.Fragment>
+        <div
+          className={`flex align-center w-full mb-8 ${
+            isFold ? "max-h-85 overflow-hidden" : ""
+          }`}
+        >
+          {renderRateContent()}
+        </div>
+        {rate.remarkLength > FOLD_LIMIT && (
+          <div
+            className={`h-10 w-full flex align-center justify-center relative ${
+              isFold ? "z-1 mb-0 -mt-20 bg-linear-to-b from-background/30 to-background" : ""
+            }`}
+          >
+            <Button
+              onClick={() => {
+                if (!isFold && headerRef.current) {
+                  window.scrollTo(
+                    0,
+                    headerRef.current.getBoundingClientRect().y +
+                      window.scrollY
+                  );
+                }
+                setIsFold(!isFold);
+              }}
+            >
+              {isFold ? t("Rate.expand_review") : t("Rate.collapse_review")}
+            </Button>
+          </div>
+        )}
+      </React.Fragment>
+    );
+  };
+
+
   return (
     <div className={"flex flex-col gap-4"}>
+      <div ref={headerRef} />
       <div className={"flex items-center gap-2"}>
         <div className="flex flex-1 items-center gap-2">
           <UserAvatarPopover userId={rate.user._id}>
@@ -142,7 +235,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
         </div>
       )}
 
-      {renderRateContent()}
+      {renderContent()}
 
       <>
         <div className="flex flex-wrap gap-2">
