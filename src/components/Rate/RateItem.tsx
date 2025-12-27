@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useState } from "react";
 import { UserAvatar } from "@/components/User/Avatar";
 import { UserAvatarPopover } from "@/components/User/UserAvatarPopover";
 import { RateView, RateType, RemarkContentType } from "@dicecho/types";
@@ -18,6 +18,8 @@ import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
 import { useRateTranslation } from "./use-rate-translation";
+import { SpoilerCollapsible } from "./spoiler-collapsible";
+import { FoldableContent } from "@/components/ui/foldable-content";
 
 interface IProps {
   rate: IRateDto;
@@ -33,8 +35,6 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
-  const [isFold, setIsFold] = useState(rate.remarkLength > FOLD_LIMIT);
-  const headerRef = useRef<HTMLDivElement>(null);
   
   const {
     translation,
@@ -47,58 +47,6 @@ export const RateItem: React.FunctionComponent<IProps> = ({
   } = useRateTranslation(rate);
 
   const { data: session, status } = useSession();
-
-  const { rateContentType, rateMarkdown, rateRichTextState } = useMemo(() => {
-    if (rate.remarkLength === 0) {
-      return { 
-        rateContentType: rate.remarkType, 
-        rateMarkdown: rate.remark, 
-        rateRichTextState: rate.richTextState 
-      };
-    }
-
-    let rateContentType = RemarkContentType.Markdown;
-    let rateMarkdown: string | undefined;
-    let rateRichTextState: any[] = [];
-
-    if (showTranslation && translation && translation.translatedText) {
-      rateContentType = RemarkContentType.Markdown;
-      rateMarkdown = translation.translatedText;
-    } else {
-      if (rate.remarkType === RemarkContentType.Richtext) {
-        rateContentType = RemarkContentType.Richtext;
-        rateRichTextState = rate.richTextState;
-      }
-
-      if (rate.remarkType === RemarkContentType.Markdown) {
-        rateContentType = RemarkContentType.Markdown;
-        rateMarkdown = rate.remark;
-      }
-    }
-
-    if (rate.spoilerCount > SPOILER_LIMIT) {
-      if (rateContentType === RemarkContentType.Richtext) {
-        // For richtext, we cannot easily convert to markdown, so we just return empty state
-        rateRichTextState = [{ 
-          type:'details' , 
-          children: [
-            { type: 'summary', children: [{ type: 'text', text: t("Rate.spoiler_warning") }] }, 
-            ...rateRichTextState 
-          ] 
-        }];
-      }
-      if (rateContentType === RemarkContentType.Markdown) {
-        rateMarkdown = `
-<details>
-<summary>${t("Rate.spoiler_warning")}</summary>\n
-${rateMarkdown}
-</details>
-`;
-      }
-    }
-
-    return { rateContentType, rateMarkdown, rateRichTextState };
-  }, [rate, showTranslation, translation]);
 
   const canEdit =
     status === "authenticated" && rate.user._id === session?.user?._id;
@@ -123,25 +71,25 @@ ${rateMarkdown}
       return (
         <RichTextPreview
           id={`rate-item-translated-${rate._id}`}
-          markdown={rateMarkdown} 
+          markdown={translation.translatedText} 
         />
       );
     }
 
-    if (rateContentType === RemarkContentType.Richtext) {
+    if (rate.remarkType === RemarkContentType.Richtext) {
       return (
         <RichTextPreview
           id={`rate-item-${rate._id}`}
-          value={rateRichTextState}
+          value={rate.richTextState}
         />
       );
     }
 
-    if (rateContentType === RemarkContentType.Markdown) {
+    if (rate.remarkType === RemarkContentType.Markdown) {
       return (
         <RichTextPreview
           id={`rate-item-${rate._id}`}
-          markdown={rateMarkdown} 
+          markdown={rate.remark} 
         />
       );
     }
@@ -151,47 +99,30 @@ ${rateMarkdown}
 
   const renderContent = () => {
     if (rate.spoilerCount > SPOILER_LIMIT) {
-      return renderRateContent();
-    }
-    return (
-      <React.Fragment>
-        <div
-          className={`flex items-center w-full ${
-            isFold ? "max-h-85 overflow-hidden" : ""
-          }`}
-        >
+      return (
+        <SpoilerCollapsible title={t("Rate.spoiler_warning")}>
           {renderRateContent()}
-        </div>
-        {rate.remarkLength > FOLD_LIMIT && (
-          <div
-            className={`h-20 w-full flex items-center justify-center relative ${
-              isFold ? "z-1 mb-0 -mt-20 bg-linear-to-b from-card/30 to-card" : ""
-            }`}
-          >
-            <Button
-              onClick={() => {
-                if (!isFold && headerRef.current) {
-                  window.scrollTo(
-                    0,
-                    headerRef.current.getBoundingClientRect().y +
-                      window.scrollY
-                  );
-                }
-                setIsFold(!isFold);
-              }}
-            >
-              {isFold ? t("Rate.expand_review") : t("Rate.collapse_review")}
-            </Button>
-          </div>
-        )}
-      </React.Fragment>
+        </SpoilerCollapsible>
+      );
+    }
+
+    const shouldFold = rate.remarkLength > FOLD_LIMIT;
+
+    return (
+      <FoldableContent
+        foldable={shouldFold}
+        defaultFolded={shouldFold}
+        expandText={t("Rate.expand_review")}
+        collapseText={t("Rate.collapse_review")}
+      >
+        {renderRateContent()}
+      </FoldableContent>
     );
   };
 
 
   return (
     <div className={"flex flex-col gap-4"}>
-      <div ref={headerRef} />
       <div className={"flex items-center gap-2"}>
         <div className="flex flex-1 items-center gap-2">
           <UserAvatarPopover userId={rate.user._id}>
