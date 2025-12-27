@@ -41,9 +41,10 @@ export const SpoilerCollapsible: React.FC<SpoilerCollapsibleProps> = ({
             "relative",
             'before:absolute before:top-1/2 before:left-2 before:-translate-y-1/2 before:content-[""]',
             "before:h-0 before:w-0",
-            "before:border-r-[5px] before:border-l-[5px] before:border-r-transparent before:border-l-transparent",
-            "before:border-t-foreground/60 before:border-t-[5px]",
+            "before:border-t-[5px] before:border-b-[5px] before:border-t-transparent before:border-b-transparent",
+            "before:border-l-foreground/60 before:border-l-[5px]",
             "before:transition-transform before:duration-200",
+            "data-[state=open]:before:rotate-90",
             "[&_p]:m-0"
           )}
         >
