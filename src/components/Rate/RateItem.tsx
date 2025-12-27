@@ -119,6 +119,15 @@ ${rateMarkdown}
       return null;
     }
 
+    if (showTranslation && isTranslated && translation?.translatedText) {
+      return (
+        <RichTextPreview
+          id={`rate-item-translated-${rate._id}`}
+          markdown={rateMarkdown} 
+        />
+      );
+    }
+
     if (rateContentType === RemarkContentType.Richtext) {
       return (
         <RichTextPreview
