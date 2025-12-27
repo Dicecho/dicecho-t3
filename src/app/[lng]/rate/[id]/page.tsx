@@ -1,4 +1,5 @@
 import { RateItem } from "@/components/Rate/RateItem";
+import { Card, CardContent } from "@/components/ui/card";
 import { getDicechoServerApi } from "@/server/dicecho";
 
 const RateDetailPage = async (
@@ -18,7 +19,11 @@ const RateDetailPage = async (
   return (
     <div className="container grid grid-cols-6 pt-4">
       <div className="col-span-6 flex flex-col gap-4 md:col-span-4">
-        <RateItem rate={rate} />
+        <Card>
+          <CardContent>
+            <RateItem rate={rate} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

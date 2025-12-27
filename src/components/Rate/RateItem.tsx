@@ -156,7 +156,7 @@ ${rateMarkdown}
     return (
       <React.Fragment>
         <div
-          className={`flex align-center w-full mb-8 ${
+          className={`flex items-center w-full ${
             isFold ? "max-h-85 overflow-hidden" : ""
           }`}
         >
@@ -164,8 +164,8 @@ ${rateMarkdown}
         </div>
         {rate.remarkLength > FOLD_LIMIT && (
           <div
-            className={`h-10 w-full flex align-center justify-center relative ${
-              isFold ? "z-1 mb-0 -mt-20 bg-linear-to-b from-background/30 to-background" : ""
+            className={`h-20 w-full flex items-center justify-center relative ${
+              isFold ? "z-1 mb-0 -mt-20 bg-linear-to-b from-card/30 to-card" : ""
             }`}
           >
             <Button
