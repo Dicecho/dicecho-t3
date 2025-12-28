@@ -33,7 +33,7 @@ export const RateList: FC<RateListProps> = ({
     pageSize?: number;
   }>({ page: 1 });
 
-  const { api } = useDicecho();
+  const { api, initialized } = useDicecho();
   const { data, isFetching, fetchStatus } = useQuery({
     queryKey: ["rate", "list", query, pageParams],
     queryFn: () => api.rate.list({ ...query, ...pageParams }),
@@ -49,6 +49,7 @@ export const RateList: FC<RateListProps> = ({
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    enabled: initialized
   });
 
   return (
