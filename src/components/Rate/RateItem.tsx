@@ -13,13 +13,16 @@ import { Badge } from "@/components/ui/badge";
 import { CommentSection } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { MessageCircle, Edit, Trash2, Loader2, Languages } from "lucide-react";
+import { MessageCircle, Edit, Trash2, Loader2, Languages, ThumbsUp, ThumbsDown, Laugh } from "lucide-react";
 import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
 import { useRateTranslation } from "./use-rate-translation";
 import { SpoilerCollapsible } from "./spoiler-collapsible";
 import { FoldableContent } from "@/components/ui/foldable-content";
+import { cn } from "@/lib/utils";
+import { AuthButton } from "@/components/Auth/auth-button";
+import { useReactionDeclare } from "@/hooks/use-reaction-declare";
 
 interface IProps {
   rate: IRateDto;
@@ -35,6 +38,15 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
+  
+  const { toggle, isActive, getCount } = useReactionDeclare({
+    targetName: "Rate",
+    targetId: rate._id,
+    initialState: {
+      declareCounts: rate.declareCounts,
+      declareStatus: rate.declareStatus,
+    },
+  });
   
   const {
     translation,
@@ -179,6 +191,37 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 
       <>
         <div className="flex flex-wrap gap-2">
+          <AuthButton
+            size="sm"
+            variant="secondary"
+            onAuthClick={() => toggle("like")}
+            className={cn("gap-2", isActive("like") && "text-primary")}
+          >
+            <ThumbsUp className={cn("h-4 w-4", isActive("like") && "fill-current")} />
+            <span>{getCount("like")}</span>
+          </AuthButton>
+
+          <AuthButton
+            size="sm"
+            variant="secondary"
+            onAuthClick={() => toggle("dislike")}
+            className={cn("gap-2", isActive("dislike") && "text-destructive")}
+          >
+            <ThumbsDown className={cn("h-4 w-4", isActive("dislike") && "fill-current")} />
+          </AuthButton>
+
+          <AuthButton
+            size="sm"
+            variant="secondary"
+            onAuthClick={() => toggle("happy")}
+            className={cn("gap-2", isActive("happy") && "text-yellow-500")}
+          >
+            <Laugh className="h-4 w-4" />
+            {getCount("happy") > 0 && (
+              <span>{getCount("happy")}</span>
+            )}
+          </AuthButton>
+
           <Button
             size="sm"
             variant={"secondary"}

@@ -56,6 +56,12 @@ export function isBackendError(
 
 type Empty = Record<string, never>;
 
+export interface DeclareResponse {
+  _id: string;
+  declareCounts: Record<string, number>;
+  declareStatus: Record<string, boolean>;
+}
+
 export type DicechoApiOptions = APIClientOptions & {
   auth?: DicechoAuthProvider;
 };
@@ -352,6 +358,21 @@ export function createDicechoApi(opts: DicechoApiOptions) {
         payload: Partial<{ rate: number; remark: string; remarkType: string; type: number; view: number; isAnonymous: boolean; accessLevel: string }>,
       ) => request<typeof payload, IRateDto>(`/api/rate/${id}`, "PUT", payload),
       delete: (id: string) => request<Empty, Empty>(`/api/rate/${id}`, "DELETE"),
+    },
+
+    like: {
+      declare: (targetName: string, targetId: string, attitude: "like" | "dislike" | "happy") =>
+        request<{ targetName: string; targetId: string; attitude: string }, DeclareResponse>(
+          `/api/like/declare/`,
+          "POST",
+          { targetName, targetId, attitude }
+        ),
+      cancelDeclare: (targetName: string, targetId: string, attitude: "like" | "dislike" | "happy") =>
+        request<{ targetName: string; targetId: string; attitude: string }, DeclareResponse>(
+          `/api/like/declare/cancel`,
+          "POST",
+          { targetName, targetId, attitude }
+        ),
     },
 
     comment: {
