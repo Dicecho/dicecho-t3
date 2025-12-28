@@ -21,7 +21,7 @@ const RateDetailPage = async (
       <div className="col-span-6 flex flex-col gap-4 md:col-span-4">
         <Card>
           <CardContent>
-            <RateDetailClient initialRate={rate} rateId={id} />
+            <RateDetailClient initialRate={rate} />
           </CardContent>
         </Card>
       </div>
