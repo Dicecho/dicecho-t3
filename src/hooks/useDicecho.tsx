@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 type Dicecho = {
   api: DicechoApi;
   initialized: boolean;
+  session?: ReturnType<typeof useSession>["data"];
 };
 
 const DicechoContext = createContext<Dicecho | undefined>(undefined);
@@ -69,7 +70,7 @@ export const DicechoProvider = ({
   }, [session?.user?.authError, status]);
 
   return (
-    <DicechoContext.Provider value={{ api, initialized }}>
+    <DicechoContext.Provider value={{ api, initialized, session }}>
       {children}
     </DicechoContext.Provider>
   );

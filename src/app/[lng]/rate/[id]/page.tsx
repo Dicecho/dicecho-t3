@@ -1,6 +1,6 @@
-import { RateItem } from "@/components/Rate/RateItem";
 import { Card, CardContent } from "@/components/ui/card";
 import { getDicechoServerApi } from "@/server/dicecho";
+import { RateDetailClient } from "./rate-detail-client";
 
 const RateDetailPage = async (
   props: {
@@ -21,7 +21,7 @@ const RateDetailPage = async (
       <div className="col-span-6 flex flex-col gap-4 md:col-span-4">
         <Card>
           <CardContent>
-            <RateItem rate={rate} />
+            <RateDetailClient initialRate={rate} />
           </CardContent>
         </Card>
       </div>
