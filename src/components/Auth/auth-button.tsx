@@ -5,31 +5,19 @@ import { useSession } from "next-auth/react";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { AuthDialog } from "./AuthDialog";
 
-export interface AuthButtonProps extends ButtonProps {
-  /** Called only when user is authenticated */
-  onAuthClick?: () => void;
-}
-
 /**
  * A button that requires authentication.
- * - If authenticated: executes onAuthClick normally
+ * - If authenticated: executes onClick normally
  * - If not authenticated: opens AuthDialog on click
  */
-export const AuthButton = forwardRef<HTMLButtonElement, AuthButtonProps>(
-  ({ onAuthClick, onClick, children, ...props }, ref) => {
+export const AuthButton = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ onClick, children, ...props }, ref) => {
     const { status } = useSession();
     const isAuthenticated = status === "authenticated";
 
     if (isAuthenticated) {
       return (
-        <Button
-          ref={ref}
-          onClick={(e) => {
-            onClick?.(e);
-            onAuthClick?.();
-          }}
-          {...props}
-        >
+        <Button ref={ref} onClick={onClick} {...props}>
           {children}
         </Button>
       );
@@ -42,7 +30,7 @@ export const AuthButton = forwardRef<HTMLButtonElement, AuthButtonProps>(
         </Button>
       </AuthDialog>
     );
-  }
+  },
 );
 
 AuthButton.displayName = "AuthButton";

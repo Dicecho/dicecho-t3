@@ -194,7 +194,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
           <AuthButton
             size="sm"
             variant="secondary"
-            onAuthClick={() => toggle("like")}
+            onClick={() => toggle("like")}
             className={cn("gap-2", isActive("like") && "text-primary")}
           >
             <ThumbsUp className={cn("h-4 w-4", isActive("like") && "fill-current")} />
@@ -204,7 +204,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
           <AuthButton
             size="sm"
             variant="secondary"
-            onAuthClick={() => toggle("dislike")}
+            onClick={() => toggle("dislike")}
             className={cn("gap-2", isActive("dislike") && "text-destructive")}
           >
             <ThumbsDown className={cn("h-4 w-4", isActive("dislike") && "fill-current")} />
@@ -213,7 +213,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
           <AuthButton
             size="sm"
             variant="secondary"
-            onAuthClick={() => toggle("happy")}
+            onClick={() => toggle("happy")}
             className={cn("gap-2", isActive("happy") && "text-yellow-500")}
           >
             <Laugh className="h-4 w-4" />
