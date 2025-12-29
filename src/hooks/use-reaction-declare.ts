@@ -103,17 +103,19 @@ export function useReactionDeclare({
             declareStatus: response.declareStatus,
           });
         } catch {
-          // Revert on error
-          setState((prev) => ({
-            declareCounts: {
-              ...prev.declareCounts,
-              [attitude]: currentCount,
-            },
-            declareStatus: {
-              ...prev.declareStatus,
-              [attitude]: isCurrentlyActive,
-            },
-          }));
+          // Revert on error - restore both the toggled attitude and any exclusive one
+          setState((prev) => {
+            const revertedStatus = { ...prev.declareStatus, [attitude]: isCurrentlyActive };
+            const revertedCounts = { ...prev.declareCounts, [attitude]: currentCount };
+
+            // Restore the mutually exclusive reaction if it was cancelled
+            if (!isCurrentlyActive && mutualExclusive && exclusiveActive) {
+              revertedStatus[mutualExclusive] = true;
+              revertedCounts[mutualExclusive] = exclusiveCount;
+            }
+
+            return { declareCounts: revertedCounts, declareStatus: revertedStatus };
+          });
         }
       });
     },

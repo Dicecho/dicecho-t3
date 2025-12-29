@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { RateItem } from "@/components/Rate/RateItem";
 import { useDicecho } from "@/hooks/useDicecho";
@@ -13,14 +12,14 @@ interface RateDetailClientProps {
 export function RateDetailClient({ initialRate }: RateDetailClientProps) {
   const { api, session } = useDicecho();
   const { data: rate } = useQuery({
-    queryKey: ["rate", "detail", initialRate._id, session?.user?.id],
+    queryKey: ["rate", "detail", initialRate._id, session?.user?.jti],
     queryFn: () => api.rate.detail(initialRate._id),
-    initialData: initialRate,
+    placeholderData: initialRate,
     staleTime: 3600 * 1000,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false
   });
 
-  return <RateItem rate={rate} />;
+  return <RateItem rate={rate ?? initialRate} />;
 }
