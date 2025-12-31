@@ -1,34 +1,29 @@
 "use client";
 
 import { forwardRef } from "react";
-import { useSession } from "next-auth/react";
 import { Button, type ButtonProps } from "@/components/ui/button";
-import { AuthDialog } from "./AuthDialog";
+import { useAuthAction } from "./use-auth-action";
 
 /**
  * A button that requires authentication.
  * - If authenticated: executes onClick normally
- * - If not authenticated: opens AuthDialog on click
+ * - If not authenticated: opens AuthDialog, then executes onClick after successful login
  */
 export const AuthButton = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ onClick, children, ...props }, ref) => {
-    const { status } = useSession();
-    const isAuthenticated = status === "authenticated";
-
-    if (isAuthenticated) {
-      return (
-        <Button ref={ref} onClick={onClick} {...props}>
-          {children}
-        </Button>
-      );
-    }
+    const { requireAuth, AuthDialogPortal } = useAuthAction();
 
     return (
-      <AuthDialog>
-        <Button ref={ref} {...props}>
+      <>
+        <Button
+          ref={ref}
+          onClick={onClick ? requireAuth(onClick) : undefined}
+          {...props}
+        >
           {children}
         </Button>
-      </AuthDialog>
+        <AuthDialogPortal />
+      </>
     );
   },
 );

@@ -241,6 +241,13 @@
   "rate_deleted": "리뷰가 삭제되었습니다",
   "delete_rate_confirm_title": "삭제 확인",
   "delete_rate_confirm_message": "이 리뷰를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+  "block": "차단",
+  "rate_blocked": "리뷰가 차단되었습니다",
+  "block_rate_confirm_title": "차단 확인",
+  "block_rate_confirm_message": "차단하면 이 리뷰가 목록에 표시되지 않습니다",
+  "report_spoiler": "스포일러 경고",
+  "report_spoiler_confirm_title": "스포일러 경고",
+  "report_spoiler_confirm_message": "이 리뷰를 스포일러로 경고하시겠습니까? 경고 남용은 추적됩니다",
   "file_upload": {
     "drop_files": "파일을 여기에 드롭하거나",
     "browse_files": "파일 찾아보기",
