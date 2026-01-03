@@ -241,6 +241,13 @@
   "rate_deleted": "评价已删除",
   "delete_rate_confirm_title": "确认删除",
   "delete_rate_confirm_message": "确定要删除这个评价吗？此操作无法撤销。",
+  "block": "屏蔽",
+  "rate_blocked": "评价屏蔽成功",
+  "block_rate_confirm_title": "确认屏蔽",
+  "block_rate_confirm_message": "屏蔽后该评价将不会显示在你的列表当中",
+  "report_spoiler": "剧透警告",
+  "report_spoiler_confirm_title": "剧透警告",
+  "report_spoiler_confirm_message": "确定要警告这条评价剧透么，恶意滥用警告会被追溯",
   "file_upload": {
     "drop_files": "拖放文件到此处或",
     "browse_files": "浏览文件",

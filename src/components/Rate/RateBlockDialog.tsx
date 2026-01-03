@@ -1,0 +1,76 @@
+"use client";
+
+import { useState, type PropsWithChildren, cloneElement, isValidElement } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { useDicecho } from "@/hooks/useDicecho";
+import type { IRateDto } from "@dicecho/types";
+import { useTranslation } from "@/lib/i18n/react";
+
+interface RateBlockDialogProps {
+  rate: IRateDto;
+  onSuccess?: () => void;
+}
+
+export function RateBlockDialog({
+  rate,
+  onSuccess,
+  children,
+}: PropsWithChildren<RateBlockDialogProps>) {
+  const [open, setOpen] = useState(false);
+  const { api } = useDicecho();
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
+
+  const mutation = useMutation({
+    mutationFn: () => api.block.block("Rate", rate._id),
+    onSuccess: () => {
+      toast.success(t("rate_blocked"));
+      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["rate"] });
+      onSuccess?.();
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || t("error"));
+    },
+  });
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {t("block_rate_confirm_title")}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {t("block_rate_confirm_message")}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
+              e.preventDefault();
+              mutation.mutate();
+            }}
+            disabled={mutation.isPending}
+          >
+            {t("block")}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}

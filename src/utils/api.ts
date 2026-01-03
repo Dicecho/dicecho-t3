@@ -358,6 +358,7 @@ export function createDicechoApi(opts: DicechoApiOptions) {
         payload: Partial<{ rate: number; remark: string; remarkType: string; type: number; view: number; isAnonymous: boolean; accessLevel: string }>,
       ) => request<typeof payload, IRateDto>(`/api/rate/${id}`, "PUT", payload),
       delete: (id: string) => request<Empty, Empty>(`/api/rate/${id}`, "DELETE"),
+      reportSpoiler: (id: string) => request<Empty, IRateDto>(`/api/rate/${id}/reportSpoiler`, "POST"),
     },
 
     like: {
@@ -430,6 +431,21 @@ export function createDicechoApi(opts: DicechoApiOptions) {
       markRead: (uuid: string) => request<Empty, INotificationDto>(`/api/notification/${uuid}/mark`, "POST"),
       markAllRead: () => request<Empty, Empty>(`/api/notification/markAll`, "POST"),
     },
+
+    block: {
+      block: (targetName: string, targetId: string) => 
+        request<{ targetName: string; targetId: string; }, Empty>(
+          `/api/block`,
+          "POST",
+          { targetName, targetId }
+        ),
+      cancel: (targetName: string, targetId: string) => 
+        request<{ targetName: string; targetId: string; }, Empty>(
+          `/api/block/cancel`,
+          "POST",
+          { targetName, targetId }
+        ),
+    }
   };
 }
 

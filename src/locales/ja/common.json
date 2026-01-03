@@ -213,6 +213,13 @@
   "rate_deleted": "評価を削除しました",
   "delete_rate_confirm_title": "削除の確認",
   "delete_rate_confirm_message": "この評価を削除してもよろしいですか？この操作は取り消せません。",
+  "block": "ブロック",
+  "rate_blocked": "評価をブロックしました",
+  "block_rate_confirm_title": "ブロックの確認",
+  "block_rate_confirm_message": "ブロックすると、この評価はあなたのリストに表示されなくなります",
+  "report_spoiler": "ネタバレ警告",
+  "report_spoiler_confirm_title": "ネタバレ警告",
+  "report_spoiler_confirm_message": "この評価をネタバレとして警告しますか？警告の悪用は追跡されます",
   "file_upload": {
     "drop_files": "ファイルをここにドロップするか",
     "browse_files": "ファイルを参照",

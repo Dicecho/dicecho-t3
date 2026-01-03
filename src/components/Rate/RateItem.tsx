@@ -13,16 +13,19 @@ import { Badge } from "@/components/ui/badge";
 import { CommentSection } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { MessageCircle, Edit, Trash2, Loader2, Languages, ThumbsUp, ThumbsDown, Laugh } from "lucide-react";
+import { MessageCircle, Edit, Trash2, Loader2, Languages, ThumbsUp, ThumbsDown, Laugh, EyeOff, AlertTriangle } from "lucide-react";
 import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
+import { RateBlockDialog } from "./RateBlockDialog";
+import { RateSpoilerReportDialog } from "./RateSpoilerReportDialog";
 import { useRateTranslation } from "./use-rate-translation";
 import { SpoilerCollapsible } from "./spoiler-collapsible";
 import { FoldableContent } from "@/components/ui/foldable-content";
 import { cn } from "@/lib/utils";
 import { AuthButton } from "@/components/Auth/auth-button";
 import { useReactionDeclare } from "@/hooks/use-reaction-declare";
+import { useAccount } from "@/hooks/useAccount";
 
 interface IProps {
   rate: IRateDto;
@@ -38,7 +41,9 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
-  
+  const { data: session } = useSession();
+  const { isAuthenticated } = useAccount();
+
   const { toggle, isActive, getCount } = useReactionDeclare({
     targetName: "Rate",
     targetId: rate._id,
@@ -58,10 +63,9 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     targetLanguage,
   } = useRateTranslation(rate);
 
-  const { data: session, status } = useSession();
 
   const canEdit =
-    status === "authenticated" && rate.user._id === session?.user?._id;
+    isAuthenticated && rate.user._id === session?.user?._id;
 
   const rateUrl =
     typeof window !== "undefined"
@@ -276,6 +280,24 @@ export const RateItem: React.FunctionComponent<IProps> = ({
                   <span>{t("delete")}</span>
                 </Button>
               </RateDeleteDialog>
+            </>
+          )}
+
+          {!canEdit && (
+            <>
+              <RateSpoilerReportDialog rate={rate}>
+                <AuthButton size="sm" variant="secondary" className="gap-2">
+                  <AlertTriangle className="h-4 w-4" />
+                  <span>{t("report_spoiler")}</span>
+                </AuthButton>
+              </RateSpoilerReportDialog>
+
+              <RateBlockDialog rate={rate} onSuccess={onDeleted}>
+                <AuthButton size="sm" variant="secondary" className="gap-2">
+                  <EyeOff className="h-4 w-4" />
+                  <span>{t("block")}</span>
+                </AuthButton>
+              </RateBlockDialog>
             </>
           )}
         </div>

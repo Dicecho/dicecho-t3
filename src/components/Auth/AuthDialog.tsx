@@ -19,7 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import DicechoLogo from "./dicecho.svg";
 
-export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
+export const AuthDialog: FC<DialogProps> = ({ children, onOpenChange, ...props }) => {
   const { t } = useTranslation();
 
   const { mutate: signInMutation, isPending } = useMutation({
@@ -38,6 +38,7 @@ export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
     },
     onSuccess: () => {
       toast.success(t("sign_in_success"));
+      onOpenChange?.(false);
     },
     onError: (error) => {
       toast.error(t("sign_in_failed"), {
@@ -47,7 +48,7 @@ export const AuthDialog: FC<DialogProps> = ({ children, ...props }) => {
   });
 
   return (
-    <Dialog {...props}>
+    <Dialog onOpenChange={onOpenChange} {...props}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="p-4" showCloseButton={false}>
         <DialogHeader>
