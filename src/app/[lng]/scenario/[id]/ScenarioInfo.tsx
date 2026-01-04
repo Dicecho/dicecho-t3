@@ -8,6 +8,7 @@ import { UserAvatar } from "@/components/User/Avatar";
 import type { ComponentProps, FC, PropsWithChildren } from "react";
 import type { IModDto } from "@dicecho/types";
 import { UserAvatarPopover } from "@/components/User/UserAvatarPopover";
+import { LinkWithLng } from "@/components/Link";
 
 const InfoItem: FC<
   PropsWithChildren<ComponentProps<"div"> & { title: string }>
@@ -47,7 +48,7 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
       ) : (
         <InfoItem className="flex items-center" title={t("author")}>
           <UserAvatarPopover userId={scenario.author._id}>
-            <div className="flex items-center cursor-pointer">
+            <div className="flex cursor-pointer items-center">
               <span className="mr-2 inline-block">
                 <UserAvatar
                   user={scenario.author}
@@ -77,7 +78,9 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
         <InfoItem title={t("tags")}>
           <div className="flex flex-wrap items-center gap-2">
             {scenario.tags.map((tag) => (
-              <span key={tag}>{tag}</span>
+              <LinkWithLng className="hover:text-primary" key={tag} href={`/tag/${encodeURIComponent(tag)}`}>
+                <span>{tag}</span>
+              </LinkWithLng>
             ))}
           </div>
         </InfoItem>
