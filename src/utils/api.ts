@@ -326,6 +326,7 @@ export function createDicechoApi(opts: DicechoApiOptions) {
         request<ContributeModPayload & { isForeign: true }, IModDto>(`/api/mod`, "POST", { ...payload, isForeign: true }),
       update: (id: string, payload: ModUpsertPayload) => request<ModUpsertPayload, IModDto>(`/api/mod/${id}`, "PUT", payload),
       recommend: (id: string) => request<Empty, ModListApiResponse>(`/api/mod/${id}/recommend`, "GET"),
+      related: (id: string) => request<Empty, IModDto[]>(`/api/mod/${id}/related`, "GET"),
     },
 
     collection: {

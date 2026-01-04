@@ -6,12 +6,17 @@ import {
   LinkIcon,
   PencilIcon,
   StarIcon,
+  UserPenIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Album } from "@/components/Album";
 import { RateInfo } from "@/components/Scenario/RateInfo";
 import { ScenarioRelatedLink } from "@/components/Scenario/ScenarioRelatedLink";
+import { ScenarioRecommendList } from "@/components/Scenario/ScenarioRecommendList";
+import { ScenarioRecommendCarousel } from "@/components/Scenario/scenario-recommend-carousel";
+import { AuthorWorks } from "@/components/Scenario/author-works";
+import { RelatedCollections } from "@/components/Scenario/related-collections";
 import { ScenarioInfo } from "./ScenarioInfo";
 import { ScenarioRateList } from "./rates";
 import { ScenarioDescription } from "@/components/Scenario/ScenarioDescription";
@@ -42,13 +47,20 @@ export async function ScenarioDetail({ lng, scenario }: ScenarioDetailProps) {
         <BookmarkPlusIcon size={16} />
         {t("collect")}
       </Button>
-      {scenario.canEdit && (
-        <LinkWithLng href={`/scenario/${scenario._id}/edit`}>
+      {scenario.canEdit ? (
+        <Link href={`/${lng}/scenario/${scenario._id}/edit`}>
           <Button variant="outline" color="primary">
             <PencilIcon size={16} />
             {t("scenario_edit")}
           </Button>
-        </LinkWithLng>
+        </Link>
+      ) : (
+        <Link href={`/${lng}/scenario/${scenario._id}/edit`}>
+          <Button variant="outline" color="primary">
+            <UserPenIcon size={16} />
+            {t("scenario_apply_edit")}
+          </Button>
+        </Link>
       )}
       {scenario.originUrl && (
         <Link className="ml-auto" href={scenario.originUrl} target="_blank">
@@ -153,12 +165,14 @@ export async function ScenarioDetail({ lng, scenario }: ScenarioDetailProps) {
             </Card>
           )}
 
-          {/* <ScenarioRecommendList
-              lng={lng}
-              scenarioId={scenario._id}
-              tags={scenario.tags}
-              moduleRule={scenario.moduleRule}
-            /> */}
+          <div className="md:hidden">
+            <Card className="relative w-full p-0 py-4">
+              <div className="px-4 text-base font-semibold">
+                {t("scenario_similar_modules")}
+              </div>
+              <ScenarioRecommendCarousel scenarioId={scenario._id} />
+            </Card>
+          </div>
 
           <RateInfo
             className="bg-card w-full p-4 max-md:hidden"
@@ -180,6 +194,9 @@ export async function ScenarioDetail({ lng, scenario }: ScenarioDetailProps) {
           <Card className="relative flex w-full flex-col gap-4 p-4">
             <ScenarioInfo scenario={scenario} />
           </Card>
+          <ScenarioRecommendList scenarioId={scenario._id} />
+          <AuthorWorks scenarioId={scenario._id} />
+          <RelatedCollections scenarioId={scenario._id} />
         </div>
       </div>
     </div>
