@@ -47,8 +47,9 @@ export function NotificationBox({
     },
   ];
 
-  const currentType =
-    notificationsNavigation.find((nav) => nav.value === activeTab)?.type;
+  const currentType = notificationsNavigation.find(
+    (nav) => nav.value === activeTab,
+  )?.type;
 
   const {
     notifications,
@@ -67,23 +68,23 @@ export function NotificationBox({
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="flex h-full items-center justify-center">
+          <div className="border-primary h-8 w-8 animate-spin rounded-full border-b-2" />
         </div>
       );
     }
 
     if (notifications.length === 0) {
       return (
-        <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-          <Bell className="h-12 w-12 mb-4 opacity-30" />
-          <p>{t("notification_empty")}</p>
+        <div className="text-muted-foreground flex h-full flex-col items-center justify-center">
+          <Bell className="mb-4 h-12 w-12 opacity-30" />
+          <p className="text-sm">{t("notification_empty")}</p>
         </div>
       );
     }
 
     return (
-      <div className="divide-y">
+      <>
         {notifications.map((notification) => (
           <NotificationItem
             key={notification._id}
@@ -91,56 +92,60 @@ export function NotificationBox({
             onMarkRead={markRead}
           />
         ))}
-      </div>
+      </>
     );
   };
 
   return (
     <div
       className={cn(
-        "flex flex-col bg-background border rounded-lg shadow-lg overflow-hidden",
-        className
+        "bg-background flex h-[400px] flex-col overflow-hidden rounded-lg border shadow-lg",
+        className,
       )}
     >
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
-        <TabsList className="w-full justify-start rounded-none border-b bg-muted/50">
+      {/* Header */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex min-h-0 flex-1 flex-col">
+        <TabsList className="w-full border-b bg-muted/50 flex h-12 justify-start gap-2 overflow-x-auto rounded-none border-0 p-0">
           {notificationsNavigation.map((tab) => {
             const Icon = tab.icon;
             return (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="flex items-center gap-2"
+                className="flex-1 text-muted-foreground data-[state=active]:border-primary data-[state=active]:text-foreground h-full rounded-none border-b-2 border-transparent px-4 py-2 text-xs font-semibold tracking-wide uppercase data-[state=active]:bg-transparent data-[state=active]:shadow-none max-md:flex-1"
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="mr-2 h-4 w-4" />
                 {tab.name}
               </TabsTrigger>
             );
           })}
         </TabsList>
 
+        {/* Content */}
         {notificationsNavigation.map((tab) => (
           <TabsContent
             key={tab.value}
             value={tab.value}
-            className="m-0 max-h-[400px] overflow-y-auto"
+            className="m-0 min-h-0 flex-1 overflow-y-auto px-4 data-[state=inactive]:hidden"
           >
             {renderContent()}
           </TabsContent>
         ))}
       </Tabs>
 
-      <div className="flex items-center justify-between px-4 py-3 border-t bg-muted/30">
+      {/* Footer */}
+      <div className="bg-muted/50 flex shrink-0 items-center border-t px-2 py-1">
         <Button
-          variant="ghost"
+          variant="link"
           size="sm"
+          className="h-auto px-2 py-1 text-sm"
           onClick={() => markAllRead()}
           disabled={isMarkingAllRead || unreadCount === 0}
         >
           {t("notification_mark_all_read")}
         </Button>
-        <Link href={`/${lng}/account/notification`}>
-          <Button variant="ghost" size="sm">
+        <Link href={`/${lng}/account/notification`} className="ml-auto">
+          <Button variant="link" size="sm" className="h-auto px-2 py-1 text-sm">
             {t("notification_view_all")}
           </Button>
         </Link>

@@ -47,10 +47,7 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
 
   return (
     <div className="flex gap-2 rounded-2xl py-2">
-      <UserAvatar
-        className="h-6 w-6 rounded-full"
-        user={replyUser}
-      />
+      <UserAvatar className="h-6 w-6 rounded-full" user={replyUser} />
       <div className="flex-1 space-y-1">
         <div className="text-muted-foreground flex flex-wrap items-baseline gap-2 text-xs">
           <span className="text-foreground text-sm font-medium">
@@ -66,58 +63,54 @@ export const ReplyItem: React.FC<ReplyItemProps> = ({
           )}
           <span>{formatDate(new Date(reply.createdAt).getTime())}</span>
         </div>
-        <div className="text-sm text-foreground">{reply.content}</div>
+        <div className="text-foreground text-sm">{reply.content}</div>
         {showActions && (
-        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-          <button
-            type="button"
-            className="hover:text-foreground"
-            onClick={() => onReply(reply)}
-          >
-            {t("comment_reply_button")}
-          </button>
-          {reply.replyTo && (
-            <CommentDialogModal commentId={reply._id}>
+          <div className="text-muted-foreground flex flex-wrap gap-3 text-xs">
             <button
               type="button"
               className="hover:text-foreground"
+              onClick={() => onReply(reply)}
             >
-              {t("comment_view_dialog")}
+              {t("comment_reply_button")}
             </button>
-            </CommentDialogModal>
-          )}
-          {reply.canEdit && onDelete && (
-            <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-              <AlertDialogTrigger asChild>
-                <button type="button" className="hover:text-destructive">
-                  {t("comment_delete")}
-                </button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    {t("comment_delete_title")}
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {t("comment_delete_desc")}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-destructive hover:bg-destructive/90"
-                    onClick={handleDelete}
-                  >
-                    {t("confirm")}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
-        </div>
+            {reply.replyTo && (
+              <CommentDialogModal commentId={reply._id}>
+                <span className="hover:text-foreground">
+                  {t("comment_view_dialog")}
+                </span>
+              </CommentDialogModal>
+            )}
+            {reply.canEdit && onDelete && (
+              <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+                <AlertDialogTrigger asChild>
+                  <button type="button" className="hover:text-destructive">
+                    {t("comment_delete")}
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      {t("comment_delete_title")}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {t("comment_delete_desc")}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive hover:bg-destructive/90"
+                      onClick={handleDelete}
+                    >
+                      {t("confirm")}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         )}
       </div>
     </div>
   );
 };
-
