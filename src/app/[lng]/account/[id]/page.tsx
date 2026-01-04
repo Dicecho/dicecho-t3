@@ -1,9 +1,9 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
-import { AccountProfileServer } from "@/components/Account/AccountProfileServer";
-import { AccountProfileSkeleton } from "@/components/Account/AccountProfileSkeleton";
+import { AccountPageLayout } from "@/components/Account/account-page-layout";
+import { AccountHome } from "@/components/Account/AccountHome";
 import { MobileFooter } from "@/components/Footer";
 import { getDicechoServerApi } from "@/server/dicecho";
+import { notFound } from "next/navigation";
 
 // Let Next.js decide the rendering strategy based on usage
 export const dynamic = "auto";
@@ -50,11 +50,20 @@ export default async function AccountDetailPage(props: {
   const params = await props.params;
   const { lng, id } = params;
 
+  const api = await getDicechoServerApi();
+  const user = await api.user.profile(id, { revalidate: 300 }).catch(() => null);
+
+  if (!user) {
+    notFound();
+  }
+
   return (
     <>
-      <Suspense key={id} fallback={<AccountProfileSkeleton />}>
-        <AccountProfileServer userId={id} lng={lng} />
-      </Suspense>
+      <AccountPageLayout user={user} lng={lng}>
+        <div className="container py-4">
+          <AccountHome user={user} />
+        </div>
+      </AccountPageLayout>
       <MobileFooter />
     </>
   );

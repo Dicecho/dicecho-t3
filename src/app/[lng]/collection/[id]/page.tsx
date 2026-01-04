@@ -1,6 +1,7 @@
 import { getDicechoServerApi } from "@/server/dicecho";
 import { CollectionDetail } from "@/components/Collection";
 import { MobileFooter } from "@/components/Footer";
+import { CollectionDetailHeader } from "./header";
 import { notFound, redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth";
 
@@ -26,7 +27,8 @@ export default async function CollectionDetailPage(props: {
 
     return (
       <>
-        <div className="container py-6">
+        <CollectionDetailHeader title={collection.name} />
+        <div className="md:container md:py-6">
           <CollectionDetail collection={collection} />
         </div>
         <MobileFooter />

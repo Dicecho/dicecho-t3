@@ -204,7 +204,7 @@ const HeaderTabs = ({
           key={tab.value}
           href={tab.path}
           className={cn(
-            "text-muted-foreground hover:border-foreground hover:text-foreground mx-2 border-b-2 border-transparent px-2 pb-1 text-base transition-all",
+            "text-muted-foreground hover:border-foreground hover:text-foreground mx-2 border-b-2 border-transparent px-2 pb-1 text-base transition-all capitalize",
             isActive(tab) && "border-foreground text-foreground",
           )}
         >

@@ -43,7 +43,7 @@ export const AccountTabs = ({ user, lng }: AccountTabsProps) => {
             key={tab.value}
             href={tab.path}
             className={cn(
-              "mx-2 border-b-2 border-transparent px-2 py-4 text-sm text-muted-foreground transition-all hover:border-foreground hover:text-foreground",
+              "mx-2 border-b-2 border-transparent px-2 py-4 text-sm text-muted-foreground transition-all hover:border-foreground hover:text-foreground capitalize",
               isActive(tab) && "border-foreground text-foreground"
             )}
           >
