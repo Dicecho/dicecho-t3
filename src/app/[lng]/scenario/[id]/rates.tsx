@@ -16,15 +16,18 @@ const DEFAULT_QUERY: Partial<IRateListQuery> = {
   sort: { [RateSortKey.RATE_AT]: -1 },
 };
 
+type ScenarioRateListProps = {
+  scenarioId: string;
+  rateCount?: number;
+  markCount?: number;
+} & React.ComponentProps<"div">;
+
 export const ScenarioRateList = ({
   scenarioId,
   rateCount = 0,
   markCount = 0,
-}: {
-  scenarioId: string;
-  rateCount?: number;
-  markCount?: number;
-}) => {
+  ...props
+}: ScenarioRateListProps) => {
   const { t } = useTranslation();
   const [query, setQuery] = useLocalStorage<
     Pick<Partial<IRateListQuery>, "filter" | "sort">
@@ -36,7 +39,7 @@ export const ScenarioRateList = ({
   };
 
   return (
-    <Card>
+    <Card {...props}>
       <CardHeader className="overflow-x-hidden">
         <div className="flex items-center gap-2 flex-wrap">
           <RateFilter
