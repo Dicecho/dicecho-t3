@@ -25,6 +25,7 @@ import { FoldableContent } from "@/components/ui/foldable-content";
 import { cn } from "@/lib/utils";
 import { AuthButton } from "@/components/Auth/auth-button";
 import { useReactionDeclare } from "@/hooks/use-reaction-declare";
+import { serializeRichTextToMarkdownLegacy } from "@/components/Editor/utils/platejson-serializer";
 import { useAccount } from "@/hooks/useAccount";
 
 interface IProps {
@@ -93,10 +94,11 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     }
 
     if (rate.remarkType === RemarkContentType.Richtext) {
+      const markdown = serializeRichTextToMarkdownLegacy(rate.richTextState);
       return (
         <RichTextPreview
           id={`rate-item-${rate._id}`}
-          value={rate.richTextState}
+          markdown={markdown}
         />
       );
     }
