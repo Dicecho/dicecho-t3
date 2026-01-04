@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/react";
+import { UserAvatar } from "@/components/User/Avatar";
+import { CommentDialogModal } from "@/components/Comment/CommentDialogModal";
 import type { INotificationDto } from "@/types/notification";
 import { NotificationType } from "@/types/notification";
 
@@ -63,15 +63,15 @@ export function NotificationItem({
           <span>
             {t("notification_your_rate_in")}
             <Link
-              href={`/${lng}/module/${notification.data.mod._id}`}
-              className="mx-1 hover:underline"
+              href={`/${lng}/scenario/${notification.data.mod._id}`}
+              className="text-primary mx-1 hover:underline"
             >
               {notification.data.mod.title}
             </Link>
             {t("notification_rate")}
             <Link
               href={`/${lng}/rate/${notification.data.targetId}`}
-              className="hover:underline"
+              className="text-primary hover:underline"
             >
               {eclipse(notification.data.content)}
             </Link>
@@ -81,16 +81,11 @@ export function NotificationItem({
 
       if (notification.data.targetName === "Comment") {
         return (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // TODO: Open comment dialog
-              console.log("Open comment dialog:", notification.data.targetId);
-            }}
-            className="hover:underline"
-          >
-            {eclipse(notification.data.content)}
-          </button>
+          <CommentDialogModal commentId={notification.data.targetId}>
+            <span className="text-primary hover:underline">
+              {eclipse(notification.data.content)}
+            </span>
+          </CommentDialogModal>
         );
       }
     }
@@ -103,22 +98,17 @@ export function NotificationItem({
           <span>
             {t("notification_your_rate_in")}
             <Link
-              href={`/${lng}/module/${notification.data.mod._id}`}
-              className="mx-1 hover:underline"
+              href={`/${lng}/scenario/${notification.data.mod._id}`}
+              className="text-primary mx-1 hover:underline"
             >
               {notification.data.mod.title}
             </Link>
             {t("notification_rate")}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                // TODO: Open comment dialog
-                console.log("Open comment dialog:", commentId);
-              }}
-              className="hover:underline"
-            >
-              {eclipse(notification.data.content)}
-            </button>
+            <CommentDialogModal commentId={commentId}>
+              <span className="hover:underline">
+                {eclipse(notification.data.content)}
+              </span>
+            </CommentDialogModal>
           </span>
         );
       }
@@ -129,21 +119,16 @@ export function NotificationItem({
             {t("notification_your_topic")}
             <Link
               href={`/${lng}/forum/topic/${notification.data.targetId}`}
-              className="mx-1 hover:underline"
+              className="text-primary mx-1 hover:underline"
             >
               {eclipse(notification.data.topic.title)}
             </Link>
             {t("notification_rate")}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                // TODO: Open comment dialog
-                console.log("Open comment dialog:", commentId);
-              }}
-              className="hover:underline"
-            >
-              {eclipse(notification.data.content)}
-            </button>
+            <CommentDialogModal commentId={commentId}>
+              <span className="text-primary hover:underline">
+                {eclipse(notification.data.content)}
+              </span>
+            </CommentDialogModal>
           </span>
         );
       }
@@ -154,21 +139,16 @@ export function NotificationItem({
             {t("notification_your_collection")}
             <Link
               href={`/${lng}/collection/${notification.data.targetId}`}
-              className="mx-1 hover:underline"
+              className="text-primary mx-1 hover:underline"
             >
               {eclipse(notification.data.collection.title)}
             </Link>
             {t("notification_rate")}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                // TODO: Open comment dialog
-                console.log("Open comment dialog:", commentId);
-              }}
-              className="hover:underline"
-            >
-              {eclipse(notification.data.content)}
-            </button>
+            <CommentDialogModal commentId={commentId}>
+              <span className="text-primary hover:underline">
+                {eclipse(notification.data.content)}
+              </span>
+            </CommentDialogModal>
           </span>
         );
       }
@@ -179,16 +159,11 @@ export function NotificationItem({
       return (
         <span>
           {t("notification_your_comment")}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // TODO: Open comment dialog
-              console.log("Open comment dialog:", commentId);
-            }}
-            className="hover:underline"
-          >
-            {eclipse(notification.data.content)}
-          </button>
+          <CommentDialogModal commentId={commentId}>
+            <span className="text-primary hover:underline">
+              {eclipse(notification.data.content)}
+            </span>
+          </CommentDialogModal>
         </span>
       );
     }
@@ -209,15 +184,15 @@ export function NotificationItem({
   return (
     <div
       className={cn(
-        "relative flex gap-3 px-4 py-3 cursor-pointer hover:bg-accent/50 transition-colors",
-        notification.isUnread && "bg-accent/30"
+        "flex cursor-pointer py-1 text-sm",
+        "[&+&]:border-border [&+&]:border-t [&+&]:border-dashed",
       )}
       onClick={handleClick}
     >
       {notification.isUnread && (
-        <Badge
-          variant="destructive"
-          className="absolute left-2 top-3 h-2 w-2 p-0"
+        <span
+          className="bg-destructive mt-1.5 mr-2 h-2 w-2 shrink-0 rounded-full"
+          style={{ boxShadow: "0 0 5px rgba(223, 85, 78, 1)" }}
         />
       )}
 
@@ -225,31 +200,25 @@ export function NotificationItem({
         <Link
           href={`/${lng}/user/${notification.sender._id}`}
           onClick={(e) => e.stopPropagation()}
+          className="mr-2 shrink-0"
         >
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={notification.sender.avatarUrl} />
-            <AvatarFallback>
-              {notification.sender.nickName.slice(0, 2)}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar user={notification.sender} className="h-8 w-8" />
         </Link>
       )}
 
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {notification.sender && (
           <Link
             href={`/${lng}/user/${notification.sender._id}`}
             onClick={(e) => e.stopPropagation()}
-            className="font-medium hover:underline"
+            className="mr-1 font-bold hover:underline"
           >
             {notification.sender.nickName}
           </Link>
         )}
-        <span className="mx-1 text-muted-foreground">{renderVerb()}</span>
-        <span className="text-sm">{renderTarget()}</span>
-        {renderSuffix() && (
-          <span className="ml-1 text-sm">{renderSuffix()}</span>
-        )}
+        <span className="text-muted-foreground mx-1">{renderVerb()}</span>
+        <span>{renderTarget()}</span>
+        {renderSuffix() && <span className="ml-1">{renderSuffix()}</span>}
       </div>
     </div>
   );

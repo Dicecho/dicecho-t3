@@ -38,7 +38,7 @@ export const HeaderAccount = () => {
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-96 p-0" align="end">
+          <PopoverContent className="w-80 p-0" align="end">
             <NotificationBox />
           </PopoverContent>
         </Popover>
