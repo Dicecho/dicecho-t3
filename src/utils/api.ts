@@ -405,6 +405,8 @@ export function createDicechoApi(opts: DicechoApiOptions) {
     },
 
     tag: {
+      detail: (name: string, options?: { revalidate?: number | false }) =>
+        request<Empty, ITag>(`/api/tag/${encodeURIComponent(name)}`, "GET", {}, { revalidate: options?.revalidate ?? 300 }),
       modRecommend: (options?: { revalidate?: number | false }) =>
         request<Empty, ITag[]>(`/api/tag/modRecommend`, "GET", {}, { revalidate: options?.revalidate ?? 3600 }),
     },
