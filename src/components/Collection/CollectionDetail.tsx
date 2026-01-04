@@ -72,20 +72,49 @@ export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
   return (
     <div className="space-y-4">
       {/* Collection Header */}
-      <Card>
-        <CardContent className="flex w-full gap-4">
-          {collection.coverUrl && (
-            <Image
-              src={collection.coverUrl}
-              alt={collection.name}
-              className="object-cover aspect-square w-40 h-40 rounded-md"
-              width={160}
-              height={160}
-              priority
-            />
-          )}
+      <Card className="max-md:rounded-none">
+        <CardContent className="flex w-full flex-col gap-4 md:flex-row">
+          {/* 第一行：封面图 + 标题信息 */}
+          <div className="flex gap-3 md:contents">
+            {collection.coverUrl && (
+              <Image
+                src={collection.coverUrl}
+                alt={collection.name}
+                className="aspect-square h-20 w-20 shrink-0 rounded-md object-cover md:h-40 md:w-40"
+                width={160}
+                height={160}
+                priority
+              />
+            )}
 
-          <div className="space-y-4 flex-1">
+            {/* 移动端：标题和操作按钮在图片右侧 */}
+            <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 md:hidden">
+              <div className="flex flex-wrap items-center gap-2">
+                <CardTitle className="text-lg">{collection.name}</CardTitle>
+                <Badge
+                  variant={
+                    collection.accessLevel === "public"
+                      ? "secondary"
+                      : "outline"
+                  }
+                >
+                  {collection.accessLevel === "public"
+                    ? t("collection_access_public")
+                    : t("collection_access_private")}
+                </Badge>
+              </div>
+              <CardDescription className="text-xs">
+                {t("collection_created_at", {
+                  date: new Intl.DateTimeFormat(i18n.language, {
+                    dateStyle: "medium",
+                  }).format(new Date(collection.createdAt)),
+                })}
+              </CardDescription>
+            </div>
+          </div>
+
+          {/* 桌面端信息区域 */}
+          <div className="hidden flex-1 space-y-4 md:block">
             <div className="flex items-start justify-between">
               <div className="flex-1 space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
@@ -189,11 +218,91 @@ export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
               )}
             </div>
           </div>
+
+          {/* 移动端：描述、创建者、统计、操作按钮 */}
+          <div className="space-y-3 md:hidden">
+            {/* Creator */}
+            <Link
+              href={`/account/${collection.user._id}`}
+              className="flex w-fit items-center gap-2 transition-opacity hover:opacity-80"
+            >
+              <UserAvatar user={collection.user} className="h-5 w-5" />
+              <span className="text-muted-foreground text-xs">
+                {collection.user.nickName}
+              </span>
+            </Link>
+
+            {/* Description */}
+            {collection.description ? (
+              <p className="text-foreground text-sm leading-relaxed">
+                {collection.description}
+              </p>
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                {t("collection_no_description")}
+              </p>
+            )}
+
+            {/* Stats and Actions */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="text-muted-foreground flex items-center gap-3 text-xs">
+                <span className="flex items-center gap-1">
+                  <Heart className="h-3.5 w-3.5" />
+                  {t("collection_favorite_count", {
+                    count: collection.favoriteCount,
+                  })}
+                </span>
+                <span className="flex items-center gap-1">
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  {t("collection_comment_count", {
+                    count: collection.commentCount,
+                  })}
+                </span>
+              </div>
+
+              {collection.canEdit && (
+                <div className="ml-auto flex items-center gap-1">
+                  <CollectionEditDialog collection={collection}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  </CollectionEditDialog>
+                  <CollectionDeleteDialog
+                    collection={collection}
+                    onSuccess={() => router.push(`/collection`)}
+                  >
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Trash className="text-destructive h-4 w-4" />
+                    </Button>
+                  </CollectionDeleteDialog>
+                </div>
+              )}
+
+              {!collection.canEdit && (
+                <Button
+                  variant={collection.isFavorited ? "outline" : "default"}
+                  size="sm"
+                  className="md:ml-auto"
+                  onClick={() =>
+                    favoriteMutation.mutate(collection.isFavorited)
+                  }
+                  disabled={favoriteMutation.isPending}
+                >
+                  <Heart
+                    className={`mr-1.5 h-3.5 w-3.5 ${collection.isFavorited ? "fill-current" : ""}`}
+                  />
+                  {collection.isFavorited
+                    ? t("collection_unfavorite")
+                    : t("collection_favorite")}
+                </Button>
+              )}
+            </div>
+          </div>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent className="px-6">
+      <Card className="max-md:rounded-none">
+        <CardContent className="px-4">
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
             <div className="flex items-center justify-between">
