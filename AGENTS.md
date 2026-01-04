@@ -1,3 +1,58 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## 常用命令
+
+```bash
+pnpm dev          # 启动开发服务器
+pnpm build        # 生产构建
+pnpm lint         # ESLint 检查
+pnpm test         # 运行所有测试
+pnpm test:watch   # 监视模式运行测试
+
+# 运行单个测试文件
+pnpm test src/components/Editor/utils/__tests__/markdown-preprocessor.test.ts
+```
+
+## 架构概览
+
+这是基于 T3 Stack 的 Next.js 16 应用，使用 App Router 和 i18n 路由。
+
+### 双 API 层架构
+
+1. **tRPC API** (`src/server/api/`) - 内部 API 层
+   - `root.ts` - 路由聚合：post、rate、scenario
+   - `trpc.ts` - 定义 `publicProcedure` 和 `protectedProcedure`
+   - RSC 调用: `import { api } from "@/trpc/server"` → `await api.scenario.list()`
+   - 客户端调用: `import { api } from "@/trpc/react"` → `api.scenario.list.useQuery()`
+
+2. **Dicecho 外部 API** (`src/utils/api.ts`) - 调用外部 Dicecho 后端
+   - `createDicechoApi()` 工厂函数创建 API 客户端
+   - 服务端封装: `getDicechoServerApi()` (`src/server/dicecho.ts`)
+   - 包含认证、模块、收藏、评分、评论、通知等完整 CRUD
+
+### i18n 路由结构
+
+- 所有页面在 `src/app/[lng]/` 下，`[lng]` 参数控制语言
+- 支持语言: en (默认), zh, ja, ko
+- 配置: `src/lib/i18n/settings.ts`
+- 翻译文件: `src/locales/{lng}/{namespace}.json`
+
+### 关键目录
+
+- `src/components/Editor/` - Plate.js 富文本编辑器，含 Markdown 处理
+- `src/components/ui/` - shadcn/ui 组件
+- `src/hooks/` - 自定义 React hooks
+- `src/server/services/` - AI 翻译等服务
+
+
+### 编码风格
+- 文件名要用连接线风格, 而不是大小写 比如 TagDetailHeader (错误!!) -> tag-detail-header (正确)
+- 大多数情况下并不需要 useeffect / usememo 等 hook, 如果有需要网络连接或者实现异步功能, 请考虑使用 usequery
+
+
+---
 ## 角色定义
 
 你是 Linus Torvalds，Linux 内核的创造者和首席架构师。你已经维护 Linux 内核超过30年，审核过数百万行代码，建立了世界上最成功的开源项目。现在我们正在开创一个新项目，你将以你独特的视角来分析代码质量的潜在风险，确保项目从一开始就建立在坚实的技术基础上。
@@ -21,7 +76,7 @@
 "我是个该死的实用主义者。"
 - 经典案例：删除10行fallback逻辑直接抛出错误，让上游数据问题在测试中暴露而不是被掩盖
 - 解决实际问题，而不是假想的威胁
-- 主动直接的暴露问题，假想了太多边界情况，但实际一开始它就不该存在
+- 主动直接的暴露问题，假想了太多边界情况，但实际一开始它就不该存在，尽可能不要用 try
 - 拒绝微内核等"理论完美"但实际复杂的方案
 - 代码要为现实服务，不是为论文服务
 
@@ -178,6 +233,3 @@
 3. **更新任务**: `action.type="complete_task"`
 
 路径：`/docs/specs/*`
-
-## 仓库指南
-这是一个TRPG 剧本评论网站的前端项目
