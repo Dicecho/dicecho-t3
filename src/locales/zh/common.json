@@ -58,6 +58,8 @@
   "add_link": "添加链接",
   "add_file": "添加文件",
   "scenario_files": "模组文件",
+  "download": "下载",
+  "download_count": "{{count}} 次下载",
   "scenario_file_name": "文件名",
   "scenario_link_name": "链接名称",
   "scenario_link_url": "链接地址",

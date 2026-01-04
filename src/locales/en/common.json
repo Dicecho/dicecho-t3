@@ -58,6 +58,8 @@
   "add_link": "Add link",
   "add_file": "Add file",
   "scenario_files": "Scenario files",
+  "download": "Download",
+  "download_count": "{{count}} downloads",
   "scenario_file_name": "File name",
   "scenario_link_name": "Link name",
   "scenario_link_url": "Link url",

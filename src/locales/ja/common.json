@@ -58,6 +58,8 @@
   "add_link": "リンクを追加",
   "add_file": "ファイルを追加",
   "scenario_files": "シナリオファイル",
+  "download": "ダウンロード",
+  "download_count": "{{count}} ダウンロード",
   "scenario_file_name": "ファイル名",
   "scenario_link_name": "リンク名",
   "scenario_link_url": "リンク URL",
