@@ -265,6 +265,7 @@
     "filter_remark_length": "filter by remark length",
     "filter_rating": "filter by rating",
     "filter_rate_view": "filter by view",
+    "filter_placeholder": "Add filter...",
     "remark_length_all": "commented",
     "remark_length_short": "short comment",
     "remark_length_long": "long comment",

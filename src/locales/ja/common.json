@@ -227,6 +227,7 @@
     "filter_remark_length": "検索条件(長さ)",
     "filter_rating": "検索条件(評判)",
     "filter_rate_view": "検索条件(視点)",
+    "filter_placeholder": "フィルターを追加...",
     "remark_length_all": "文字入り",
     "remark_length_short": "短文",
     "remark_length_long": "長文",

@@ -86,6 +86,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     if (showTranslation && isTranslated && translation?.translatedText) {
       return (
         <RichTextPreview
+          className="overflow-hidden"
           id={`rate-item-translated-${rate._id}`}
           markdown={translation.translatedText} 
         />
@@ -95,6 +96,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     if (rate.remarkType === RemarkContentType.Richtext) {
       return (
         <RichTextPreview
+          className="overflow-hidden"
           id={`rate-item-${rate._id}`}
           value={rate.richTextState}
         />
@@ -104,6 +106,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     if (rate.remarkType === RemarkContentType.Markdown) {
       return (
         <RichTextPreview
+          className="overflow-hidden"
           id={`rate-item-${rate._id}`}
           markdown={rate.remark} 
         />

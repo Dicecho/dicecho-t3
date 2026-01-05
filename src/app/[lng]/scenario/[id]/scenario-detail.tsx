@@ -7,7 +7,7 @@ import { ScenarioRecommendCarousel } from "@/components/Scenario/scenario-recomm
 import { AuthorWorks } from "@/components/Scenario/author-works";
 import { RelatedCollections } from "@/components/Scenario/related-collections";
 import { ScenarioActions } from "@/components/Scenario/scenario-actions";
-import { ScenarioInfo } from "./ScenarioInfo";
+import { ScenarioInfo } from "./scenario-info";
 import { ScenarioHeader } from "./scenario-header";
 import { ScenarioRateList } from "./rates";
 import { ScenarioDescription } from "@/components/Scenario/ScenarioDescription";
@@ -30,7 +30,7 @@ export async function ScenarioDetail({ lng, scenario }: ScenarioDetailProps) {
       <div className="mt-4 grid grid-cols-6 gap-4">
         <div className="col-span-6 flex flex-col gap-4 md:col-span-4">
           {scenario.imageUrls.length > 0 && (
-            <Card className="relative w-full p-4">
+            <Card className="relative w-full p-4 max-md:rounded-none">
               <Album imageUrls={scenario.imageUrls} />
             </Card>
           )}
@@ -42,7 +42,7 @@ export async function ScenarioDetail({ lng, scenario }: ScenarioDetailProps) {
           )}
 
           <div className="md:hidden">
-            <Card className="relative w-full p-0 py-4">
+            <Card className="relative w-full p-0 py-4 max-md:rounded-none">
               <div className="px-4 text-base font-semibold">
                 {t("scenario_similar_modules")}
               </div>

@@ -25,6 +25,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Loader2 } from "lucide-react";
+import { LinkWithLng } from "../Link";
 
 type UserAvatarPopoverProps = {
   userId: string;
@@ -52,7 +53,11 @@ export const UserAvatarPopover: FC<UserAvatarPopoverProps> = ({
   const isMobile = useIsMobile();
 
   // React Query 自动处理一切
-  const { data: user, isLoading, isFetching } = useQuery({
+  const {
+    data: user,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ["user", userId],
     queryFn: () => api.user.profile(userId),
     enabled: isOpen,
@@ -90,9 +95,7 @@ export const UserAvatarPopover: FC<UserAvatarPopoverProps> = ({
           disabled={isFollowLoading}
           onClick={() => unfollowMutation.mutate()}
         >
-          {isFollowLoading && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
+          {isFollowLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {t("unfollow")}
         </Button>
       ) : (
@@ -103,9 +106,7 @@ export const UserAvatarPopover: FC<UserAvatarPopoverProps> = ({
           disabled={isFollowLoading}
           onClick={() => followMutation.mutate()}
         >
-          {isFollowLoading && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
+          {isFollowLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {t("follow")}
         </Button>
       )}
@@ -143,7 +144,9 @@ export const UserAvatarPopover: FC<UserAvatarPopoverProps> = ({
   // 桌面: HoverCard（悬浮卡片）
   return (
     <HoverCard onOpenChange={setIsOpen} openDelay={0}>
-      <HoverCardTrigger asChild>{children}</HoverCardTrigger>
+      <HoverCardTrigger asChild>
+        <LinkWithLng href={`/account/${userId}`}>{children}</LinkWithLng>
+      </HoverCardTrigger>
       <HoverCardContent
         className="w-100 border-0 bg-transparent p-0"
         align="start"
