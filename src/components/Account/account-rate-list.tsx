@@ -17,7 +17,7 @@ import { Empty } from "@/components/Empty";
 import { useTranslation } from "@/lib/i18n/react";
 
 const DEFAULT_QUERY: Pick<Partial<IRateListQuery>, "filter" | "sort"> = {
-  filter: { type: RateType.Rate },
+  filter: { type: RateType.Rate, remarkLength: { $gt: 1 } },
   sort: { [RateSortKey.RATE_AT]: -1 },
 };
 

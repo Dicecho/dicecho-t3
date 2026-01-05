@@ -17,7 +17,7 @@ import { useTranslation } from "@/lib/i18n/react";
 import { RateEditDialog } from "@/components/Rate";
 
 const DEFAULT_QUERY: Partial<IRateListQuery> = {
-  filter: { type: RateType.Rate },
+  filter: { type: RateType.Rate, remarkLength: { $gt: 1 } },
   sort: { [RateSortKey.RATE_AT]: -1 },
 };
 
