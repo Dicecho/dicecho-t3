@@ -68,7 +68,7 @@ export const AccountRateList = ({
   return (
     <Card>
       <CardHeader>
-        <div className="flex flex-col gap-2">
+        <div className="flex md:flex-row flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2">
             <RateTypeTabs
               className="max-md:flex-1"
@@ -80,7 +80,7 @@ export const AccountRateList = ({
               markCount={markCount}
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1">
             <RateFilterDrawer
               filter={query.filter ?? {}}
               onChange={(filter) => setStoredQuery({ ...query, filter })}
@@ -100,7 +100,7 @@ export const AccountRateList = ({
             </RateFilterDrawer>
 
             <RateFilterSelector
-              className="flex-1 max-md:hidden"
+              className="flex-1 max-md:hidden ml-auto"
               filter={query.filter ?? {}}
               onChange={(filter) => setStoredQuery({ ...query, filter })}
             />
