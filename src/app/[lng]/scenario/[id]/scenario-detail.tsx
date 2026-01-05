@@ -6,6 +6,7 @@ import { ScenarioRecommendList } from "@/components/Scenario/ScenarioRecommendLi
 import { ScenarioRecommendCarousel } from "@/components/Scenario/scenario-recommend-carousel";
 import { AuthorWorks } from "@/components/Scenario/author-works";
 import { RelatedCollections } from "@/components/Scenario/related-collections";
+import { ScenarioActions } from "@/components/Scenario/scenario-actions";
 import { ScenarioInfo } from "./ScenarioInfo";
 import { ScenarioHeader } from "./scenario-header";
 import { ScenarioRateList } from "./rates";
@@ -69,6 +70,7 @@ export async function ScenarioDetail({ lng, scenario }: ScenarioDetailProps) {
           )}
           <Card className="relative flex w-full flex-col gap-4 p-4">
             <ScenarioInfo scenario={scenario} />
+            <ScenarioActions scenario={scenario} />
           </Card>
           <ScenarioRecommendList scenarioId={scenario._id} />
           <AuthorWorks scenarioId={scenario._id} />

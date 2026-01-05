@@ -17,7 +17,7 @@ const ScenarioEditPage = async ({
 
   return (
     <>
-      <ScenarioDetailHeader title={t("scenario_edit")} />
+      <ScenarioDetailHeader title={t("scenario_edit")} scenario={scenario} />
       <ScenarioEditPageClient lng={lng} scenario={scenario} />
     </>
   );

@@ -26,7 +26,7 @@ const ScenarioDownloadPage = async ({
 
   return (
     <>
-      <ScenarioDetailHeader title={t("download")} />
+      <ScenarioDetailHeader title={t("download")} scenario={scenario} />
       <div className="md:container">
         <ScenarioHeader lng={lng} scenario={scenario} currentTab="download" />
 
