@@ -1,13 +1,14 @@
 import { getServerAuthSession } from "@/server/auth";
-import { AccountPageLayout } from "@/components/Account/account-page-layout";
-import { SettingsPageContent } from "@/components/Account/settings-page-content";
-import { SettingsPageLayout } from "@/components/Account/settings-page-layout";
-import { MobileFooter } from "@/components/Footer";
 import { getDicechoServerApi } from "@/server/dicecho";
 import { redirect, notFound } from "next/navigation";
+import { SettingsPageLayout } from "@/components/Account/settings-page-layout";
+import { SettingsPageContent } from "@/components/Account/settings-page-content";
+import { AccountPageLayout } from "@/components/Account/account-page-layout";
+import { ProfileForm } from "@/components/Account/profile-form";
+import { MobileFooter } from "@/components/Footer";
 import { getTranslation } from "@/lib/i18n";
 
-export default async function AccountSettingPage(props: {
+export default async function ProfileSettingPage(props: {
   params: Promise<{ lng: string; id: string }>;
 }) {
   const params = await props.params;
@@ -19,7 +20,6 @@ export default async function AccountSettingPage(props: {
     getTranslation(lng),
   ]);
 
-  // Only allow users to access their own settings
   if (!session || session.user._id !== id) {
     redirect(`/${lng}/account/${id}`);
   }
@@ -35,10 +35,10 @@ export default async function AccountSettingPage(props: {
       {/* Mobile: Use SettingsPageLayout with back button */}
       <div className="md:hidden">
         <SettingsPageLayout
-          title={t("settings_title")}
-          backHref={`/${lng}/account/${id}`}
+          title={t("settings_menu_profile")}
+          backHref={`/${lng}/account/${id}/setting`}
         >
-          <SettingsPageContent user={user} userId={id} lng={lng} />
+          <ProfileForm user={user} showCard={false} />
         </SettingsPageLayout>
       </div>
 
@@ -46,7 +46,9 @@ export default async function AccountSettingPage(props: {
       <div className="hidden md:block">
         <AccountPageLayout user={user} lng={lng}>
           <div className="container py-4">
-            <SettingsPageContent user={user} userId={id} lng={lng} />
+            <SettingsPageContent user={user} userId={id} lng={lng}>
+              <ProfileForm user={user} />
+            </SettingsPageContent>
           </div>
         </AccountPageLayout>
       </div>
