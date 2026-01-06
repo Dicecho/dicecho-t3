@@ -64,11 +64,12 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
         <InfoItem title={t("contributors")}>
           <div className="flex items-center gap-2">
             {scenario.contributors.map((contributor) => (
-              <UserAvatar
-                user={contributor}
-                key={contributor._id}
-                className="h-5 w-5 rounded-full"
-              />
+              <UserAvatarPopover key={contributor._id} userId={contributor._id}>
+                <UserAvatar
+                  user={contributor}
+                  className="h-5 w-5 rounded-full"
+                />
+              </UserAvatarPopover>
             ))}
           </div>
         </InfoItem>
@@ -78,7 +79,11 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
         <InfoItem title={t("tags")}>
           <div className="flex flex-wrap items-center gap-2">
             {scenario.tags.map((tag) => (
-              <LinkWithLng className="hover:text-primary" key={tag} href={`/tag/${encodeURIComponent(tag)}`}>
+              <LinkWithLng
+                className="hover:text-primary"
+                key={tag}
+                href={`/tag/${encodeURIComponent(tag)}`}
+              >
                 <span>{tag}</span>
               </LinkWithLng>
             ))}
@@ -90,13 +95,26 @@ export const ScenarioInfo: FC<ScenarioInfoProps> = ({
         <InfoItem title={t("languages")}>
           <div className="flex items-center gap-2">
             {scenario.languages.map((language) => (
-              <span key={language}>{t(`language_codes.${language}`)}</span>
+              <LinkWithLng
+                className="hover:text-primary"
+                key={language}
+                href={`/scenario?language=${encodeURIComponent(language)}`}
+              >
+                {t(`language_codes.${language}`)}
+              </LinkWithLng>
             ))}
           </div>
         </InfoItem>
       )}
 
-      <InfoItem title={t("rule")}>{scenario.moduleRule}</InfoItem>
+      <InfoItem title={t("rule")}>
+        <LinkWithLng
+          className="hover:text-primary"
+          href={`/scenario?rule=${encodeURIComponent(scenario.moduleRule)}`}
+        >
+          {scenario.moduleRule}
+        </LinkWithLng>
+      </InfoItem>
 
       <div className="text-muted-foreground text-sm">
         <Trans

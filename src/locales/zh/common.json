@@ -265,6 +265,7 @@
     "filter_remark_length": "筛选评价长度",
     "filter_rating": "筛选评分",
     "filter_rate_view": "筛选角度",
+    "filter_placeholder": "添加筛选条件...",
     "remark_length_all": "带字评价",
     "remark_length_short": "短评",
     "remark_length_long": "长评",

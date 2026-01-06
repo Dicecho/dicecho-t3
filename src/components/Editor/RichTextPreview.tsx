@@ -13,9 +13,10 @@ interface RichTextPreviewProps extends Omit<WithPlateOptions, 'plugins'> {
    * 如果提供,会自动转换为 Plate 节点
    */
   markdown?: string;
+  className?: string;
 }
 
-export const RichTextPreview = ({ markdown, ...props }: RichTextPreviewProps) => {
+export const RichTextPreview = ({ markdown, className, ...props }: RichTextPreviewProps) => {
   const editor = usePlateEditor({
     readOnly: true,
     ...props,
@@ -31,8 +32,8 @@ export const RichTextPreview = ({ markdown, ...props }: RichTextPreviewProps) =>
 
   return (
     <Plate editor={editor}>
-      <EditorContainer className="overflow-y-visible">
-        <Editor variant="ai"/>
+      <EditorContainer >
+        <Editor className={className} />
       </EditorContainer>
     </Plate>
   );

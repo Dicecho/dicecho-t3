@@ -47,9 +47,28 @@ pnpm test src/components/Editor/utils/__tests__/markdown-preprocessor.test.ts
 - `src/server/services/` - AI 翻译等服务
 
 
+
 ### 编码风格
 - 文件名要用连接线风格, 而不是大小写 比如 TagDetailHeader (错误!!) -> tag-detail-header (正确)
 - 大多数情况下并不需要 useeffect / usememo 等 hook, 如果有需要网络连接或者实现异步功能, 请考虑使用 usequery
+- 不要使用 else if 语句, 在 if 里面 return 来处理特殊情况下面是范例代码
+```  ts
+function process(data) {
+  if (!data) { // 卫语句 1: 检查数据是否存在
+    return; // 提前退出
+  }
+  if (data.type === 'A') {
+    // 处理 A
+    return;
+  }
+  if (data.type === 'B') {
+    // 处理 B
+    return;
+  }
+  // ... 其他处理
+  // 如果都满足了，这里是主要逻辑 (或者可以更精简)
+}
+```
 
 
 ---

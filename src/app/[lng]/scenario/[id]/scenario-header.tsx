@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CollectionActionDialog } from "@/components/Collection/collection-action-dialog";
-import { ScenarioInfo } from "./ScenarioInfo";
+import { ScenarioInfo } from "./scenario-info";
 import { getTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 

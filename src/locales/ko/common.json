@@ -265,6 +265,7 @@
     "filter_remark_length": "비고 길이로 필터링",
     "filter_rating": "평점으로 필터링",
     "filter_rate_view": "관점으로 필터링",
+    "filter_placeholder": "필터 추가...",
     "remark_length_all": "댓글 있음",
     "remark_length_short": "짧은 댓글",
     "remark_length_long": "긴 댓글",
