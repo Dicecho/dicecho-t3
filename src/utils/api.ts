@@ -25,9 +25,12 @@ import {
 import * as qs from "qs";
 import type {
   CollectionDto,
+  CollectionItem,
   CollectionItemsResponse,
   CollectionListQuery,
   CollectionListResponse,
+  CreateCollectionDto,
+  UpdateCollectionDto,
 } from "@/types/collection";
 import type { CommentQuery, CommentRepliesQuery, ParentCommentDto, ReplyDto } from "@/types/comment";
 import type { ITag, TagQuery } from "@/types/tag";
@@ -88,15 +91,6 @@ type ChangePasswordDto = {
   oldPassword: string;
   newPassword: string;
 };
-
-type CreateCollectionDto = {
-  name: string;
-  description?: string;
-};
-
-type UpdateCollectionDto = Partial<
-  Pick<CollectionDto, "name" | "description" | "coverUrl" | "accessLevel">
->;
 
 type ModCreatePayload = {
   title: string;
@@ -345,9 +339,18 @@ export function createDicechoApi(opts: DicechoApiOptions) {
       },
       detail: (uuid: string) => request<Empty, CollectionDto>(`/api/collection/${uuid}`, "GET"),
       items: (uuid: string) => request<Empty, CollectionItemsResponse>(`/api/collection/${uuid}/items`, "GET"),
+      status: (targetName: string, targetId: string) =>
+        request<Empty, Record<string, boolean>>(
+          `/api/collection/status?targetName=${targetName}&targetId=${targetId}`,
+          "GET"
+        ),
       create: (payload: CreateCollectionDto) => request<CreateCollectionDto, CollectionDto>(`/api/collection/`, "POST", payload),
       update: (uuid: string, dto: UpdateCollectionDto) =>
         request<UpdateCollectionDto, CollectionDto>(`/api/collection/${uuid}`, "PUT", dto),
+      addItem: (uuid: string, item: CollectionItem) =>
+        request<CollectionItem, CollectionDto>(`/api/collection/${uuid}/add`, "PUT", item),
+      removeItem: (uuid: string, item: CollectionItem) =>
+        request<CollectionItem, CollectionDto>(`/api/collection/${uuid}/remove`, "PUT", item),
       delete: (uuid: string) => request<Empty, Empty>(`/api/collection/${uuid}`, "DELETE"),
       favorite: (id: string) => request<Empty, CollectionDto>(`/api/collection/${id}/favorite`, "PUT"),
       cancelFavorite: (id: string) => request<Empty, CollectionDto>(`/api/collection/${id}/cancelFavorite`, "PUT"),

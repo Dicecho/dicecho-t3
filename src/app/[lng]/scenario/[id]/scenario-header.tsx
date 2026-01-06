@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { RateInfo } from "@/components/Scenario/RateInfo";
+import { CollectionActionDialog } from "@/components/Collection/collection-action-dialog";
 import { ScenarioInfo } from "./ScenarioInfo";
 import { getTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -55,10 +55,12 @@ export async function ScenarioHeader({
         <HeartIcon size={16} />
         {t("mark")}
       </Button>
-      <Button variant="outline" color="primary" className="max-md:hidden">
-        <BookmarkPlusIcon size={16} />
-        {t("collect")}
-      </Button>
+      <CollectionActionDialog targetName="Mod" targetId={scenario._id}>
+        <Button variant="outline" className="max-md:hidden">
+          <BookmarkPlusIcon size={16} />
+          {t("collect")}
+        </Button>
+      </CollectionActionDialog>
       {scenario.canEdit && (
         <Link href={`/${lng}/scenario/${scenario._id}/edit`}>
           <Button variant="outline" color="primary">
