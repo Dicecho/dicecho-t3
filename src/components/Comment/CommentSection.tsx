@@ -19,6 +19,8 @@ interface CommentSectionProps {
   targetId: string;
   pageSize?: number;
   className?: string;
+  hideComposerOnMobile?: boolean;
+  sort?: Record<string, number>;
 }
 
 export const CommentSection: React.FC<CommentSectionProps> = ({
@@ -26,6 +28,8 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
   targetId,
   pageSize = 10,
   className,
+  hideComposerOnMobile = false,
+  sort,
 }) => {
   const { api, initialized } = useDicecho();
   const { t } = useTranslation();
@@ -34,7 +38,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
 
   useEffect(() => {
     setPage(1);
-  }, [targetId, targetName, pageSize]);
+  }, [targetId, targetName, pageSize, sort]);
 
   const {
     data,
@@ -43,11 +47,12 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     error,
     refetch,
   } = useQuery<PaginatedResponse<ParentCommentDto>>({
-    queryKey: ["comments", targetName, targetId, pageSize, page],
+    queryKey: ["comments", targetName, targetId, pageSize, page, sort],
     queryFn: () =>
       api.comment.list(targetName, targetId, {
         page,
         pageSize,
+        sort,
       }),
     enabled: initialized && Boolean(targetId) && Boolean(targetName),
     placeholderData: (previousData) => previousData,
@@ -94,6 +99,7 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
         placeholder={placeholder}
         onSubmit={handleSubmit}
         mode="rich"
+        className={hideComposerOnMobile ? "hidden md:block" : undefined}
       />
 
       {isPending && (

@@ -20,7 +20,7 @@ import type { IModDto } from "@dicecho/types";
 type ScenarioHeaderProps = {
   lng: string;
   scenario: IModDto;
-  currentTab?: "home" | "download";
+  currentTab?: "home" | "topic" | "download";
 };
 
 export async function ScenarioHeader({
@@ -34,6 +34,7 @@ export async function ScenarioHeader({
 
   const tabs = [
     { id: "home", label: t("home"), href: `/${lng}/scenario/${scenario._id}` },
+    { id: "topic", label: t("topics"), href: `/${lng}/scenario/${scenario._id}/topic`, count: scenario.topicCount },
     ...(hasDownload
       ? [
           {
@@ -187,6 +188,9 @@ export async function ScenarioHeader({
               )}
             >
               {tab.label}
+              {"count" in tab && tab.count !== undefined && tab.count > 0 && (
+                <span className="text-muted-foreground ml-1 text-sm">({tab.count})</span>
+              )}
             </Link>
           ))}
         </div>

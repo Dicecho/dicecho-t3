@@ -1,10 +1,9 @@
 import { AccountPageLayout } from "@/components/Account/account-page-layout";
 import { MobileFooter } from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
 import { getDicechoServerApi } from "@/server/dicecho";
 import { notFound } from "next/navigation";
+import { AccountTopicClient } from "./account-topic-client";
 
-// ISR with 60 seconds revalidation
 export const revalidate = 60;
 
 export default async function AccountTopicPage(props: {
@@ -20,15 +19,20 @@ export default async function AccountTopicPage(props: {
     notFound();
   }
 
+  const initialData = await api.topic.list(
+    { filter: { author: id }, pageSize: 20, page: 1 },
+    { revalidate: 60 }
+  ).catch(() => null);
+
   return (
     <>
       <AccountPageLayout user={user} lng={lng}>
         <div className="container py-4">
-          <Card>
-            <CardContent className="text-muted-foreground p-8 text-center">
-              帖子功能开发中...
-            </CardContent>
-          </Card>
+          <AccountTopicClient
+            lng={lng}
+            userId={id}
+            initialData={initialData}
+          />
         </div>
       </AccountPageLayout>
       <MobileFooter />
