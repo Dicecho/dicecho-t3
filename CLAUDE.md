@@ -2,19 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 常用命令
-
-```bash
-pnpm dev          # 启动开发服务器
-pnpm build        # 生产构建
-pnpm lint         # ESLint 检查
-pnpm test         # 运行所有测试
-pnpm test:watch   # 监视模式运行测试
-
-# 运行单个测试文件
-pnpm test src/components/Editor/utils/__tests__/markdown-preprocessor.test.ts
-```
-
 ## 架构概览
 
 这是基于 T3 Stack 的 Next.js 16 应用，使用 App Router 和 i18n 路由。

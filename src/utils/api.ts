@@ -31,7 +31,7 @@ import type {
 } from "@/types/collection";
 import type { CommentQuery, CommentRepliesQuery, ParentCommentDto, ReplyDto } from "@/types/comment";
 import type { ITag, TagQuery } from "@/types/tag";
-import type { ITopicDto, TopicListQuery } from "@/types/topic";
+import type { ITopicDto, TopicListQuery, CreateTopicDto, UpdateTopicDto } from "@/types/topic";
 import type {
   INotificationDto,
   NotificationListQuery,
@@ -416,6 +416,19 @@ export function createDicechoApi(opts: DicechoApiOptions) {
         request<Empty, ITag>(`/api/tag/${encodeURIComponent(name)}`, "GET", {}, { revalidate: options?.revalidate ?? 300 }),
       modRecommend: (options?: { revalidate?: number | false }) =>
         request<Empty, ITag[]>(`/api/tag/modRecommend`, "GET", {}, { revalidate: options?.revalidate ?? 3600 }),
+    },
+
+    topic: {
+      list: (params: Partial<TopicListQuery> = {}, options?: { revalidate?: number | false }) =>
+        request<Empty, PaginatedResponse<ITopicDto>>(`/api/topic?${qs.stringify(params)}`, "GET", {}, { revalidate: options?.revalidate ?? 60 }),
+      detail: (uuid: string, options?: { revalidate?: number | false }) =>
+        request<Empty, ITopicDto>(`/api/topic/${uuid}`, "GET", {}, { revalidate: options?.revalidate ?? 60 }),
+      create: (payload: CreateTopicDto) =>
+        request<CreateTopicDto, ITopicDto>(`/api/topic`, "POST", payload),
+      update: (uuid: string, payload: UpdateTopicDto) =>
+        request<UpdateTopicDto, ITopicDto>(`/api/topic/${uuid}`, "PUT", payload),
+      delete: (uuid: string) =>
+        request<Empty, Empty>(`/api/topic/${uuid}`, "DELETE"),
     },
 
     config: {

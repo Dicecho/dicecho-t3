@@ -28,10 +28,10 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
       title: t("scenario"),
       link: "/scenario",
     },
-    // {
-    //   title: t("forum"),
-    //   link: "/forum",
-    // },
+    {
+      title: t("forum"),
+      link: "/forum",
+    },
     // {
     //   title: t("replay"),
     //   link: "/replay",
@@ -59,7 +59,7 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
 
           <div className="hidden shrink-0 md:flex">
             <NavigationMenu>
-              <NavigationMenuList>
+              <NavigationMenuList className="gap-4">
                 {menus.map((menu) => (
                   <NavigationMenuItem key={menu.link}>
                     <Link
