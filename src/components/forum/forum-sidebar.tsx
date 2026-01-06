@@ -1,12 +1,13 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { UserAvatar } from "@/components/User/Avatar";
 import { useTranslation } from "@/lib/i18n/react";
 import { useSession } from "next-auth/react";
 import { PenSquare } from "lucide-react";
 import { LinkWithLng } from "@/components/Link";
+import { HomepageProfile } from "@/components/Home/HomepageProfile";
 import { TopicFormDialog } from "./topic-form-dialog";
 import type { PropsWithChildren } from "react";
 
@@ -14,6 +15,8 @@ interface ForumSidebarProps {}
 
 export function ForumSidebar({ children }: PropsWithChildren<ForumSidebarProps>) {
   const { t } = useTranslation();
+  const params = useParams();
+  const lng = (params.lng as string) || "en";
   const { data: session } = useSession();
   const user = session?.user;
 
@@ -21,22 +24,10 @@ export function ForumSidebar({ children }: PropsWithChildren<ForumSidebarProps>)
     <div className="flex flex-col gap-4">
       {user && (
         <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <UserAvatar
-                user={{ avatarUrl: user.avatarUrl ?? "", nickName: user.nickName ?? "" }}
-                className="h-12 w-12"
-              />
-              <div className="flex-1 overflow-hidden">
-                <LinkWithLng href={`/account/${user._id}`}>
-                  <div className="truncate font-medium hover:underline">
-                    {user.nickName}
-                  </div>
-                </LinkWithLng>
-              </div>
-            </div>
+          <CardContent className="pt-6">
+            <HomepageProfile user={user} lng={lng} />
             <TopicFormDialog>
-              <Button className="mt-4 w-full">
+              <Button className="mt-6 w-full">
                 <PenSquare className="mr-2 h-4 w-4" />
                 {t("topic_create")}
               </Button>
