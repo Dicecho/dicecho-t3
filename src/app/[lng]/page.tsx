@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { getServerAuthSession } from "@/server/auth";
 import { MobileFooter } from "@/components/Footer";
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { HeaderMenu } from "@/components/Header/HeaderMenu";
@@ -8,9 +7,7 @@ import { getTranslation } from "@/lib/i18n";
 import { BannerServer, BannerSkeleton } from "@/components/Home/BannerServer";
 import { CollectionsServer, MobileCollectionsServer } from "@/components/Home/CollectionsServer";
 import { ScenarioSectionServer, MobileScenarioSectionServer } from "@/components/Home/ScenarioSectionServer";
-import { HomepageProfile } from "@/components/Home/HomepageProfile";
-import { HomepageActions } from "@/components/Home/HomepageActions";
-import { Card, CardContent } from "@/components/ui/card";
+import { HomepageSidebar } from "@/components/Home/HomepageSidebar";
 import { Button } from "@/components/ui/button";
 import { NotificationReminder } from "@/components/Header/notification-reminder";
 import { CollectionGridSkeleton } from "@/components/Home/CollectionGridSkeleton";
@@ -28,7 +25,6 @@ export default async function Home(props: {
   const { lng } = params;
 
   const { t } = await getTranslation(lng);
-  const session = await getServerAuthSession();
 
   return (
     <>
@@ -69,25 +65,16 @@ export default async function Home(props: {
 
           {/* Sidebar - Right Side (1/3) */}
           <div className="md:col-span-4">
-            {session?.user && (
-              <Card className="mb-4">
-                <CardContent className="pt-6">
-                  <HomepageProfile user={session.user} lng={lng} />
-                  <div className="mt-6">
-                    <HomepageActions lng={lng} />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            <Button
-              asChild
-              className="w-full mb-4"
-            >
-              <a href="https://discord.gg/geEpSKFUzG" target="_blank" rel="noopener noreferrer">
-                {t("home_discord_join")}
-              </a>
-            </Button>
+            <HomepageSidebar>
+              <Button
+                asChild
+                className="w-full"
+              >
+                <a href="https://discord.gg/geEpSKFUzG" target="_blank" rel="noopener noreferrer">
+                  {t("home_discord_join")}
+                </a>
+              </Button>
+            </HomepageSidebar>
           </div>
         </div>
 
