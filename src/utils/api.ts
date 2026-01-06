@@ -45,6 +45,11 @@ import type {
   BlockListResponse,
   IPendantDto,
 } from "@/types/block";
+import type {
+  IReplayDto,
+  ReplayListQuery,
+  ReplayListResponse,
+} from "@/types/replay";
 
 export function isBackendError(
   err: unknown,
@@ -482,6 +487,17 @@ export function createDicechoApi(opts: DicechoApiOptions) {
         classification: string;
         reason: string;
       }) => request<typeof data, Empty>(`/api/report`, "POST", data),
+    },
+
+    replay: {
+      list: (params: Partial<ReplayListQuery> = {}, options?: { revalidate?: number | false }) =>
+        request<Empty, ReplayListResponse>(`/api/replay?${qs.stringify(params)}`, "GET", {}, { revalidate: options?.revalidate ?? 60 }),
+      detail: (bvid: string, options?: { revalidate?: number | false }) =>
+        request<Empty, IReplayDto>(`/api/replay/${bvid}/`, "GET", {}, { revalidate: options?.revalidate ?? 300 }),
+      update: (bvid: string) =>
+        request<Empty, IReplayDto>(`/api/replay/${bvid}/`, "PUT"),
+      delete: (bvid: string) =>
+        request<Empty, Empty>(`/api/replay/${bvid}/`, "DELETE"),
     },
   };
 }

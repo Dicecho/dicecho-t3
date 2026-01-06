@@ -29,18 +29,12 @@ export const MobileFooter = ({ className, ...props }: MobileProps) => {
       exact: false,
       icon: BookText,
     },
-    // {
-    //   title: t("forum"),
-    //   link: "/forum",
-    //   exact: false,
-    //   icon: MessagesSquare,
-    // },
-    // {
-    //   title: t("replay"),
-    //   link: "/replay",
-    //   exact: false,
-    //   icon: Tv,
-    // },
+    {
+      title: t("replay"),
+      link: "/replay",
+      exact: false,
+      icon: Tv,
+    },
     {
       title: t("my"),
       link: session?.user ? `/account/${session?.user?._id}` : "/account",
