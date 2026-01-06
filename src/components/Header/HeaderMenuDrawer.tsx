@@ -107,7 +107,7 @@ export const HeaderMenuDrawer: FC<PropsWithChildren> = ({ children }) => {
     {
       icon: Settings,
       label: t("settings"),
-      link: `/settings`,
+      link: `/setting`,
     },
   ];
 

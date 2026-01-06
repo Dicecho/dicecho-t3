@@ -53,7 +53,7 @@ export const UserBox: React.FC<UserBoxProps> = ({ user }) => {
     {
       icon: Settings,
       label: t("settings"),
-      link: `/settings`,
+      link: `/account/${user.id}/setting`,
     },
   ];
 

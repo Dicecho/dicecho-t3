@@ -37,6 +37,11 @@ import type {
   NotificationListQuery,
   NotificationPaginatedResponse,
 } from "@/types/notification";
+import type {
+  BlockQuery,
+  BlockListResponse,
+  IPendantDto,
+} from "@/types/block";
 
 export function isBackendError(
   err: unknown,
@@ -305,8 +310,9 @@ export function createDicechoApi(opts: DicechoApiOptions) {
     },
 
     pendant: {
-      active: (uuid: string) => request(`/api/pendant/${uuid}/active`, "PUT"),
-      inactive: () => request(`/api/pendant/inactive`, "PUT"),
+      self: () => request<Empty, IPendantDto[]>(`/api/pendant/self`, "GET"),
+      active: (uuid: string) => request<Empty, Empty>(`/api/pendant/${uuid}/active`, "PUT"),
+      inactive: () => request<Empty, Empty>(`/api/pendant/inactive`, "PUT"),
     },
 
     module: {
@@ -436,13 +442,15 @@ export function createDicechoApi(opts: DicechoApiOptions) {
     },
 
     block: {
-      block: (targetName: string, targetId: string) => 
+      self: (query: Partial<BlockQuery> = {}) =>
+        request<Empty, BlockListResponse>(`/api/block/self?${qs.stringify(query)}`, "GET"),
+      block: (targetName: string, targetId: string) =>
         request<{ targetName: string; targetId: string; }, Empty>(
           `/api/block`,
           "POST",
           { targetName, targetId }
         ),
-      cancel: (targetName: string, targetId: string) => 
+      cancel: (targetName: string, targetId: string) =>
         request<{ targetName: string; targetId: string; }, Empty>(
           `/api/block/cancel`,
           "POST",

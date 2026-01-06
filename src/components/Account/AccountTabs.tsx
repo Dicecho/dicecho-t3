@@ -24,7 +24,6 @@ export const AccountTabs = ({ user, lng }: AccountTabsProps) => {
     { label: t("home"), value: "home", path: basePath, exact: true },
     { label: t("topics"), value: "topic", path: `${basePath}/topic` },
     { label: t("collection"), value: "collection", path: `${basePath}/collection` },
-    ...(isSelf ? [{ label: t("settings"), value: "setting", path: `${basePath}/setting` }] : []),
   ];
 
   const isActive = (tab: { path: string; exact?: boolean }) => {
@@ -50,6 +49,14 @@ export const AccountTabs = ({ user, lng }: AccountTabsProps) => {
             {tab.label}
           </LinkWithLng>
         ))}
+        {isSelf && (
+          <LinkWithLng
+            href={`${basePath}/setting`}
+            className="max-md:hidden mx-2 border-b-2 border-transparent px-2 py-4 text-sm text-muted-foreground transition-all hover:border-foreground hover:text-foreground capitalize"
+          >
+            {t("settings")}
+          </LinkWithLng>
+        )}
       </div>
     </div>
   );
