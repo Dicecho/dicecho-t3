@@ -125,7 +125,7 @@ const ScenarioDetailPage = async ({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <ScenarioDetailHeader title={scenario.title} />
+      <ScenarioDetailHeader title={scenario.title} scenario={scenario} />
       <ScenarioDetail lng={lng} scenario={scenario} />
     </>
   );

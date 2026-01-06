@@ -55,7 +55,7 @@ export async function ScenarioHeader({
         <HeartIcon size={16} />
         {t("mark")}
       </Button>
-      <Button variant="outline" color="primary">
+      <Button variant="outline" color="primary" className="max-md:hidden">
         <BookmarkPlusIcon size={16} />
         {t("collect")}
       </Button>

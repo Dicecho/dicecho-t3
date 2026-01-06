@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -14,6 +15,7 @@ interface ShareButtonProps {
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
   children?: React.ReactNode;
+  asChild?: boolean;
 }
 
 export function ShareButton({
@@ -23,6 +25,7 @@ export function ShareButton({
   size = "sm",
   className,
   children,
+  asChild = false,
 }: ShareButtonProps) {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
@@ -32,7 +35,6 @@ export function ShareButton({
       copyToClipboard();
       return;
     }
-    
 
     // Check if Web Share API is available
     if (navigator.share) {
@@ -64,6 +66,14 @@ export function ShareButton({
       });
   };
 
+  if (asChild) {
+    return (
+      <Slot onClick={handleShare}>
+        {children}
+      </Slot>
+    );
+  }
+
   return (
     <Button
       variant={variant}
@@ -76,4 +86,3 @@ export function ShareButton({
     </Button>
   );
 }
-

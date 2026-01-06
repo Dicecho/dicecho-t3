@@ -333,6 +333,7 @@ export function createDicechoApi(opts: DicechoApiOptions) {
       update: (id: string, payload: ModUpsertPayload) => request<ModUpsertPayload, IModDto>(`/api/mod/${id}`, "PUT", payload),
       recommend: (id: string) => request<Empty, ModListApiResponse>(`/api/mod/${id}/recommend`, "GET"),
       related: (id: string) => request<Empty, IModDto[]>(`/api/mod/${id}/related`, "GET"),
+      applyEditor: (id: string) => request<Empty, Empty>(`/api/mod/${id}/apply-editor`, "POST"),
     },
 
     collection: {
@@ -456,7 +457,16 @@ export function createDicechoApi(opts: DicechoApiOptions) {
           "POST",
           { targetName, targetId }
         ),
-    }
+    },
+
+    report: {
+      submit: (data: {
+        targetName: string;
+        targetId: string;
+        classification: string;
+        reason: string;
+      }) => request<typeof data, Empty>(`/api/report`, "POST", data),
+    },
   };
 }
 
