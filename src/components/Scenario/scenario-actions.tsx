@@ -10,6 +10,7 @@ import {
   FlagIcon,
   MoreVerticalIcon,
   FileEditIcon,
+  BookmarkPlusIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthButton } from "@/components/Auth/auth-button";
@@ -25,6 +26,7 @@ import { toast } from "sonner";
 import { useDicecho } from "@/hooks/useDicecho";
 import { useTranslation } from "@/lib/i18n/react";
 import { ShareButton } from "@/components/ui/share-button";
+import { CollectionActionDialog } from "@/components/Collection/collection-action-dialog";
 import { ScenarioBlockDialog } from "./scenario-block-dialog";
 import { ScenarioReportDialog } from "./scenario-report-dialog";
 
@@ -45,6 +47,7 @@ export function ScenarioActions({
   const lng = params.lng as string;
   const { api } = useDicecho();
 
+  const [collectOpen, setCollectOpen] = useState(false);
   const [blockOpen, setBlockOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
 
@@ -62,8 +65,7 @@ export function ScenarioActions({
   const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${lng}/scenario/${scenario._id}`;
 
   const handleCollect = () => {
-    // TODO: open collection modal
-    toast.info(t("coming_soon"));
+    setCollectOpen(true);
   };
 
   if (variant === "actionsheet") {
@@ -80,9 +82,11 @@ export function ScenarioActions({
               <ShareButton url={shareUrl} title={scenario.title} asChild>
                 <ActionSheetItem>{t("share")}</ActionSheetItem>
               </ShareButton>
-              <AuthButton asChild onClick={handleCollect}>
-                <ActionSheetItem>{t("collect")}</ActionSheetItem>
-              </AuthButton>
+              <ActionSheetClose asChild>
+                <AuthButton asChild onClick={handleCollect}>
+                  <ActionSheetItem>{t("collect")}</ActionSheetItem>
+                </AuthButton>
+              </ActionSheetClose>
               {scenario.canEdit && (
                 <ActionSheetClose asChild>
                   <ActionSheetItem asChild>
@@ -116,6 +120,12 @@ export function ScenarioActions({
             </ActionSheetGroup>
           </ActionSheetContent>
         </ActionSheet>
+        <CollectionActionDialog
+          targetName="Mod"
+          targetId={scenario._id}
+          open={collectOpen}
+          onOpenChange={setCollectOpen}
+        />
         <ScenarioBlockDialog
           scenarioId={scenario._id}
           open={blockOpen}
