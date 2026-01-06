@@ -65,7 +65,7 @@ export default async function ReplayPage({
   return (
     <>
       <MobileHeader left={<HeaderMenu />} right={<NotificationReminder />}>
-        <span className="text-lg font-semibold">{t("replay")}</span>
+        <span className="text-lg font-semibold text-center">{t("replay")}</span>
       </MobileHeader>
 
       <main className="container pb-24 md:pt-6">
