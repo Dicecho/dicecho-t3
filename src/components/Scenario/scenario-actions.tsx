@@ -102,10 +102,10 @@ export function ScenarioActions({
                 </AuthButton>
               )}
               <AuthButton asChild onClick={() => setBlockOpen(true)}>
-                <ActionSheetItem danger>{t("scenario_block")}</ActionSheetItem>
+                <ActionSheetItem variant="destructive">{t("scenario_block")}</ActionSheetItem>
               </AuthButton>
               <AuthButton asChild onClick={() => setReportOpen(true)}>
-                <ActionSheetItem danger>{t("scenario_report")}</ActionSheetItem>
+                <ActionSheetItem variant="destructive">{t("scenario_report")}</ActionSheetItem>
               </AuthButton>
             </ActionSheetGroup>
 

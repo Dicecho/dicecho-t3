@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { forwardRef } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 import {
   Drawer,
   DrawerClose,
@@ -33,44 +34,60 @@ const ActionSheetContent = forwardRef<
 ));
 ActionSheetContent.displayName = "ActionSheetContent";
 
+const actionSheetGroupVariants = cva("rounded-[14px] overflow-hidden", {
+  variants: {
+    variant: {
+      default: "bg-background/80 dark:bg-muted/80 backdrop-blur-xl",
+      cancel: "mt-2 bg-background dark:bg-muted",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
+
 const ActionSheetGroup = forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { variant?: "default" | "cancel" }
->(({ className, variant = "default", ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> &
+    VariantProps<typeof actionSheetGroupVariants>
+>(({ className, variant, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      "rounded-[14px] overflow-hidden",
-      variant === "default" &&
-        "bg-background/80 dark:bg-muted/80 backdrop-blur-xl",
-      variant === "cancel" && "mt-2 bg-background dark:bg-muted",
-      className,
-    )}
+    className={cn(actionSheetGroupVariants({ variant }), className)}
     {...props}
   />
 ));
 ActionSheetGroup.displayName = "ActionSheetGroup";
 
-interface ActionSheetItemProps extends React.HTMLAttributes<HTMLElement> {
-  danger?: boolean;
-  asChild?: boolean;
-  disabled?: boolean;
-}
+const actionSheetItemVariants = cva(
+  "flex h-14 w-full items-center justify-center text-base font-normal border-t border-border/30 first:border-t-0 active:bg-muted/50 disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "text-primary",
+        destructive: "text-destructive",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  },
+);
+
+type ActionSheetItemProps = React.HTMLAttributes<HTMLElement> &
+  VariantProps<typeof actionSheetItemVariants> & {
+    asChild?: boolean;
+    disabled?: boolean;
+  };
 
 const ActionSheetItem = forwardRef<HTMLElement, ActionSheetItemProps>(
-  ({ children, danger, className, asChild, disabled, ...props }, ref) => {
+  ({ children, variant, className, asChild, disabled, ...props }, ref) => {
     const Comp = asChild ? "div" : "button";
     return (
       <Comp
         ref={ref as React.Ref<HTMLButtonElement & HTMLDivElement>}
         disabled={!asChild ? disabled : undefined}
-        className={cn(
-          "flex h-14 w-full items-center justify-center text-base font-normal",
-          "border-t border-border/30 first:border-t-0",
-          "text-primary active:bg-muted/50 disabled:opacity-50",
-          danger && "text-destructive",
-          className,
-        )}
+        className={cn(actionSheetItemVariants({ variant }), className)}
         {...props}
       >
         {children}
