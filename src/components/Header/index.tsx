@@ -32,10 +32,10 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
       title: t("forum"),
       link: "/forum",
     },
-    // {
-    //   title: t("replay"),
-    //   link: "/replay",
-    // },
+    {
+      title: t("replay"),
+      link: "/replay",
+    },
   ];
 
   return (

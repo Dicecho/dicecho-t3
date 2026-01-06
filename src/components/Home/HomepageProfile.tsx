@@ -13,12 +13,16 @@ interface HomepageProfileProps {
 export const HomepageProfile: FC<HomepageProfileProps> = ({ user, lng }) => {
   return (
     <div className="flex flex-col items-center">
-      <UserAvatar user={user} className="h-16 w-16" />
+      <div>
+        <UserAvatar user={user} className="h-16 w-16" />
+      </div>
 
-      <div className="text-lg font-semibold mb-2 text-center mt-4">{user.nickName}</div>
+      <div className="mt-4 mb-2 text-center text-lg font-semibold">
+        {user.nickName}
+      </div>
 
       {user.note && (
-        <div className="text-sm text-muted-foreground mb-4 text-center">
+        <div className="text-muted-foreground mb-4 text-center text-sm">
           {user.note}
         </div>
       )}
@@ -26,9 +30,9 @@ export const HomepageProfile: FC<HomepageProfileProps> = ({ user, lng }) => {
       <div className="flex items-center gap-4 text-sm">
         <Link
           href={`/${lng}/account/${user._id}/followers`}
-          className="flex flex-col items-center hover:text-primary transition-colors"
+          className="hover:text-primary flex flex-col items-center transition-colors"
         >
-          <span className="font-semibold text-lg">{user.followerCount}</span>
+          <span className="text-lg font-semibold">{user.followerCount}</span>
           <span className="text-muted-foreground">粉丝</span>
         </Link>
 
@@ -36,20 +40,19 @@ export const HomepageProfile: FC<HomepageProfileProps> = ({ user, lng }) => {
 
         <Link
           href={`/${lng}/account/${user._id}/followings`}
-          className="flex flex-col items-center hover:text-primary transition-colors"
+          className="hover:text-primary flex flex-col items-center transition-colors"
         >
-          <span className="font-semibold text-lg">{user.followingCount}</span>
+          <span className="text-lg font-semibold">{user.followingCount}</span>
           <span className="text-muted-foreground">关注</span>
         </Link>
 
         <Separator orientation="vertical" className="h-8" />
 
         <div className="flex flex-col items-center">
-          <span className="font-semibold text-lg">{user.likedCount}</span>
+          <span className="text-lg font-semibold">{user.likedCount}</span>
           <span className="text-muted-foreground">获赞</span>
         </div>
       </div>
     </div>
   );
 };
-
