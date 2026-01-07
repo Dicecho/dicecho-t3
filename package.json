@@ -24,6 +24,8 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^3.10.0",
+    "@octokit/app": "^16.1.2",
+    "@octokit/types": "^16.0.0",
     "@platejs/ai": "^52.0.16",
     "@platejs/basic-nodes": "^52.0.11",
     "@platejs/basic-styles": "^52.0.11",

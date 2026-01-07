@@ -36,6 +36,10 @@ export const Header = async ({ lng, ...props }: HeaderProps) => {
       title: t("replay"),
       link: "/replay",
     },
+    {
+      title: t("feedback"),
+      link: "/feedback",
+    },
   ];
 
   return (

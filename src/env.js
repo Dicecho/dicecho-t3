@@ -33,6 +33,12 @@ export const env = createEnv({
     AZURE_OPENAI_ENDPOINT: z.string().optional(),
     AZURE_OPENAI_DEPLOYMENT: z.string().optional(),
     AZURE_OPENAI_API_VERSION: z.string().optional(),
+    // GitHub Feedback Configuration
+    GITHUB_APP_ID: z.string().optional(),
+    GITHUB_APP_PK: z.string().optional(),
+    GITHUB_INSTALLATION_ID: z.string().optional(),
+    GITHUB_OWNER: z.string().default("dicecho"),
+    GITHUB_REPO: z.string().default("feedback"),
   },
 
   /**
@@ -66,6 +72,12 @@ export const env = createEnv({
     AZURE_OPENAI_ENDPOINT: process.env.AZURE_OPENAI_ENDPOINT,
     AZURE_OPENAI_DEPLOYMENT: process.env.AZURE_OPENAI_DEPLOYMENT,
     AZURE_OPENAI_API_VERSION: process.env.AZURE_OPENAI_API_VERSION,
+    // GitHub Feedback Configuration
+    GITHUB_APP_ID: process.env.GITHUB_APP_ID,
+    GITHUB_APP_PK: process.env.GITHUB_APP_PK,
+    GITHUB_INSTALLATION_ID: process.env.GITHUB_INSTALLATION_ID,
+    GITHUB_OWNER: process.env.GITHUB_OWNER,
+    GITHUB_REPO: process.env.GITHUB_REPO,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

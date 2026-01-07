@@ -1,3 +1,4 @@
+import { feedbackRouter } from "@/server/api/routers/feedback";
 import { postRouter } from "@/server/api/routers/post";
 import { rateRouter } from "@/server/api/routers/rate";
 import { scenarioRouter } from "@/server/api/routers/scenario";
@@ -9,6 +10,7 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  feedback: feedbackRouter,
   post: postRouter,
   rate: rateRouter,
   scenario: scenarioRouter,
