@@ -22,17 +22,17 @@ export function ImageElementStatic(
         >
           <img
             className={cn(
-              'w-full max-w-full cursor-default object-cover px-0',
+              'w-full max-w-1/2 cursor-default object-cover px-0',
               'rounded-sm'
             )}
             alt={(props.attributes as any).alt}
             src={url}
           />
-          {caption && caption[0] && (
+          {/* {caption && caption[0] && (
             <figcaption className="mx-auto mt-2 h-[24px] max-w-full">
               {NodeApi.string(caption[0])}
             </figcaption>
-          )}
+          )} */}
         </div>
       </figure>
       {props.children}

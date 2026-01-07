@@ -2,6 +2,8 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { getDicechoServerApi } from "@/server/dicecho";
+import { createDicechoApi } from "@/utils/api";
+import { env } from "@/env";
 import { translate, getLanguageDisplayName } from "@/server/services/ai";
 import { getTranslationCache } from "@/server/services/translate-cache";
 import { serializeRichTextToMarkdown } from "@/components/Editor/utils/platejson-serializer";
@@ -9,6 +11,29 @@ import { RemarkContentType } from "@dicecho/types";
 import { LanguageCodes } from "@/utils/language";
 
 export const rateRouter = createTRPCRouter({
+  detail: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        // accessToken is used to get user-specific data (like isLiked)
+        // also serves as queryKey differentiator for session changes
+        accessToken: z.string().optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      // When accessToken is provided, fetch user-specific data without cache
+      // When no accessToken, use cache (revalidate: 300) for public view
+      if (input.accessToken) {
+        const api = createDicechoApi({
+          origin: env.NEXT_PUBLIC_DICECHO_API_ENDPOINT,
+          auth: { getAccessToken: async () => input.accessToken },
+        });
+        return api.rate.detail(input.id, { revalidate: false });
+      }
+      const api = await getDicechoServerApi();
+      return api.rate.detail(input.id, { revalidate: 300 });
+    }),
+
   translate: publicProcedure
     .input(
       z.object({

@@ -364,7 +364,8 @@ export function createDicechoApi(opts: DicechoApiOptions) {
     rate: {
       list: (params: Partial<IRateListQuery> = {}) =>
         request<Empty, IRateListApiResponse>(`/api/rate?${qs.stringify(params)}`, "GET"),
-      detail: (id: string) => request<Empty, IRateDto>(`/api/rate/${id}`, "GET"),
+      detail: (id: string, options?: { revalidate?: number | false }) =>
+        request<Empty, IRateDto>(`/api/rate/${id}`, "GET", {}, { revalidate: options?.revalidate ?? 300 }),
       create: (
         modId: string,
         payload: { rate?: number; remark?: string; remarkType: string; type: number; view?: number; isAnonymous?: boolean; accessLevel?: string },

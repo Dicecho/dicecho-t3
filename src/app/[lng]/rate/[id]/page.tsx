@@ -1,31 +1,72 @@
-import { Card, CardContent } from "@/components/ui/card";
+import type { Metadata } from "next";
 import { getDicechoServerApi } from "@/server/dicecho";
+import { HydrateClient, api } from "@/trpc/server";
 import { RateDetailClient } from "./rate-detail-client";
+import { notFound } from "next/navigation";
 
-const RateDetailPage = async (
-  props: {
-    params: Promise<{ id: string }>;
+export const dynamic = "auto";
+
+// ISR with 5 minutes revalidation (rate content rarely changes)
+export const revalidate = 300;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lng: string; id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+
+  const rate = await api.rate.detail({ id, accessToken: undefined }).catch(() => null);
+
+  if (!rate) {
+    return {
+      title: "Rate - Dicecho",
+      description: "TRPG review on Dicecho",
+    };
   }
-) => {
+
+  const title = `${rate.user.nickName} 的评价 - ${rate.mod?.title ?? "Dicecho"}`;
+  const description =
+    rate.remark?.slice(0, 160) || `${rate.user.nickName} 对 ${rate.mod?.title} 的评价`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      siteName: "Dicecho",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+  };
+}
+
+const RateDetailPage = async (props: {
+  params: Promise<{ lng: string; id: string }>;
+}) => {
   const params = await props.params;
+  const { id } = params;
 
-  const {
-    id
-  } = params;
+  // accessToken: undefined ensures queryKey matches client-side when user is not logged in
+  const rate = await api.rate.detail({ id, accessToken: undefined }).catch(() => null);
 
-  const api = await getDicechoServerApi();
-  const rate = await api.rate.detail(id);
+  if (!rate) {
+    return notFound();
+  }
 
   return (
-    <div className="container grid grid-cols-6 pt-4">
-      <div className="col-span-6 flex flex-col gap-4 md:col-span-4">
-        <Card>
-          <CardContent>
-            <RateDetailClient initialRate={rate} />
-          </CardContent>
-        </Card>
+    <HydrateClient>
+      <div className="md:container grid grid-cols-6 gap-8">
+        <div className="col-span-6 md:col-span-4">
+          <RateDetailClient rateId={id} />
+        </div>
       </div>
-    </div>
+    </HydrateClient>
   );
 };
 
