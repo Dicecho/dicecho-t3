@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type PropsWithChildren, cloneElement, isValidElement } from "react";
+import { useState, type PropsWithChildren } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AlertDialog,
@@ -21,14 +21,21 @@ import { useTranslation } from "@/lib/i18n/react";
 interface RateBlockDialogProps {
   rate: IRateDto;
   onSuccess?: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function RateBlockDialog({
   rate,
   onSuccess,
+  open: controlledOpen,
+  onOpenChange,
   children,
 }: PropsWithChildren<RateBlockDialogProps>) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
+  const setOpen = isControlled ? (onOpenChange ?? (() => {})) : setUncontrolledOpen;
   const { api } = useDicecho();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -48,7 +55,7 @@ export function RateBlockDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      {!isControlled && <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

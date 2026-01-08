@@ -48,7 +48,7 @@ export const ImageElement = withHOC(
               <Image
                 ref={handleRef}
                 className={cn(
-                  'block w-full max-w-full cursor-pointer object-cover px-0',
+                  'block w-full max-w-1/2 cursor-pointer object-cover px-0',
                   'rounded-sm',
                   focused && selected && 'ring-2 ring-ring ring-offset-2',
                   isDragging && 'opacity-50'
@@ -63,7 +63,7 @@ export const ImageElement = withHOC(
               />
             </Resizable>
 
-            <Caption style={{ width }} align={align}>
+            {/* <Caption style={{ width }} align={align}>
               <CaptionTextarea
                 readOnly={readOnly}
                 onFocus={(e) => {
@@ -71,7 +71,7 @@ export const ImageElement = withHOC(
                 }}
                 placeholder="Write a caption..."
               />
-            </Caption>
+            </Caption> */}
           </figure>
 
           {props.children}

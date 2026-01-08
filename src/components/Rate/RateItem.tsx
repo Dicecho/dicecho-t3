@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { CommentSection } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { MessageCircle, Edit, Trash2, Loader2, Languages, ThumbsUp, ThumbsDown, Laugh, EyeOff, AlertTriangle } from "lucide-react";
+import { MessageCircle, Edit, Trash2, Loader2, Languages, ThumbsUp, ThumbsDown, Laugh, EyeOff, AlertTriangle, MoreHorizontal } from "lucide-react";
 import { ShareButton } from "@/components/ui/share-button";
 import { RateEditDialog } from "./RateEditDialog";
 import { RateDeleteDialog } from "./RateDeleteDialog";
@@ -22,14 +22,36 @@ import { RateSpoilerReportDialog } from "./RateSpoilerReportDialog";
 import { useRateTranslation } from "./use-rate-translation";
 import { SpoilerCollapsible } from "./spoiler-collapsible";
 import { FoldableContent } from "@/components/ui/foldable-content";
+import { LinkWithLng } from "@/components/Link";
+import { ScenarioWidget } from "@/components/Scenario/widget";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  ActionSheet,
+  ActionSheetTrigger,
+  ActionSheetContent,
+  ActionSheetGroup,
+  ActionSheetItem,
+  ActionSheetClose,
+} from "@/components/ui/action-sheet";
 import { cn } from "@/lib/utils";
 import { AuthButton } from "@/components/Auth/auth-button";
 import { useReactionDeclare } from "@/hooks/use-reaction-declare";
 import { useAccount } from "@/hooks/useAccount";
+import { formatDistanceToNow } from "date-fns";
+import { getDateFnsLocale } from "@/lib/i18n/date-fns-locale";
+import { api } from "@/trpc/react";
 
 interface IProps {
   rate: IRateDto;
   onDeleted?: () => void;
+  hideComments?: boolean;
+  showMod?: boolean;
+  foldable?: boolean;
 }
 
 const FOLD_LIMIT = 200;
@@ -38,11 +60,25 @@ const SPOILER_LIMIT = 1;
 export const RateItem: React.FunctionComponent<IProps> = ({
   rate,
   onDeleted,
+  hideComments = false,
+  showMod = false,
+  foldable = true,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [commentVisible, setCommentVisible] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [blockOpen, setBlockOpen] = useState(false);
+  const [spoilerOpen, setSpoilerOpen] = useState(false);
   const { data: session } = useSession();
   const { isAuthenticated } = useAccount();
+  const utils = api.useUtils();
+
+  // Prefill tRPC cache before navigating to detail page
+  const prefillDetailCache = () => {
+    // Prefill the public view cache (accessToken: undefined)
+    utils.rate.detail.setData({ id: rate._id, accessToken: undefined }, rate);
+  };
 
   const { toggle, isActive, getCount } = useReactionDeclare({
     targetName: "Rate",
@@ -62,6 +98,14 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     translate,
     targetLanguage,
   } = useRateTranslation(rate);
+
+
+  const formatDate = (date: Date) => {
+    return formatDistanceToNow(new Date(date), {
+      addSuffix: true,
+      locale: getDateFnsLocale(i18n.language),
+    });
+  };
 
 
   const canEdit =
@@ -125,6 +169,10 @@ export const RateItem: React.FunctionComponent<IProps> = ({
       );
     }
 
+    if (!foldable) {
+      return renderRateContent();
+    }
+
     const shouldFold = rate.remarkLength > FOLD_LIMIT;
 
     return (
@@ -153,16 +201,112 @@ export const RateItem: React.FunctionComponent<IProps> = ({
               <div>{rate.user.nickName}</div>
             </div>
           </UserAvatarPopover>
-          <div className="text-muted-foreground">
-            {rate.type === RateType.Rate
-              ? t("Rate.type_rate")
-              : t("Rate.type_mark")}
+          <div className="text-muted-foreground text-sm">
+            {formatDate(rate.rateAt)}
           </div>
-          <div className="text-muted-foreground ml-auto text-sm">
-            {formatDate(new Date(rate.rateAt).getTime())}
-          </div>
+
+          {/* Desktop: DropdownMenu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" variant="ghost" className="ml-auto hidden h-8 w-8 md:flex">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {canEdit ? (
+                <>
+                  <DropdownMenuItem onSelect={() => setEditOpen(true)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    {t("edit")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => setDeleteOpen(true)}
+                    className="text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t("delete")}
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem onSelect={() => setSpoilerOpen(true)}>
+                    <AlertTriangle className="mr-2 h-4 w-4" />
+                    {t("report_spoiler")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setBlockOpen(true)}>
+                    <EyeOff className="mr-2 h-4 w-4" />
+                    {t("block")}
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Mobile: ActionSheet */}
+          <ActionSheet>
+            <ActionSheetTrigger asChild>
+              <Button size="icon" variant="ghost" className="ml-auto h-8 w-8 md:hidden">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </ActionSheetTrigger>
+            <ActionSheetContent>
+              <ActionSheetGroup>
+                {canEdit ? (
+                  <>
+                    <ActionSheetClose asChild>
+                      <ActionSheetItem onClick={() => setEditOpen(true)}>
+                        <Edit className="mr-2 h-4 w-4" />
+                        {t("edit")}
+                      </ActionSheetItem>
+                    </ActionSheetClose>
+                    <ActionSheetClose asChild>
+                      <ActionSheetItem
+                        variant="destructive"
+                        onClick={() => setDeleteOpen(true)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        {t("delete")}
+                      </ActionSheetItem>
+                    </ActionSheetClose>
+                  </>
+                ) : (
+                  <>
+                    <ActionSheetClose asChild>
+                      <ActionSheetItem
+                        variant="destructive"
+                        onClick={() => setSpoilerOpen(true)}
+                      >
+                        <AlertTriangle className="mr-2 h-4 w-4" />
+                        {t("report_spoiler")}
+                      </ActionSheetItem>
+                    </ActionSheetClose>
+                    <ActionSheetClose asChild>
+                      <ActionSheetItem
+                        variant="destructive"
+                        onClick={() => setBlockOpen(true)}
+                      >
+                        <EyeOff className="mr-2 h-4 w-4" />
+                        {t("block")}
+                      </ActionSheetItem>
+                    </ActionSheetClose>
+                  </>
+                )}
+              </ActionSheetGroup>
+              <ActionSheetGroup variant="cancel">
+                <ActionSheetClose asChild>
+                  <ActionSheetItem>{t("cancel")}</ActionSheetItem>
+                </ActionSheetClose>
+              </ActionSheetGroup>
+            </ActionSheetContent>
+          </ActionSheet>
         </div>
       </div>
+
+      {showMod && rate.mod && (
+        <LinkWithLng href={`/scenario/${rate.mod._id}`} className="w-full">
+          <ScenarioWidget scenario={rate.mod} variant="compact" />
+        </LinkWithLng>
+      )}
 
       {rate.type === RateType.Rate && rate.rate > 0 && (
         <Rate value={rate.rate / 2} allowHalf readOnly />
@@ -229,89 +373,87 @@ export const RateItem: React.FunctionComponent<IProps> = ({
             )}
           </AuthButton>
 
-          <Button
-            size="sm"
-            variant={"secondary"}
-            onClick={() => setCommentVisible((prev) => !prev)}
-            className="gap-2"
-          >
-            <MessageCircle className="h-4 w-4" />
-            <span>{t("comments")}</span>
-            {rate.commentCount > 0 && (
-              <Badge variant="muted">{rate.commentCount}</Badge>
-            )}
-          </Button>
+          {!hideComments && (
+            <>
+              {/* Mobile: Link to detail page */}
+              <LinkWithLng
+                href={`/rate/${rate._id}`}
+                className="md:hidden"
+                onClick={prefillDetailCache}
+              >
+                <Button size="sm" variant="secondary" className="gap-1">
+                  <MessageCircle className="h-4 w-4" />
+                  {rate.commentCount > 0 && (
+                    <span>{rate.commentCount}</span>
+                  )}
+                </Button>
+              </LinkWithLng>
 
-          <ShareButton url={rateUrl} variant="secondary" size="sm">
-            {t("share")}
-          </ShareButton>
-          {
-            showTranslateButton && (
+              {/* Desktop: Expand comment section */}
               <Button
                 size="sm"
                 variant="secondary"
-                onClick={translate}
-                disabled={isTranslating}
-                className="gap-2"
+                onClick={() => setCommentVisible((prev) => !prev)}
+                className="hidden gap-1 md:inline-flex"
               >
-                {isTranslating ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Languages className="h-4 w-4" />
+                <MessageCircle className="h-4 w-4" />
+                {rate.commentCount > 0 && (
+                  <span>{rate.commentCount}</span>
                 )}
-                <span>
-                  {isTranslated
-                    ? t("Rate.show_original")
-                    : t("Rate.translate_to", { language: t(`language_codes.${targetLanguage}`) })}
-                </span>
               </Button>
-            )
-          }
-          
-          {canEdit && (
-            <>
-              <RateEditDialog rate={rate}>
-                <Button size="sm" variant="secondary" className="gap-2">
-                  <Edit className="h-4 w-4" />
-                  <span>{t("edit")}</span>
-                </Button>
-              </RateEditDialog>
-
-              <RateDeleteDialog rate={rate} onSuccess={onDeleted}>
-                <Button size="sm" variant="secondary" className="gap-2">
-                  <Trash2 className="h-4 w-4" />
-                  <span>{t("delete")}</span>
-                </Button>
-              </RateDeleteDialog>
             </>
           )}
 
-          {!canEdit && (
-            <>
-              <RateSpoilerReportDialog rate={rate}>
-                <AuthButton size="sm" variant="secondary" className="gap-2">
-                  <AlertTriangle className="h-4 w-4" />
-                  <span>{t("report_spoiler")}</span>
-                </AuthButton>
-              </RateSpoilerReportDialog>
-
-              <RateBlockDialog rate={rate} onSuccess={onDeleted}>
-                <AuthButton size="sm" variant="secondary" className="gap-2">
-                  <EyeOff className="h-4 w-4" />
-                  <span>{t("block")}</span>
-                </AuthButton>
-              </RateBlockDialog>
-            </>
+          <ShareButton url={rateUrl} variant="secondary" size="sm" />
+          {showTranslateButton && (
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={translate}
+              disabled={isTranslating}
+              className="gap-2"
+            >
+              {isTranslating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Languages className="h-4 w-4" />
+              )}
+              <span>
+                {isTranslated
+                  ? t("Rate.show_original")
+                  : t("Rate.translate_to", { language: t(`language_codes.${targetLanguage}`) })}
+              </span>
+            </Button>
           )}
         </div>
-        {commentVisible && (
+        {!hideComments && commentVisible && (
           <CommentSection
             targetName="Rate"
             targetId={rate._id}
-            className="mt-2"
+            className="mt-2 hidden md:block"
           />
         )}
       </>
+
+      {/* Controlled Dialogs */}
+      <RateEditDialog rate={rate} open={editOpen} onOpenChange={setEditOpen} />
+      <RateDeleteDialog
+        rate={rate}
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onSuccess={onDeleted}
+      />
+      <RateBlockDialog
+        rate={rate}
+        open={blockOpen}
+        onOpenChange={setBlockOpen}
+        onSuccess={onDeleted}
+      />
+      <RateSpoilerReportDialog
+        rate={rate}
+        open={spoilerOpen}
+        onOpenChange={setSpoilerOpen}
+      />
     </div>
   );
 };

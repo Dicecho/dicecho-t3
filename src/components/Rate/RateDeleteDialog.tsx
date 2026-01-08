@@ -21,14 +21,21 @@ import { useTranslation } from "@/lib/i18n/react";
 interface RateDeleteDialogProps {
   rate: IRateDto;
   onSuccess?: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function RateDeleteDialog({
   rate,
   onSuccess,
+  open: controlledOpen,
+  onOpenChange,
   children,
 }: PropsWithChildren<RateDeleteDialogProps>) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
+  const setOpen = isControlled ? (onOpenChange ?? (() => {})) : setUncontrolledOpen;
   const { api } = useDicecho();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -48,7 +55,7 @@ export function RateDeleteDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      {!isControlled && <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

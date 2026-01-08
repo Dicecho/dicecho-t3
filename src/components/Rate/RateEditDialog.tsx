@@ -27,15 +27,22 @@ interface RateEditDialogProps {
   rate?: IRateDto;
   modId?: string;
   onSuccess?: (rate: IRateDto) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function RateEditDialog({
   rate,
   modId,
   onSuccess,
+  open: controlledOpen,
+  onOpenChange,
   children,
 }: PropsWithChildren<RateEditDialogProps>) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
+  const setOpen = isControlled ? (onOpenChange ?? (() => {})) : setUncontrolledOpen;
   const { api } = useDicecho();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -85,7 +92,7 @@ export function RateEditDialog({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>{children}</DrawerTrigger>
+        {!isControlled && <DrawerTrigger asChild>{children}</DrawerTrigger>}
         <DrawerContent>
           <DrawerHeader className="hidden">
             <DrawerTitle>{t(rate ? "edit_rate" : "create_rate")}</DrawerTitle>
@@ -104,7 +111,7 @@ export function RateEditDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {!isControlled && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="sm:max-w-[600px]" showCloseButton={false}>
         <DialogHeader className="hidden">
           <DialogTitle>{t(rate ? "edit_rate" : "create_rate")}</DialogTitle>
