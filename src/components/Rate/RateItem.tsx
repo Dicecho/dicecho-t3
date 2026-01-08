@@ -41,6 +41,7 @@ import {
 import { cn } from "@/lib/utils";
 import { AuthButton } from "@/components/Auth/auth-button";
 import { useReactionDeclare } from "@/hooks/use-reaction-declare";
+import { serializeRichTextToMarkdownLegacy } from "@/components/Editor/utils/platejson-serializer";
 import { useAccount } from "@/hooks/useAccount";
 import { formatDistanceToNow } from "date-fns";
 import { getDateFnsLocale } from "@/lib/i18n/date-fns-locale";
@@ -138,11 +139,12 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     }
 
     if (rate.remarkType === RemarkContentType.Richtext) {
+      const markdown = serializeRichTextToMarkdownLegacy(rate.richTextState);
       return (
         <RichTextPreview
           className="overflow-hidden"
           id={`rate-item-${rate._id}`}
-          value={rate.richTextState}
+          markdown={markdown}
         />
       );
     }

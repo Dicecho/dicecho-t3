@@ -11,6 +11,7 @@ import { MarkdownPlugin } from '@platejs/markdown';
 import { KEYS } from 'platejs';
 import { MarkdownKit } from '../plugins/markdown-kit';
 import { DetailsPlugin } from '../plugins/details-plugin';
+import { LegacyMarkdownKit } from '../plugins/markdown-kit';
 import { preprocessMarkdown } from '../utils/markdown-preprocessor';
 
 /**
@@ -20,6 +21,15 @@ function createTestEditor() {
   return createPlateEditor({
     plugins: [
       ...MarkdownKit,
+      DetailsPlugin,
+    ],
+  });
+}
+
+function createLegacyTestEditor() {
+  return createPlateEditor({
+    plugins: [
+      ...LegacyMarkdownKit,
       DetailsPlugin,
     ],
   });
@@ -48,7 +58,7 @@ describe('Details Markdown 完整转换测试', () => {
   })
 
   describe("serialize summary when summary is an attribute of details", () => {
-    const editor = createTestEditor();
+    const editor = createLegacyTestEditor();
     const value = [
       {
         type: 'details',
@@ -59,17 +69,135 @@ describe('Details Markdown 完整转换测试', () => {
       },
     ];
     const markdown = editor.getApi(MarkdownPlugin).markdown.serialize({ value });
-    
+
     // 1. "this is summary" 在 <summary></summary> 中间
     expect(markdown).toMatch(/<summary>[\s\S]*this is summary[\s\S]*<\/summary>/);
-    
+
     // 2. "this is children" 不在 <summary></summary> 中间
     const summaryMatch = markdown.match(/<summary>([\s\S]*?)<\/summary>/);
     expect(summaryMatch).toBeTruthy();
     expect(summaryMatch![1]).not.toContain('this is children');
-    
+
     // 3. "this is children" 在 <details></details> 中间
-    expect(markdown).toMatch(/<Details>[\s\S]*this is children[\s\S]*<\/Details>/);
+    expect(markdown).toMatch(/<details>[\s\S]*this is children[\s\S]*<\/details>/);
+  })
+
+  describe("旧格式 details 没有 summary 属性时，所有 children 都是 content", () => {
+    test("单个 children 应该作为 content，summary 为空", () => {
+      const editor = createLegacyTestEditor();
+      // 线上真实脏数据：没有 summary 属性，只有一个 children
+      const value = [
+        {
+          type: 'details',
+          children: [
+            {
+              type: KEYS.p,
+              children: [{ text: '拿了秘密就散桌的ho3。' }],
+            },
+          ],
+        },
+      ];
+      const markdown = editor.getApi(MarkdownPlugin).markdown.serialize({ value });
+
+      // 1. summary 应该为空
+      expect(markdown).toMatch(/<summary>\s*<\/summary>/);
+
+      // 2. 用户内容不应该在 summary 中
+      const summaryMatch = markdown.match(/<summary>([\s\S]*?)<\/summary>/);
+      expect(summaryMatch).toBeTruthy();
+      expect(summaryMatch![1]).not.toContain('拿了秘密就散桌的ho3');
+
+      // 3. 用户内容应该在 details 中（作为 content）
+      expect(markdown).toContain('拿了秘密就散桌的ho3');
+    });
+
+    test("多个 children 都应该作为 content，summary 为空", () => {
+      const editor = createLegacyTestEditor();
+      // 多个 children 的情况
+      const value = [
+        {
+          type: 'details',
+          children: [
+            {
+              type: KEYS.p,
+              children: [{ text: '第一段内容' }],
+            },
+            {
+              type: KEYS.p,
+              children: [{ text: '第二段内容' }],
+            },
+          ],
+        },
+      ];
+      const markdown = editor.getApi(MarkdownPlugin).markdown.serialize({ value });
+
+      // 1. summary 应该为空
+      expect(markdown).toMatch(/<summary>\s*<\/summary>/);
+
+      // 2. 所有内容都不应该在 summary 中
+      const summaryMatch = markdown.match(/<summary>([\s\S]*?)<\/summary>/);
+      expect(summaryMatch).toBeTruthy();
+      expect(summaryMatch![1]).not.toContain('第一段内容');
+      expect(summaryMatch![1]).not.toContain('第二段内容');
+
+      // 3. 所有内容都应该在 details 中
+      expect(markdown).toContain('第一段内容');
+      expect(markdown).toContain('第二段内容');
+    });
+
+    test("完整的线上真实数据场景", () => {
+      const editor = createLegacyTestEditor();
+      // 用户提供的完整线上数据
+      const value = [
+        { children: [{ text: "我是" }] },
+        {
+          type: "details",
+          children: [
+            {
+              type: "p",
+              children: [{ text: "拿了秘密就散桌的ho3。" }],
+              id: 1765781017916
+            }
+          ],
+          id: 1765781033417
+        },
+        {
+          type: "p",
+          children: [
+            { text: "说到这里我的幸运已经体现得淋漓尽致了。奈何我最终没忍住还是读了这个模组，卧槽这是什么。。。" }
+          ],
+          id: 1765781033419
+        },
+        {
+          type: "details",
+          children: [
+            {
+              type: "p",
+              children: [
+                { text: "我个人对必死ho的看法是这个位置某种程度上可以最好地表达pc的生死观，但是拜昆仑完全没有给这种生死观的探讨留余地，因为你猫根本不在乎你的生死观是啥他只会捕获关键词。你说你愿意死他就一脸欣慰地看着你，你说你不想死他就一脸失望地看着你然后一巴掌打晕！" }
+              ],
+              id: 1765781147243
+            }
+          ],
+          id: 1765781118903
+        },
+      ];
+      const markdown = editor.getApi(MarkdownPlugin).markdown.serialize({ value });
+
+      // 1. 两个 details 的 summary 都应该为空
+      const summaryMatches = markdown.match(/<summary>([\s\S]*?)<\/summary>/g);
+      expect(summaryMatches).toBeTruthy();
+      expect(summaryMatches!.length).toBe(2);
+      summaryMatches!.forEach((match) => {
+        // summary 内容应该为空（只有空白字符）
+        const content = match.replace(/<\/?summary>/g, '').trim();
+        expect(content).toBe('');
+      });
+
+      // 2. 用户的实际内容应该在 details 的 content 区域
+      expect(markdown).toContain('拿了秘密就散桌的ho3');
+      expect(markdown).toContain('我个人对必死ho的看法');
+    });
   })
 
   describe('Markdown → Slate AST (deserialize)', () => {
