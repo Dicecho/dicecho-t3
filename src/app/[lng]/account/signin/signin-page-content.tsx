@@ -1,6 +1,7 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { SigninForm } from "@/components/Auth/SigninForm";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/react";
@@ -8,11 +9,20 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import DicechoLogo from "./dicecho.svg";
+import DicechoLogo from "../dicecho.svg";
+import Link from "next/link";
 
-export function SignIn() {
+export function SigninPageContent() {
   const { t, i18n } = useTranslation();
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      toast.info(t("already_signed_in"));
+      router.replace(`/${i18n.language}/account/${session.user.id}`);
+    }
+  }, [status, session, router, i18n.language, t]);
 
   const { mutate: signInMutation, isPending } = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
@@ -40,7 +50,7 @@ export function SignIn() {
   });
 
   return (
-    <div className="flex flex-col items-center gap-8 mt-24">
+    <div className="flex flex-col items-center gap-8 mt-24 w-full max-w-sm px-4">
       <DicechoLogo className="text-primary" width={100} height={100} />
 
       <SigninForm onSubmit={signInMutation}>
@@ -54,6 +64,16 @@ export function SignIn() {
           {t("sign_in")}
         </Button>
       </SigninForm>
+
+      <p className="text-sm text-muted-foreground">
+        {t("no_account_yet")}{" "}
+        <Link
+          href={`/${i18n.language}/account/signup`}
+          className="text-primary underline hover:no-underline"
+        >
+          {t("sign_up")}
+        </Link>
+      </p>
     </div>
   );
 }

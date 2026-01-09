@@ -12,7 +12,7 @@ interface HomepageActionsProps {
 export const HomepageActions: FC<HomepageActionsProps> = ({ lng }) => {
   return (
     <div className="flex flex-col gap-2">
-      <Link href={`/${lng}/editor`}>
+      <Link href={`/${lng}/module/submission`}>
         <Button variant="outline" className="w-full">
           <Upload className="mr-2 h-4 w-4" />
           模组投稿

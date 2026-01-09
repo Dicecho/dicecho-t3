@@ -10,6 +10,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { signIn } from "next-auth/react";
 import { SigninForm } from "./SigninForm";
+import { SignupForm } from "./SignupForm";
 
 import type { FC } from "react";
 import { Button } from "../ui/button";
@@ -18,11 +19,13 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import DicechoLogo from "./dicecho.svg";
+import { useDicecho } from "@/hooks/useDicecho";
 
 export const AuthDialog: FC<DialogProps> = ({ children, onOpenChange, ...props }) => {
   const { t } = useTranslation();
+  const { api } = useDicecho();
 
-  const { mutate: signInMutation, isPending } = useMutation({
+  const { mutate: signInMutation, isPending: isSigningIn } = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
       const result = await signIn("credentials", {
         email: data.email,
@@ -43,6 +46,22 @@ export const AuthDialog: FC<DialogProps> = ({ children, onOpenChange, ...props }
     onError: (error) => {
       toast.error(t("sign_in_failed"), {
         description: error.message,
+      });
+    },
+  });
+
+  const { mutate: signUpMutation, isPending: isSigningUp } = useMutation({
+    mutationFn: async (data: { email: string }) => {
+      await api.auth.signup({ email: data.email });
+    },
+    onSuccess: () => {
+      toast.success(t("signup_email_sent"), {
+        description: t("signup_check_inbox"),
+      });
+    },
+    onError: (error) => {
+      toast.error(t("sign_up_failed"), {
+        description: error instanceof Error ? error.message : String(error),
       });
     },
   });
@@ -69,19 +88,33 @@ export const AuthDialog: FC<DialogProps> = ({ children, onOpenChange, ...props }
             <TabsContent value="signin">
               <SigninForm onSubmit={signInMutation}>
                 <Button
-                  disabled={isPending}
+                  disabled={isSigningIn}
                   className="w-full"
                   type="submit"
                   color="primary"
                 >
-                  {isPending ? (
+                  {isSigningIn ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : null}
                   {t("sign_in")}
                 </Button>
               </SigninForm>
             </TabsContent>
-            <TabsContent value="signup">working...</TabsContent>
+            <TabsContent value="signup">
+              <SignupForm onSubmit={signUpMutation}>
+                <Button
+                  disabled={isSigningUp}
+                  className="w-full"
+                  type="submit"
+                  color="primary"
+                >
+                  {isSigningUp ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : null}
+                  {t("sign_up")}
+                </Button>
+              </SignupForm>
+            </TabsContent>
           </Tabs>
         </div>
       </DialogContent>
