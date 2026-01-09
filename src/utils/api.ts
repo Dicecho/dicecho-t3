@@ -260,6 +260,10 @@ export function createDicechoApi(opts: DicechoApiOptions) {
         return res.data;
       }
 
+      if (isBackendError(err)) {
+        throw new Error(err.body.detail);
+      }
+
       throw err;
     }
   };
@@ -282,10 +286,10 @@ export function createDicechoApi(opts: DicechoApiOptions) {
 
       forget: (data: { email: string }) => request("/api/user/send-rescue", "POST", data),
 
-      verify: (data: { email: string; vertifyCode: string; nickName: string; password: string }) =>
+      verify: (data: { email: string; verifyCode: string; nickName: string; password: string }) =>
         request("/api/user/vertify", "POST", data),
 
-      checkVertify: (data: { email: string; vertifyCode: string }) =>
+      checkVerify: (data: { email: string; verifyCode: string }) =>
         request("/api/user/check-vertify", "POST", data),
 
       rescue: (data: { email: string; rescueCode: string; newPassword: string }) =>
