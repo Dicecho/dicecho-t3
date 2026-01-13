@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { MobileHeader } from "@/components/Header/MobileHeader";
 import { useTranslation } from "@/lib/i18n/react";
 import { FeedbackLabelBadge, FeedbackComment, FeedbackReactions } from "@/components/feedback";
-import { CommentComposer } from "@/components/Comment/CommentComposer";
+import { CommentComposer } from "@/components/Comment";
 import { RichTextPreview } from "@/components/Editor";
 import { api, RouterOutputs } from "@/trpc/react";
 

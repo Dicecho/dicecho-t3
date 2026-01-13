@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDicecho } from "@/hooks/useDicecho";
 import { useTranslation } from "@/lib/i18n/react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ReplyItem } from "@/components/Comment/ReplyItem";
+import { CommentDisplay } from "./comment-display";
 import type { ReplyDto } from "@/types/comment";
 import { Loader2 } from "lucide-react";
 
@@ -31,7 +31,7 @@ export const CommentDialogModal: React.FC<React.PropsWithChildren<CommentDialogM
         refetch();
       }
     }}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         {children}
       </DialogTrigger>
       <DialogContent className="max-h-[80vh] overflow-y-auto" showCloseButton>
@@ -57,11 +57,14 @@ export const CommentDialogModal: React.FC<React.PropsWithChildren<CommentDialogM
         {!isLoading && !isError && (data?.length ?? 0) > 0 && (
           <div className="space-y-4">
             {data?.map((reply) => (
-              <ReplyItem
+              <CommentDisplay
                 key={reply._id}
-                reply={reply}
-                onReply={() => {}}
-                showActions={false}
+                user={reply.user}
+                content={reply.content}
+                createdAt={reply.createdAt}
+                replyToName={reply.replyTo?.user?.nickName}
+                avatarSize="sm"
+                className="py-2"
               />
             ))}
           </div>
@@ -70,4 +73,3 @@ export const CommentDialogModal: React.FC<React.PropsWithChildren<CommentDialogM
     </Dialog>
   );
 };
-

@@ -6,21 +6,31 @@ import { useDicecho } from "@/hooks/useDicecho";
 import { useTranslation } from "@/lib/i18n/react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CommentItem } from "./CommentItem";
+import { CommentThread } from "./comment-thread";
+import { CommentComposer } from "./comment-composer";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ControllablePagination } from "@/components/Pagination/ControllablePagination";
 import type { PaginatedResponse } from "@dicecho/types";
 import type { ParentCommentDto } from "@/types/comment";
-import { CommentComposer } from "@/components/Comment/CommentComposer";
+import type { ReplyTarget } from "./reply-section";
 
 interface CommentSectionProps {
   targetName: string;
   targetId: string;
   pageSize?: number;
   className?: string;
-  hideComposerOnMobile?: boolean;
   sort?: Record<string, number>;
+  /** Called when user clicks reply - parent decides how to handle */
+  onReply: (target: ReplyTarget) => void;
+  /** Show top-level comment composer (default: true) */
+  showComposer?: boolean;
+  /** Current reply target for inline composer (PC only) */
+  replyTarget?: ReplyTarget | null;
+  /** Called when inline reply is submitted */
+  onReplySubmit?: (content: string) => Promise<void>;
+  /** Called when inline reply is cancelled */
+  onClearReply?: () => void;
 }
 
 export const CommentSection: React.FC<CommentSectionProps> = ({
@@ -28,8 +38,12 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
   targetId,
   pageSize = 10,
   className,
-  hideComposerOnMobile = false,
   sort,
+  onReply,
+  showComposer = true,
+  replyTarget,
+  onReplySubmit,
+  onClearReply,
 }) => {
   const { api, initialized } = useDicecho();
   const { t } = useTranslation();
@@ -72,13 +86,10 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
     [comments.length, t],
   );
 
-  const handleSubmit = async (payload: string) => {
+  const handleTopLevelSubmit = async (payload: string) => {
     await api.comment.create(targetName, targetId, { content: payload });
     setPage(1);
-    await queryClient.invalidateQueries({
-      queryKey: ["comments", targetName, targetId],
-      exact: false,
-    });
+    await invalidateComments();
   };
 
   const invalidateComments = async () => {
@@ -89,18 +100,14 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   return (
-    <div
-      className={cn(
-        "space-y-4",
-        className,
+    <div className={cn("space-y-4", className)}>
+      {showComposer && (
+        <CommentComposer
+          placeholder={placeholder}
+          onSubmit={handleTopLevelSubmit}
+          mode="rich"
+        />
       )}
-    >
-      <CommentComposer
-        placeholder={placeholder}
-        onSubmit={handleSubmit}
-        mode="rich"
-        className={hideComposerOnMobile ? "hidden md:block" : undefined}
-      />
 
       {isPending && (
         <div className="space-y-4">
@@ -127,18 +134,20 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
       )}
 
       {!isPending && !error && comments.length === 0 && (
-        <div className="text-sm text-muted-foreground">
-          {t("comment_empty")}
-        </div>
+        <div className="text-sm text-muted-foreground">{t("comment_empty")}</div>
       )}
 
       {!error && comments.length > 0 && (
         <div className="space-y-4">
           {comments.map((comment: ParentCommentDto) => (
-            <CommentItem
+            <CommentThread
               key={comment._id}
               comment={comment}
+              onReply={onReply}
               onRefresh={invalidateComments}
+              replyTarget={replyTarget}
+              onReplySubmit={onReplySubmit}
+              onClearReply={onClearReply}
             />
           ))}
         </div>
@@ -164,3 +173,5 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
   );
 };
 
+// Re-export types for convenience
+export type { ReplyTarget };

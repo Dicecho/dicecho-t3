@@ -2,39 +2,23 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { getDateFnsLocale } from "@/lib/i18n/date-fns-locale";
 import { useTranslation } from "@/lib/i18n/react";
 import { useSession } from "next-auth/react";
-import { useDicecho } from "@/hooks/useDicecho";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { UserAvatar } from "@/components/User/Avatar";
 import { LinkWithLng } from "@/components/Link";
 import { TopicFormDialog } from "@/components/forum/topic-form-dialog";
 import { TopicDeleteDialog } from "@/components/forum/topic-delete-dialog";
 import { TopicActions } from "@/components/forum/topic-actions";
 import { TopicRelatedMods } from "@/components/forum/topic-related-mods";
-import { CommentSection } from "@/components/Comment/CommentSection";
-import { MobileCommentFooter } from "@/components/Comment/mobile-comment-footer";
+import { CommentPanel } from "@/components/Comment";
 import { RichTextPreview } from "@/components/Editor/RichTextPreview";
 import { Pencil, Trash2 } from "lucide-react";
 import type { ITopicDto } from "@/types/topic";
-
-const COMMENT_SORT_OPTIONS = [
-  { key: "created", labelKey: "comment_sort_oldest", value: { createdAt: 1 } },
-  { key: "-created", labelKey: "comment_sort_newest", value: { createdAt: -1 } },
-  { key: "like", labelKey: "comment_sort_likes", value: { likeCount: -1 } },
-] as const;
 
 interface TopicDetailClientProps {
   topic: ITopicDto;
@@ -46,12 +30,9 @@ export function TopicDetailClient({
   lng,
 }: TopicDetailClientProps) {
   const [topic, setTopic] = useState(initialTopic);
-  const [commentSort, setCommentSort] = useState("created");
   const { t } = useTranslation();
   const { data: session } = useSession();
   const router = useRouter();
-  const { api } = useDicecho();
-  const queryClient = useQueryClient();
 
   const formatDate = (date: Date) => {
     return formatDistanceToNow(new Date(date), {
@@ -61,17 +42,6 @@ export function TopicDetailClient({
   };
 
   const canEdit = topic.canEdit || session?.user?._id === topic.author._id;
-
-  const currentSortOption = COMMENT_SORT_OPTIONS.find((opt) => opt.key === commentSort) ?? COMMENT_SORT_OPTIONS[0];
-
-  const handleMobileComment = async (content: string) => {
-    await api.comment.create("Topic", topic._id, { content });
-    await queryClient.invalidateQueries({
-      queryKey: ["comments", "Topic", topic._id],
-      exact: false,
-    });
-    setTopic((prev) => ({ ...prev, commentCount: prev.commentCount + 1 }));
-  };
 
   return (
     <>
@@ -158,29 +128,10 @@ export function TopicDetailClient({
           <div className="mt-2 md:mt-6 mb-4">
             <Card className="max-md:rounded-none p-0">
               <CardContent className="p-4 md:p-6">
-                {/* Comment header with count and sort */}
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="font-medium">
-                    {topic.commentCount} {t("comments")}
-                  </span>
-                  <Select value={commentSort} onValueChange={setCommentSort}>
-                    <SelectTrigger className="w-auto border-0 bg-transparent">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {COMMENT_SORT_OPTIONS.map((option) => (
-                        <SelectItem key={option.key} value={option.key}>
-                          {t(option.labelKey)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <CommentSection
+                <CommentPanel
                   targetName="Topic"
                   targetId={topic._id}
-                  hideComposerOnMobile
-                  sort={currentSortOption.value}
+                  initialCount={topic.commentCount}
                 />
               </CardContent>
             </Card>
@@ -210,9 +161,6 @@ export function TopicDetailClient({
           </div>
         </div>
       </div>
-
-      {/* Mobile Comment Footer */}
-      <MobileCommentFooter onSubmit={handleMobileComment} />
     </>
   );
 }
