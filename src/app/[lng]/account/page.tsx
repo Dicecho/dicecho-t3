@@ -1,35 +1,16 @@
 import { getServerAuthSession } from "@/server/auth";
-import { MobileFooter } from "@/components/Footer";
-import { MobileHeader } from "@/components/Header/MobileHeader";
-import { HeaderMenu } from "@/components/Header/HeaderMenu";
-import { NotificationReminder } from "@/components/Header/notification-reminder";
 import { redirect } from "next/navigation";
-import { SignIn } from "./SignIn";
 
-export default async function AccountPage(
-  props: {
-    params: Promise<{ lng: string }>;
-  }
-) {
+export default async function AccountPage(props: {
+  params: Promise<{ lng: string }>;
+}) {
   const params = await props.params;
-
-  const {
-    lng
-  } = params;
+  const { lng } = params;
 
   const session = await getServerAuthSession();
   if (session?.user) {
     redirect(`/${lng}/account/${session.user.id}`);
   }
 
-  return (
-    <>
-      <MobileHeader left={<HeaderMenu />} right={<NotificationReminder />}>
-      </MobileHeader>
-      <main className="flex justify-center w-full">
-        <SignIn />
-      </main>
-      <MobileFooter />
-    </>
-  );
+  redirect(`/${lng}/account/signin`);
 }

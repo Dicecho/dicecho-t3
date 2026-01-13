@@ -10,6 +10,7 @@ import { LinkWithLng } from "@/components/Link";
 import { HomepageProfile } from "@/components/Home/HomepageProfile";
 import { TopicFormDialog } from "./topic-form-dialog";
 import type { PropsWithChildren } from "react";
+import { AuthDialog } from "@/components/Auth/AuthDialog";
 
 interface ForumSidebarProps {}
 
@@ -39,12 +40,12 @@ export function ForumSidebar({ children }: PropsWithChildren<ForumSidebarProps>)
       {!user && (
         <Card>
           <CardContent className="p-4">
-            <p className="text-muted-foreground mb-3 text-sm">
+            <p className="text-muted-foreground mb-3 text-sm text-center">
               {t("not_sign_in")}
             </p>
-            <LinkWithLng href="/api/auth/signin">
+            <AuthDialog>
               <Button className="w-full">{t("sign_in")}</Button>
-            </LinkWithLng>
+            </AuthDialog>
           </CardContent>
         </Card>
       )}

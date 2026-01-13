@@ -5,10 +5,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/react";
 import { useSession } from "next-auth/react";
-import { LinkWithLng } from "@/components/Link";
 import { HomepageProfile } from "./HomepageProfile";
 import { HomepageActions } from "./HomepageActions";
 import type { FC, PropsWithChildren } from "react";
+import { AuthDialog } from "@/components/Auth/AuthDialog";
 
 interface HomepageSidebarProps {}
 
@@ -58,12 +58,12 @@ export const HomepageSidebar: FC<PropsWithChildren<HomepageSidebarProps>> = ({
       {!user && (
         <Card>
           <CardContent className="p-4">
-            <p className="text-muted-foreground mb-3 text-sm">
+            <p className="text-muted-foreground mb-3 text-sm text-center">
               {t("not_sign_in")}
             </p>
-            <LinkWithLng href="/api/auth/signin">
+            <AuthDialog>
               <Button className="w-full">{t("sign_in")}</Button>
-            </LinkWithLng>
+            </AuthDialog>
           </CardContent>
         </Card>
       )}
