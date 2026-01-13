@@ -13,6 +13,7 @@ import { toast } from "sonner";
 
 interface MobileCommentFooterProps {
   placeholder?: string;
+  replyTargetId?: string;
   replyToName?: string;
   replyToContent?: string;
   onSubmit: (content: string) => Promise<void>;
@@ -22,6 +23,7 @@ interface MobileCommentFooterProps {
 
 export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
   placeholder,
+  replyTargetId,
   replyToName,
   replyToContent,
   onSubmit,
@@ -37,11 +39,13 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
     ? `${t("reply_to")} @${replyToName}`
     : placeholder ?? t("comment_placeholder");
 
+  // Focus textarea when reply target changes
   useEffect(() => {
-    if (replyToName && textareaRef.current) {
+    if (replyTargetId && textareaRef.current) {
       textareaRef.current.focus();
+      textareaRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [replyToName]);
+  }, [replyTargetId]);
 
   const mutation = useMutation({
     mutationFn: (content: string) => onSubmit(content),
@@ -69,7 +73,7 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
     return (
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[1000] border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
+          "fixed inset-x-0 bottom-0 z-5 border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
           className
         )}
       >
@@ -90,7 +94,7 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
   return (
     <div
       className={cn(
-        "fixed inset-x-0 bottom-0 z-[1000] border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
+        "fixed inset-x-0 bottom-0 z-5 border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
         className
       )}
     >
@@ -125,7 +129,7 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
           onChange={(e) => setValue(e.target.value)}
           placeholder={actualPlaceholder}
           disabled={mutation.isPending}
-          className="min-h-[40px] flex-1 resize-none border-0 bg-black/20 py-2 text-sm"
+          className="min-h-[40px] flex-1 resize-none border-0 bg-black/20 py-2"
           rows={1}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {

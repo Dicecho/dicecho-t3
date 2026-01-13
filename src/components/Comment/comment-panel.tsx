@@ -122,6 +122,7 @@ export function CommentPanel({
 
       <MobileCommentFooter
         onSubmit={handleMobileSubmit}
+        replyTargetId={replyTarget?.id}
         replyToName={replyTarget?.name}
         replyToContent={replyTarget?.contentPreview}
         onClearReply={() => setReplyTarget(null)}
