@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n/react";
 import { UserAvatar } from "@/components/User/Avatar";
-import { CommentDialogModal } from "@/components/Comment/CommentDialogModal";
+import { CommentDialogModal } from "@/components/Comment";
 import type { INotificationDto } from "@/types/notification";
 import { NotificationType } from "@/types/notification";
 

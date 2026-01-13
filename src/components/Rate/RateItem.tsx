@@ -4,7 +4,7 @@ import { UserAvatar } from "@/components/User/Avatar";
 import { UserAvatarPopover } from "@/components/User/UserAvatarPopover";
 import { RateView, RateType, RemarkContentType } from "@dicecho/types";
 import type { IRateDto } from "@dicecho/types";
-import { formatDate } from "@/utils/time";
+import { formatDateWithDistanceToNow } from "@/utils/time";
 import { RichTextPreview } from "@/components/Editor";
 import { Rate } from "@/components/ui/rate";
 import { Trans } from "react-i18next";
@@ -42,8 +42,6 @@ import { cn } from "@/lib/utils";
 import { AuthButton } from "@/components/Auth/auth-button";
 import { useReactionDeclare } from "@/hooks/use-reaction-declare";
 import { useAccount } from "@/hooks/useAccount";
-import { formatDistanceToNow } from "date-fns";
-import { getDateFnsLocale } from "@/lib/i18n/date-fns-locale";
 import { api } from "@/trpc/react";
 
 interface IProps {
@@ -76,8 +74,8 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 
   // Prefill tRPC cache before navigating to detail page
   const prefillDetailCache = () => {
-    // Prefill the public view cache (accessToken: undefined)
-    utils.rate.detail.setData({ id: rate._id, accessToken: undefined }, rate);
+    // Prefill the public view cache (no userId = public)
+    utils.rate.detail.setData({ id: rate._id }, rate);
   };
 
   const { toggle, isActive, getCount } = useReactionDeclare({
@@ -98,14 +96,6 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     translate,
     targetLanguage,
   } = useRateTranslation(rate);
-
-
-  const formatDate = (date: Date) => {
-    return formatDistanceToNow(new Date(date), {
-      addSuffix: true,
-      locale: getDateFnsLocale(i18n.language),
-    });
-  };
 
 
   const canEdit =
@@ -202,7 +192,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
             </div>
           </UserAvatarPopover>
           <div className="text-muted-foreground text-sm">
-            {formatDate(rate.rateAt)}
+            {formatDateWithDistanceToNow(rate.rateAt, i18n.language)}
           </div>
 
           {/* Desktop: DropdownMenu */}

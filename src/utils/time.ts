@@ -1,9 +1,19 @@
 import dayjs from 'dayjs';
+import { formatDistanceToNow } from "date-fns";
+import { getDateFnsLocale } from "@/lib/i18n/date-fns-locale";
 
 type formatConfig = {
   unit?: 'second' | 'millisecond';
   format?: string;
   simple?: boolean;
+};
+
+export const formatDateWithDistanceToNow = (timestamp: number | Date | string, lng: string) => {
+  const date = new Date(timestamp);
+  return formatDistanceToNow(date, {
+    addSuffix: true,
+    locale: getDateFnsLocale(lng),
+  });
 };
 
 export const formatDate = (timestamp: number, config?: formatConfig) => {

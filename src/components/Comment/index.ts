@@ -1,4 +1,9 @@
-export * from "./CommentSection";
-export * from "./CommentItem";
-export * from "./CommentComposer";
-
+export * from "./comment-display";
+export * from "./comment-section";
+export * from "./comment-item";
+export * from "./comment-composer";
+export * from "./comment-dialog-modal";
+export * from "./comment-thread";
+export * from "./comment-panel";
+export * from "./reply-section";
+export * from "./reply-item";

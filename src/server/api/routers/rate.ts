@@ -15,21 +15,27 @@ export const rateRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        // accessToken is used to get user-specific data (like isLiked)
-        // also serves as queryKey differentiator for session changes
-        accessToken: z.string().optional(),
+        // Use userId as cache key - each user gets their own cached data
+        userId: z.string().optional(),
       })
     )
-    .query(async ({ input }) => {
-      // When accessToken is provided, fetch user-specific data without cache
-      // When no accessToken, use cache (revalidate: 300) for public view
-      if (input.accessToken) {
+    .query(async ({ input, ctx }) => {
+      // When userId is provided, fetch user-specific data (like isLiked)
+      if (input.userId) {
+        // Verify the userId matches the session to prevent cache poisoning
+        if (ctx.session?.user?._id !== input.userId || !ctx.session?.user?.accessToken) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Session mismatch",
+          });
+        }
         const api = createDicechoApi({
           origin: env.NEXT_PUBLIC_DICECHO_API_ENDPOINT,
-          auth: { getAccessToken: async () => input.accessToken },
+          auth: { getAccessToken: async () => ctx.session!.user!.accessToken },
         });
         return api.rate.detail(input.id, { revalidate: false });
       }
+      // Public view with cache
       const api = await getDicechoServerApi();
       return api.rate.detail(input.id, { revalidate: 300 });
     }),

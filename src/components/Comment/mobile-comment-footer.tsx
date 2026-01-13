@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AuthDialog } from "@/components/Auth/AuthDialog";
 import { useSession } from "next-auth/react";
@@ -12,7 +13,9 @@ import { toast } from "sonner";
 
 interface MobileCommentFooterProps {
   placeholder?: string;
+  replyTargetId?: string;
   replyToName?: string;
+  replyToContent?: string;
   onSubmit: (content: string) => Promise<void>;
   onClearReply?: () => void;
   className?: string;
@@ -20,7 +23,9 @@ interface MobileCommentFooterProps {
 
 export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
   placeholder,
+  replyTargetId,
   replyToName,
+  replyToContent,
   onSubmit,
   onClearReply,
   className,
@@ -29,33 +34,35 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
   const { status } = useSession();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [value, setValue] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
   const actualPlaceholder = replyToName
     ? `${t("reply_to")} @${replyToName}`
     : placeholder ?? t("comment_placeholder");
 
+  // Focus textarea when reply target changes
   useEffect(() => {
-    if (replyToName && textareaRef.current) {
+    if (replyTargetId && textareaRef.current) {
       textareaRef.current.focus();
+      textareaRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [replyToName]);
+  }, [replyTargetId]);
 
-  const handleSubmit = async () => {
-    const content = value.trim();
-    if (!content || submitting) return;
-
-    setSubmitting(true);
-    try {
-      await onSubmit(content);
+  const mutation = useMutation({
+    mutationFn: (content: string) => onSubmit(content),
+    onSuccess: () => {
       setValue("");
       onClearReply?.();
       toast.success(t("comment_submit"));
-    } catch {
+    },
+    onError: () => {
       toast.error(t("error"));
-    } finally {
-      setSubmitting(false);
-    }
+    },
+  });
+
+  const handleSubmit = () => {
+    const content = value.trim();
+    if (!content || mutation.isPending) return;
+    mutation.mutate(content);
   };
 
   if (status === "loading") {
@@ -66,7 +73,7 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
     return (
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[1000] border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
+          "fixed inset-x-0 bottom-0 z-5 border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
           className
         )}
       >
@@ -87,18 +94,42 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
   return (
     <div
       className={cn(
-        "fixed inset-x-0 bottom-0 z-[1000] border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
+        "fixed inset-x-0 bottom-0 z-5 border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
         className
       )}
     >
+      {/* Reply context header */}
+      {replyToName && (
+        <div className="mb-2 flex items-start justify-between gap-2 border-l-2 border-primary/50 pl-2">
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <div className="text-xs font-medium">
+              {t("reply_to")} @{replyToName}
+            </div>
+            {replyToContent && (
+              <div className="truncate text-xs text-muted-foreground">
+                {replyToContent}
+              </div>
+            )}
+          </div>
+          {onClearReply && (
+            <button
+              type="button"
+              onClick={onClearReply}
+              className="shrink-0 rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      )}
       <div className="flex items-end gap-2">
         <Textarea
           ref={textareaRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={actualPlaceholder}
-          disabled={submitting}
-          className="min-h-[40px] flex-1 resize-none border-0 bg-black/20 py-2 text-sm"
+          disabled={mutation.isPending}
+          className="min-h-[40px] flex-1 resize-none border-0 bg-black/20 py-2"
           rows={1}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -118,10 +149,10 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
           <Button
             size="sm"
             onClick={handleSubmit}
-            disabled={submitting || !value.trim()}
+            disabled={mutation.isPending || !value.trim()}
             className="h-10 px-4"
           >
-            {submitting ? (
+            {mutation.isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Send className="h-4 w-4" />

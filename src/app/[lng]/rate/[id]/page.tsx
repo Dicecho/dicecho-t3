@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { getDicechoServerApi } from "@/server/dicecho";
 import { HydrateClient, api } from "@/trpc/server";
 import { RateDetailClient } from "./rate-detail-client";
 import { notFound } from "next/navigation";
@@ -16,7 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
 
-  const rate = await api.rate.detail({ id, accessToken: undefined }).catch(() => null);
+  const rate = await api.rate.detail({ id }).catch(() => null);
 
   if (!rate) {
     return {
@@ -52,8 +51,8 @@ const RateDetailPage = async (props: {
   const params = await props.params;
   const { id } = params;
 
-  // accessToken: undefined ensures queryKey matches client-side when user is not logged in
-  const rate = await api.rate.detail({ id, accessToken: undefined }).catch(() => null);
+  // Server-side: fetch public data (no userId)
+  const rate = await api.rate.detail({ id }).catch(() => null);
 
   if (!rate) {
     return notFound();

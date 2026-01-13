@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AuthDialog } from "@/components/Auth/AuthDialog";
 import { useSession } from "next-auth/react";
@@ -20,28 +21,28 @@ interface CommentComposerProps {
   cancelLabel?: string;
   onCancel?: () => void;
   disabled?: boolean;
+  /** Name of the user being replied to (shows reply context) */
+  replyToName?: string;
+  /** Preview of the content being replied to */
+  replyToContent?: string;
 }
 
 export const CommentComposer: React.FC<CommentComposerProps> = (props) => {
   const { t } = useTranslation();
   const { status } = useSession();
-
-  
   const [value, setValue] = useState("");
-  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
+  const mutation = useMutation({
+    mutationFn: (content: string) => props.onSubmit(content),
+    onSuccess: () => setValue(""),
+  });
+
+  const handleSubmit = () => {
     const content = value.trim();
-    if (!content || submitting || props.disabled) {
+    if (!content || mutation.isPending || props.disabled) {
       return;
     }
-    setSubmitting(true);
-    try {
-      await props.onSubmit(content);
-      setValue("");
-    } finally {
-      setSubmitting(false);
-    }
+    mutation.mutate(content);
   };
 
   if (status === "loading") {
@@ -73,6 +74,30 @@ export const CommentComposer: React.FC<CommentComposerProps> = (props) => {
         props.className,
       )}
     >
+      {/* Reply context header */}
+      {props.replyToName && (
+        <div className="flex items-start justify-between gap-2 border-l-2 border-primary/50 pl-2">
+          <div className="min-w-0 flex-1 space-y-0.5">
+            <div className="text-xs font-medium">
+              {t("reply_to")} @{props.replyToName}
+            </div>
+            {props.replyToContent && (
+              <div className="truncate text-xs text-muted-foreground">
+                {props.replyToContent}
+              </div>
+            )}
+          </div>
+          {props.onCancel && (
+            <button
+              type="button"
+              onClick={props.onCancel}
+              className="shrink-0 rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      )}
       {props.mode === "rich" ? (
         <RichTextEditor
           onMarkdownChange={(markdown) => {
@@ -87,7 +112,7 @@ export const CommentComposer: React.FC<CommentComposerProps> = (props) => {
           autoFocus={props.autoFocus}
           onChange={(event) => setValue(event.target.value)}
           placeholder={props.placeholder}
-          disabled={submitting || props.disabled}
+          disabled={mutation.isPending || props.disabled}
           className="min-h-[48px]"
         />
       )}
@@ -98,7 +123,7 @@ export const CommentComposer: React.FC<CommentComposerProps> = (props) => {
             className="h-8 px-3 text-xs"
             variant="ghost"
             onClick={props.onCancel}
-            disabled={submitting}
+            disabled={mutation.isPending}
           >
             {t("cancel")}
           </Button>
@@ -107,9 +132,9 @@ export const CommentComposer: React.FC<CommentComposerProps> = (props) => {
           size="sm"
           className="h-8 px-3 text-xs"
           onClick={handleSubmit}
-          disabled={submitting || !value.trim() || props.disabled}
+          disabled={mutation.isPending || !value.trim() || props.disabled}
         >
-          {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {t("comment_submit")}
         </Button>
       </div>
