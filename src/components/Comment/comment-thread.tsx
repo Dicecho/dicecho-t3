@@ -11,8 +11,8 @@ import type { ReplyTarget } from "./reply-section";
 interface CommentThreadProps {
   comment: ParentCommentDto;
   replyPageSize?: number;
-  /** Called when user clicks reply on comment or any reply */
-  onReply: (target: ReplyTarget) => void;
+  /** Called when user clicks reply on comment or any reply. If not provided, reply buttons won't show. */
+  onReply?: (target: ReplyTarget) => void;
   /** Called after comment/reply is deleted to refresh parent */
   onRefresh?: () => Promise<void>;
   /** Current reply target for inline composer */
@@ -39,13 +39,15 @@ export const CommentThread: React.FC<CommentThreadProps> = ({
   const userName = comment.user?.nickName ?? "Dicecho User";
   const isReplyingToComment = replyTarget?.id === comment._id;
 
-  const handleCommentReply = () => {
-    onReply({
-      id: comment._id,
-      name: userName,
-      contentPreview: comment.content.split("\n")[0]?.slice(0, 100),
-    });
-  };
+  const handleCommentReply = onReply
+    ? () => {
+        onReply({
+          id: comment._id,
+          name: userName,
+          contentPreview: comment.content.split("\n")[0]?.slice(0, 100),
+        });
+      }
+    : undefined;
 
   const handleCommentDelete = async () => {
     await api.comment.delete(comment._id);

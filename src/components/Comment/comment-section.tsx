@@ -21,8 +21,8 @@ interface CommentSectionProps {
   pageSize?: number;
   className?: string;
   sort?: Record<string, number>;
-  /** Called when user clicks reply - parent decides how to handle */
-  onReply: (target: ReplyTarget) => void;
+  /** Called when user clicks reply - parent decides how to handle. If not provided, reply buttons won't show. */
+  onReply?: (target: ReplyTarget) => void;
   /** Show top-level comment composer (default: true) */
   showComposer?: boolean;
   /** Current reply target for inline composer (PC only) */
