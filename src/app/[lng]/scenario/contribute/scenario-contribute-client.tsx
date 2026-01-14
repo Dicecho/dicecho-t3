@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Users } from "lucide-react";
+import { trackScenarioContribute } from "@/lib/analytics";
 
 interface Props {
   lng: string;
@@ -58,6 +59,7 @@ export function ScenarioContributePageClient({ lng }: Props) {
               ...values,
               playerNumber: [values.minPlayer ?? 0, values.maxPlayer ?? 0],
             });
+            trackScenarioContribute(created._id);
             toast.success(t("scenario_create_success"));
             router.push(`/${lng}/scenario/${created._id}`);
           }}

@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/lib/i18n/react";
+import { trackSearch } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 interface SearchInputProps {
@@ -23,6 +24,7 @@ export function SearchInput({ placeholder, className, inputClassName }: SearchIn
 
   const handleSearch = () => {
     if (keyword.trim()) {
+      trackSearch(keyword.trim());
       router.push(`/${i18n.language}/search?keyword=${encodeURIComponent(keyword.trim())}`);
     }
   };

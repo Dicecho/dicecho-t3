@@ -12,6 +12,7 @@ import type { IUserDto } from "@dicecho/types";
 import { UserPlus, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { trackFollow, trackUnfollow } from "@/lib/analytics";
 import { AccountDetailHeader } from "./account-detail-header";
 
 interface AccountHeaderProps {
@@ -92,6 +93,7 @@ const UserActions = ({
   const followMutation = useMutation({
     mutationFn: () => api.user.follow(user._id),
     onSuccess: () => {
+      trackFollow(user._id);
       queryClient.invalidateQueries({
         queryKey: ["user", "profile", user._id],
       });
@@ -102,6 +104,7 @@ const UserActions = ({
   const unfollowMutation = useMutation({
     mutationFn: () => api.user.unfollow(user._id),
     onSuccess: () => {
+      trackUnfollow(user._id);
       queryClient.invalidateQueries({
         queryKey: ["user", "profile", user._id],
       });

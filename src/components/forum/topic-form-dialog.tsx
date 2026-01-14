@@ -24,6 +24,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { TopicForm, type TopicFormSubmitData, type SimpleModDto } from "./topic-form";
+import { trackTopicCreate } from "@/lib/analytics";
 import type { ITopicDto } from "@/types/topic";
 
 interface TopicFormDialogProps {
@@ -55,6 +56,9 @@ export function TopicFormDialog({ children, topic, defaultRelatedMod, onSuccess 
       return api.topic.create(data);
     },
     onSuccess: (data) => {
+      if (!isEdit) {
+        trackTopicCreate(data._id);
+      }
       toast.success(isEdit ? t("topic_updated") : t("topic_created"));
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: ["topics"] });

@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { dir } from "i18next";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/Header";
@@ -10,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Layout as AppLayout } from "@/components/Layout";
 import { languages } from "@/lib/i18n/settings";
 import { ThemeScript } from "@/components/theme-script";
+import { env } from "@/env";
 
 export const dynamic = "force-static";
 
@@ -55,6 +57,9 @@ export default async function RootLayout(props: {
             </AppLayout>
           </ThemeProvider>
         </NuqsAdapter>
+        {env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={env.NEXT_PUBLIC_GA_ID} />
+        )}
       </body>
     </html>
   );
