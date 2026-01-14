@@ -1,4 +1,21 @@
 {
+  "metadata": {
+    "title": "Dicecho - TRPG 커뮤니티 플랫폼",
+    "description": "Dicecho는 시나리오 리뷰, 게임 리플레이, 플레이어 토론을 제공하는 종합 TRPG 커뮤니티입니다. 양질의 시나리오를 발견하고 게임 경험을 공유하세요.",
+    "ogTitle": "Dicecho - TRPG 커뮤니티 | 시나리오 리뷰 & 플레이어 허브",
+    "ogDescription": "양질의 TRPG 시나리오 발견, 플레이어 리뷰 확인, 게임 리플레이 시청. CoC, DnD 등 다양한 룰 시스템을 한곳에서.",
+    "ogCTA": "지금 탐색하기",
+    "scenarioOgCTA": "지금 보기",
+    "rateOgCTA": "전체 리뷰 보기",
+    "rateOgReviewBy": "리뷰어",
+    "accountOgCTA": "프로필 보기",
+    "rate": {
+      "title": "{{user}}의 리뷰 - {{mod}}",
+      "ogTitle": "{{rating}} {{user}}의 「{{mod}}」 리뷰 | Dicecho",
+      "ogTitleNoRating": "{{user}}의 「{{mod}}」 리뷰 | Dicecho",
+      "description": "{{user}}의 {{mod}} 리뷰"
+    }
+  },
   "scenario": "시나리오",
   "forum": "포럼",
   "replay": "리플레이",
