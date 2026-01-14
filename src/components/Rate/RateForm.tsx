@@ -32,7 +32,7 @@ import {
 } from "@dicecho/types";
 import { useTranslation } from "@/lib/i18n/react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Globe, Lock, User, Crown, Eye } from "lucide-react";
+import { Globe, Lock, User, Crown, Eye, Trash2, Loader2 } from "lucide-react";
 
 const rateSchema = z.object({
   rate: z.number().min(0).max(10),
@@ -49,14 +49,18 @@ interface RateFormProps {
   rate?: IRateDto;
   onSubmit: (values: RateFormValues) => void | Promise<void>;
   onCancel?: () => void;
+  onDelete?: () => void;
   isSubmitting?: boolean;
+  isDeleting?: boolean;
   showActions?: boolean;
 }
 
 export function RateForm({
   rate,
   onSubmit,
+  onDelete,
   isSubmitting = false,
+  isDeleting = false,
 }: RateFormProps) {
   const { t } = useTranslation();
 
@@ -244,8 +248,21 @@ export function RateForm({
               )}
             />
           )}
+          <div className="flex-1" />
 
-          <Button type="submit" disabled={isSubmitting} className="ml-auto">
+          {rateType === RateType.Mark && rate && onDelete && (
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={onDelete}
+              disabled={isDeleting || rate._id === "optimistic"}
+            >
+              {rate._id === "optimistic" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              {isDeleting ? t("deleting") : t("delete")}
+            </Button>
+          )}
+
+          <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? t("saving") : t("save")}
           </Button>
         </div>

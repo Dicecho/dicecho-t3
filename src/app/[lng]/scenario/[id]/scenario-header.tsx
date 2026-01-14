@@ -3,14 +3,13 @@ import { Trans } from "react-i18next/TransWithoutContext";
 import {
   BookmarkPlusIcon,
   DownloadIcon,
-  HeartIcon,
   LinkIcon,
   PencilIcon,
-  StarIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CollectionActionDialog } from "@/components/Collection/collection-action-dialog";
+import { ScenarioRateActions } from "@/components/Scenario/scenario-rate-actions";
 import { ScenarioInfo } from "./scenario-info";
 import { getTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -48,14 +47,7 @@ export async function ScenarioHeader({
 
   const actions = (
     <>
-      <Button variant="outline" color="primary">
-        <StarIcon size={16} />
-        {t("rate")}
-      </Button>
-      <Button variant="outline" color="primary">
-        <HeartIcon size={16} />
-        {t("mark")}
-      </Button>
+      <ScenarioRateActions scenarioId={scenario._id} />
       <CollectionActionDialog targetName="Mod" targetId={scenario._id}>
         <Button variant="outline" className="max-md:hidden">
           <BookmarkPlusIcon size={16} />

@@ -27,6 +27,8 @@ interface RateEditDialogProps {
   rate?: IRateDto;
   modId?: string;
   onSuccess?: (rate: IRateDto) => void;
+  onDelete?: () => void;
+  isDeleting?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
@@ -35,6 +37,8 @@ export function RateEditDialog({
   rate,
   modId,
   onSuccess,
+  onDelete,
+  isDeleting: externalIsDeleting,
   open: controlledOpen,
   onOpenChange,
   children,
@@ -47,6 +51,40 @@ export function RateEditDialog({
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+
+  // Use external delete handler if isDeleting is provided (indicates external control)
+  const useExternalDelete = externalIsDeleting !== undefined;
+
+  const internalDeleteMutation = useMutation({
+    mutationFn: async () => {
+      if (!rate) {
+        throw new Error("rate is required for deleting");
+      }
+      return api.rate.delete(rate._id);
+    },
+    onSuccess: () => {
+      toast.success(t("rate_deleted"));
+      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["rate"] });
+      onDelete?.();
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || t("error"));
+    },
+  });
+
+  const handleDelete = () => {
+    if (useExternalDelete) {
+      onDelete?.();
+      setOpen(false);
+    } else {
+      internalDeleteMutation.mutate();
+    }
+  };
+
+  const isDeleting = useExternalDelete
+    ? externalIsDeleting
+    : internalDeleteMutation.isPending;
 
   const mutation = useMutation({
     mutationFn: async (values: RateFormValues) => {
@@ -101,7 +139,9 @@ export function RateEditDialog({
             <RateForm
               rate={rate}
               onSubmit={handleSubmit}
+              onDelete={handleDelete}
               isSubmitting={mutation.isPending}
+              isDeleting={isDeleting}
             />
           </div>
         </DrawerContent>
@@ -119,7 +159,9 @@ export function RateEditDialog({
         <RateForm
           rate={rate}
           onSubmit={handleSubmit}
+          onDelete={handleDelete}
           isSubmitting={mutation.isPending}
+          isDeleting={isDeleting}
         />
       </DialogContent>
     </Dialog>
