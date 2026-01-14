@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "@/lib/i18n/react";
+import { trackScenarioDownload } from "@/lib/analytics";
 import type { IModDto } from "@dicecho/types";
 
 interface ScenarioDownloadProps {
@@ -112,10 +113,15 @@ export function ScenarioDownload({ scenario }: ScenarioDownloadProps) {
                   </div>
                 </div>
               </div>
-              <Button asChild size="sm" variant="default">
-                <a href={file.url} target="_blank" rel="noopener noreferrer">
-                  <DownloadIcon size={16} />
-                </a>
+              <Button
+                size="sm"
+                variant="default"
+                onClick={() => {
+                  trackScenarioDownload(scenario._id, scenario.title);
+                  window.open(file.url, "_blank", "noopener,noreferrer");
+                }}
+              >
+                <DownloadIcon size={16} />
               </Button>
             </div>
           );

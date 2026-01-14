@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { useTranslation } from "@/lib/i18n/react";
 import { useParams } from "next/navigation";
 import { LinkWithLng } from "../Link";
+import { trackSignOut } from "@/lib/analytics";
 
 interface UserBoxProps {
   user: { id: string; nickName: string };
@@ -74,7 +75,10 @@ export const UserBox: React.FC<UserBoxProps> = ({ user }) => {
 
       <UserBoxItem
         className="hover:text-destructive"
-        onClick={() => signOut({ redirect: false })}
+        onClick={() => {
+          trackSignOut();
+          signOut({ redirect: false });
+        }}
       >
         <LogOut size={16} />
         {t("sign_out")}

@@ -23,6 +23,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { FeedbackForm } from "./feedback-form";
+import { trackFeedbackCreate } from "@/lib/analytics";
 
 interface FeedbackFormDialogProps {
   children: React.ReactNode;
@@ -42,6 +43,7 @@ export function FeedbackFormDialog({ children }: FeedbackFormDialogProps) {
 
   const mutation = api.feedback.create.useMutation({
     onSuccess: (data) => {
+      trackFeedbackCreate();
       toast.success(t("feedback_submitted"));
       setOpen(false);
       void utils.feedback.list.invalidate();

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useTranslation } from "@/lib/i18n/react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { trackShare } from "@/lib/analytics";
 
 interface ShareButtonProps {
   url: string;
@@ -30,6 +31,18 @@ export function ShareButton({
   const { t } = useTranslation();
   const isMobile = useIsMobile();
 
+  const copyToClipboard = () => {
+    trackShare(url, "clipboard");
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        toast.success(t("share_link_copied"));
+      })
+      .catch(() => {
+        toast.error(t("share_link_failed"));
+      });
+  };
+
   const handleShare = async () => {
     if (!isMobile) {
       copyToClipboard();
@@ -39,6 +52,7 @@ export function ShareButton({
     // Check if Web Share API is available
     if (navigator.share) {
       try {
+        trackShare(url, "native");
         await navigator.share({
           title: title || document.title,
           url: url,
@@ -53,17 +67,6 @@ export function ShareButton({
       // Fallback to clipboard
       copyToClipboard();
     }
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        toast.success(t("share_link_copied"));
-      })
-      .catch(() => {
-        toast.error(t("share_link_failed"));
-      });
   };
 
   if (asChild) {

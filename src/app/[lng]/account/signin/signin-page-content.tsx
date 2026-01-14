@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { trackSignIn } from "@/lib/analytics";
 import DicechoLogo from "../dicecho.svg";
 import Link from "next/link";
 
@@ -39,6 +40,7 @@ export function SigninPageContent() {
       return result;
     },
     onSuccess: () => {
+      trackSignIn("credentials");
       toast.success(t("sign_in_success"));
       router.push(`/${i18n.language}/`);
     },

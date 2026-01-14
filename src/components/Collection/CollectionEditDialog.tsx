@@ -47,6 +47,7 @@ import { toast } from "sonner";
 import { useDicecho } from "@/hooks/useDicecho";
 import type { CollectionDto } from "@/types/collection";
 import { useTranslation } from "@/lib/i18n/react";
+import { trackCollectionCreate } from "@/lib/analytics";
 import CoverUpload from "@/components/ui/cover-upload";
 
 const collectionSchema = z.object({
@@ -103,6 +104,9 @@ export function CollectionEditDialog({
       return api.collection.create(values);
     },
     onSuccess: (data) => {
+      if (!collection) {
+        trackCollectionCreate(data._id);
+      }
       toast.success(t(collection ? "collection_updated" : "collection_created"));
       setOpen(false);
       form.reset();

@@ -9,6 +9,7 @@ import { useTranslation } from "@/lib/i18n/react";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { trackSignUp } from "@/lib/analytics";
 import DicechoLogo from "../dicecho.svg";
 import Link from "next/link";
 import { useDicecho } from "@/hooks/useDicecho";
@@ -31,6 +32,7 @@ export function SignupPageContent() {
       await api.auth.signup({ email: data.email });
     },
     onSuccess: () => {
+      trackSignUp("email");
       toast.success(t("signup_email_sent"), {
         description: t("signup_check_inbox"),
       });

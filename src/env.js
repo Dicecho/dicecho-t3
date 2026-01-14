@@ -48,7 +48,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_DICECHO_API_ENDPOINT: z.string(),
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_GA_ID: z.string().optional(),
   },
 
   /**
@@ -61,6 +61,7 @@ export const env = createEnv({
     PROXY_AGENT_URL: process.env.PROXY_AGENT_URL,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXT_PUBLIC_DICECHO_API_ENDPOINT: process.env.NEXT_PUBLIC_DICECHO_API_ENDPOINT,
+    NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
     MONGO_URI: process.env.MONGO_URI,
     // AI Configuration
     AI_PROVIDER: process.env.AI_PROVIDER,

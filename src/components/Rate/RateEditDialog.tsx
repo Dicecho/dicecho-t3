@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { useDicecho } from "@/hooks/useDicecho";
 import { type IRateDto, RemarkContentType } from "@dicecho/types";
 import { useTranslation } from "@/lib/i18n/react";
+import { trackRateCreate } from "@/lib/analytics";
 import { RateForm, RateFormValues } from "./RateForm";
 
 interface RateEditDialogProps {
@@ -75,6 +76,9 @@ export function RateEditDialog({
       });
     },
     onSuccess: (data) => {
+      if (!rate && modId) {
+        trackRateCreate(modId, data.rate);
+      }
       toast.success(t(rate ? "rate_updated" : "rate_created"));
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: ["rate"] });
