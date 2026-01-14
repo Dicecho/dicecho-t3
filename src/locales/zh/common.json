@@ -1,4 +1,21 @@
 {
+  "metadata": {
+    "title": "Dicecho - TRPG一站式社区",
+    "description": "Dicecho是一个专注于桌面角色扮演游戏(TRPG)的综合社区平台，提供剧本评测、游戏录播、玩家讨论等功能，帮助玩家发现优质剧本、分享游戏体验。",
+    "ogTitle": "Dicecho - TRPG一站式社区 | 剧本评测与玩家交流平台",
+    "ogDescription": "发现优质TRPG剧本，查看玩家评测，观看游戏录播，加入玩家社区。COC、DND等多种规则剧本一站式浏览。",
+    "ogCTA": "立即探索",
+    "scenarioOgCTA": "立即查看",
+    "rateOgCTA": "查看完整评价",
+    "rateOgReviewBy": "评价者",
+    "accountOgCTA": "查看主页",
+    "rate": {
+      "title": "{{user}} 的评价 - {{mod}}",
+      "ogTitle": "{{rating}} {{user}} 评价《{{mod}}》| Dicecho",
+      "ogTitleNoRating": "{{user}} 评价《{{mod}}》| Dicecho",
+      "description": "{{user}} 对 {{mod}} 的评价"
+    }
+  },
   "scenario": "模组",
   "forum": "讨论区",
   "replay": "视频",

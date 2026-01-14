@@ -1,4 +1,21 @@
 {
+  "metadata": {
+    "title": "Dicecho - TRPG Community Platform",
+    "description": "Dicecho is a comprehensive TRPG community platform offering scenario reviews, gameplay replays, and player discussions. Discover quality scenarios and share your gaming experiences.",
+    "ogTitle": "Dicecho - TRPG Community | Scenario Reviews & Player Hub",
+    "ogDescription": "Discover quality TRPG scenarios, read player reviews, watch gameplay replays. Browse COC, DND and more rule systems in one place.",
+    "ogCTA": "Explore Now",
+    "scenarioOgCTA": "View Now",
+    "rateOgCTA": "Read Full Review",
+    "rateOgReviewBy": "Review by",
+    "accountOgCTA": "View Profile",
+    "rate": {
+      "title": "{{user}}'s Review - {{mod}}",
+      "ogTitle": "{{rating}} {{user}} reviews「{{mod}}」| Dicecho",
+      "ogTitleNoRating": "{{user}} reviews「{{mod}}」| Dicecho",
+      "description": "{{user}}'s review of {{mod}}"
+    }
+  },
   "scenario": "scenario",
   "forum": "forum",
   "replay": "replay",

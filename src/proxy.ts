@@ -7,7 +7,9 @@ acceptLanguage.languages(languages)
 
 export const config = {
   // matcher: '/:lng*'
-  matcher: ['/((?!api|_next/static|_next/image|assets|favicon.ico|sw.js|robots.txt|sitemap.xml|site.webmanifest).*)']
+  // Exclude static files and public assets from i18n redirect
+  // Also exclude common static file extensions (.ico, .png, .jpg, .svg, .webp, .txt, .xml, .json)
+  matcher: ['/((?!api|_next/static|_next/image|assets|.*\\.ico$|.*\\.png$|.*\\.jpg$|.*\\.jpeg$|.*\\.svg$|.*\\.webp$|.*\\.txt$|.*\\.xml$|.*\\.webmanifest$).*)']
 }
 
 export function proxy(req: NextRequest) {

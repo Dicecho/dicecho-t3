@@ -1,4 +1,21 @@
 {
+  "metadata": {
+    "title": "Dicecho - TRPGコミュニティプラットフォーム",
+    "description": "Dicechoは、シナリオレビュー、リプレイ動画、プレイヤー交流を提供するTRPG総合コミュニティです。質の高いシナリオを発見し、ゲーム体験を共有しましょう。",
+    "ogTitle": "Dicecho - TRPGコミュニティ | シナリオレビュー＆プレイヤー交流",
+    "ogDescription": "質の高いTRPGシナリオを発見、プレイヤーレビューを読む、リプレイ動画を視聴。CoC、DnDなど多様なルールシステムを一括検索。",
+    "ogCTA": "今すぐ探索",
+    "scenarioOgCTA": "今すぐ見る",
+    "rateOgCTA": "レビュー全文を見る",
+    "rateOgReviewBy": "レビュー者",
+    "accountOgCTA": "プロフィールを見る",
+    "rate": {
+      "title": "{{user}}のレビュー - {{mod}}",
+      "ogTitle": "{{rating}} {{user}}が『{{mod}}』をレビュー | Dicecho",
+      "ogTitleNoRating": "{{user}}が『{{mod}}』をレビュー | Dicecho",
+      "description": "{{user}}による{{mod}}のレビュー"
+    }
+  },
   "scenario": "シナリオ",
   "forum": "フォーラム",
   "replay": "リプレイ",
