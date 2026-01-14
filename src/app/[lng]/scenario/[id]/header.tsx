@@ -1,40 +1,52 @@
 "use client";
-import { MobileHeader } from "@/components/Header/MobileHeader";
-import { HeaderBack } from "@/components/Header/HeaderBack";
-import { ScenarioActions } from "@/components/Scenario/scenario-actions";
+
 import { useParams } from "next/navigation";
-import { useWindowScroll } from "react-use";
+
+import { HeaderBack } from "@/components/Header/HeaderBack";
+import { MobileHeader } from "@/components/Header/MobileHeader";
+import { ScenarioActions } from "@/components/Scenario/scenario-actions";
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import { cn } from "@/lib/utils";
 
 import type { IModDto } from "@dicecho/types";
 
-export const ScenarioDetailHeader = ({
-  title,
-  scenario,
-}: {
+interface ScenarioDetailHeaderProps {
   title: string;
   scenario?: IModDto;
-}) => {
-  const state = useWindowScroll();
+}
+
+export function ScenarioDetailHeader({
+  title,
+  scenario,
+}: ScenarioDetailHeaderProps) {
+  const { ref, isIntersecting } = useIntersectionObserver<HTMLDivElement>();
   const { lng } = useParams<{ lng: string }>();
 
-  const y = state.y ?? 0;
-
   return (
-    <MobileHeader
-      left={<HeaderBack fallback={`/${lng}/scenario`} />}
-      right={
-        scenario ? (
-          <ScenarioActions scenario={scenario} variant="actionsheet" />
-        ) : undefined
-      }
-      className={cn("fixed items-center justify-center", {
-        ["bg-transparent text-primary-foreground shadow-none"]: y < 160,
-      })}
-    >
-      <div className={cn("text-sm text-center", { ["opacity-0"]: y < 160 })}>
-        {title}
-      </div>
-    </MobileHeader>
+    <>
+      <div ref={ref} className="absolute top-[200px] h-px w-full md:hidden" />
+
+      <MobileHeader
+        left={<HeaderBack fallback={`/${lng}/scenario`} />}
+        right={
+          scenario && (
+            <ScenarioActions scenario={scenario} variant="actionsheet" />
+          )
+        }
+        className={cn(
+          "fixed items-center justify-center transition-colors duration-200",
+          isIntersecting && "bg-transparent text-primary-foreground shadow-none",
+        )}
+      >
+        <div
+          className={cn(
+            "text-center text-sm transition-opacity duration-200",
+            isIntersecting && "opacity-0",
+          )}
+        >
+          {title}
+        </div>
+      </MobileHeader>
+    </>
   );
-};
+}

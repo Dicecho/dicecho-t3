@@ -78,7 +78,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
     utils.rate.detail.setData({ id: rate._id }, rate);
   };
 
-  const { toggle, isActive, getCount } = useReactionDeclare({
+  const { toggle, isActive, getCount, isPending: isReactionPending } = useReactionDeclare({
     targetName: "Rate",
     targetId: rate._id,
     initialState: {
@@ -336,6 +336,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
             size="sm"
             variant="secondary"
             onClick={() => toggle("like")}
+            disabled={isReactionPending}
             className={cn("gap-2", isActive("like") && "text-primary")}
           >
             <ThumbsUp className={cn("h-4 w-4", isActive("like") && "fill-current")} />
@@ -346,6 +347,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
             size="sm"
             variant="secondary"
             onClick={() => toggle("dislike")}
+            disabled={isReactionPending}
             className={cn("gap-2", isActive("dislike") && "text-destructive")}
           >
             <ThumbsDown className={cn("h-4 w-4", isActive("dislike") && "fill-current")} />
@@ -355,6 +357,7 @@ export const RateItem: React.FunctionComponent<IProps> = ({
             size="sm"
             variant="secondary"
             onClick={() => toggle("happy")}
+            disabled={isReactionPending}
             className={cn("gap-2", isActive("happy") && "text-yellow-500")}
           >
             <Laugh className="h-4 w-4" />

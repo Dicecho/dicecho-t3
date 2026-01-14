@@ -1,27 +1,37 @@
 "use client";
-import {
-  Dialog,
-  DialogTitle,
-  type DialogProps,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { useMutation } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+
+import {
+  ResponsiveModal,
+  ResponsiveModalContent,
+  ResponsiveModalHeader,
+  ResponsiveModalTitle,
+  ResponsiveModalTrigger,
+} from "@/components/ui/responsive-modal";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDicecho } from "@/hooks/useDicecho";
+import { useTranslation } from "@/lib/i18n/react";
+
+import { Button } from "../ui/button";
+import DicechoLogo from "./dicecho.svg";
 import { SigninForm } from "./SigninForm";
 import { SignupForm } from "./SignupForm";
 
-import type { FC } from "react";
-import { Button } from "../ui/button";
-import { useTranslation } from "@/lib/i18n/react";
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
-import DicechoLogo from "./dicecho.svg";
-import { useDicecho } from "@/hooks/useDicecho";
+interface AuthDialogProps {
+  children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
 
-export const AuthDialog: FC<DialogProps> = ({ children, onOpenChange, ...props }) => {
+export function AuthDialog({
+  children,
+  onOpenChange,
+  ...props
+}: AuthDialogProps) {
   const { t } = useTranslation();
   const { api } = useDicecho();
 
@@ -67,13 +77,15 @@ export const AuthDialog: FC<DialogProps> = ({ children, onOpenChange, ...props }
   });
 
   return (
-    <Dialog onOpenChange={onOpenChange} {...props}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="p-4" showCloseButton={false}>
-        <DialogHeader>
-          <DialogTitle className="hidden">{t("sign_in_to_dicecho")}</DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col items-center w-full gap-8">
+    <ResponsiveModal onOpenChange={onOpenChange} {...props}>
+      <ResponsiveModalTrigger asChild>{children}</ResponsiveModalTrigger>
+      <ResponsiveModalContent className="p-4" showCloseButton={false}>
+        <ResponsiveModalHeader>
+          <ResponsiveModalTitle className="hidden">
+            {t("sign_in_to_dicecho")}
+          </ResponsiveModalTitle>
+        </ResponsiveModalHeader>
+        <div className="flex flex-col items-center w-full gap-8 max-md:pb-8">
           <DicechoLogo className="text-primary" width={100} height={100} />
 
           <Tabs defaultValue="signin" className="w-full">
@@ -93,9 +105,7 @@ export const AuthDialog: FC<DialogProps> = ({ children, onOpenChange, ...props }
                   type="submit"
                   color="primary"
                 >
-                  {isSigningIn ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : null}
+                  {isSigningIn && <Loader2 className="h-4 w-4 animate-spin" />}
                   {t("sign_in")}
                 </Button>
               </SigninForm>
@@ -108,16 +118,14 @@ export const AuthDialog: FC<DialogProps> = ({ children, onOpenChange, ...props }
                   type="submit"
                   color="primary"
                 >
-                  {isSigningUp ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : null}
+                  {isSigningUp && <Loader2 className="h-4 w-4 animate-spin" />}
                   {t("sign_up")}
                 </Button>
               </SignupForm>
             </TabsContent>
           </Tabs>
         </div>
-      </DialogContent>
-    </Dialog>
+      </ResponsiveModalContent>
+    </ResponsiveModal>
   );
-};
+}
