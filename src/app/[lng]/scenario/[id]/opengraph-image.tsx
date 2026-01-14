@@ -28,11 +28,11 @@ export default async function Image({
       : null;
   const ruleInfo = scenario?.moduleRule || "";
   const playerInfo = scenario?.playerNumber
-    ? `${scenario.playerNumber.filter(n => n > 0).join("-")} Players`
+    ? `${scenario.playerNumber.filter((n) => n > 0).join("-")} Players`
     : "";
   const coverUrl = scenario?.coverUrl;
   const tags = scenario?.tags?.slice(0, 3) || [];
-  const description = scenario?.description?.slice(0, 80) || "";
+  const description = scenario?.description?.slice(0, 100) || "";
   const authorName = scenario?.author.nickName || "";
   const cta = t("metadata.scenarioOgCTA");
 
@@ -68,7 +68,7 @@ export default async function Image({
             width: "100%",
             height: "100%",
             padding: "48px 60px",
-            gap: 60,
+            gap: 56,
             alignItems: "center",
             position: "relative",
           }}
@@ -86,17 +86,17 @@ export default async function Image({
               <div
                 style={{
                   display: "flex",
-                  width: 340,
-                  height: 480,
-                  borderRadius: 40,
-                  border: "8px solid #52525b",
+                  width: 320,
+                  height: 450,
+                  borderRadius: 32,
+                  border: "6px solid #52525b",
                   boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.6)",
-                  transform: "rotate(-5deg)",
+                  transform: "rotate(-4deg)",
                   overflow: "hidden",
                 }}
               >
                 <img
-                  src={`${coverUrl}?width=340&height=480&fit=cover`}
+                  src={`${coverUrl}?width=320&height=450&fit=cover`}
                   alt=""
                   style={{
                     width: "100%",
@@ -115,7 +115,7 @@ export default async function Image({
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              gap: 16,
+              gap: 20,
             }}
           >
             {/* Logo + Domain badge */}
@@ -123,12 +123,16 @@ export default async function Image({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 10,
+                gap: 12,
+                padding: "10px 18px",
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                borderRadius: 24,
+                alignSelf: "flex-start",
               }}
             >
               <svg
-                width="24"
-                height="24"
+                width="28"
+                height="28"
                 viewBox="0 0 1078 1036"
                 fill="#9396f7"
               >
@@ -136,9 +140,9 @@ export default async function Image({
               </svg>
               <span
                 style={{
-                  fontSize: 16,
-                  color: "#a1a1aa",
-                  fontWeight: 500,
+                  fontSize: 20,
+                  color: "white",
+                  fontWeight: 600,
                 }}
               >
                 dicecho.com
@@ -148,10 +152,10 @@ export default async function Image({
             {/* Title */}
             <span
               style={{
-                fontSize: 48,
+                fontSize: 52,
                 fontWeight: 800,
                 color: "white",
-                lineHeight: 1.1,
+                lineHeight: 1.15,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
@@ -166,14 +170,14 @@ export default async function Image({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 20,
+                gap: 24,
               }}
             >
               {authorName && (
                 <span
                   style={{
-                    fontSize: 18,
-                    color: "#a1a1aa",
+                    fontSize: 24,
+                    color: "#d4d4d8",
                   }}
                 >
                   by {authorName}
@@ -184,12 +188,12 @@ export default async function Image({
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    // gap: 6,
+                    gap: 6,
                   }}
                 >
                   <span
                     style={{
-                      fontSize: 20,
+                      fontSize: 26,
                       fontWeight: 700,
                       color: "#fbbf24",
                     }}
@@ -198,8 +202,8 @@ export default async function Image({
                   </span>
                   <span
                     style={{
-                      fontSize: 14,
-                      color: "#71717a",
+                      fontSize: 18,
+                      color: "#a1a1aa",
                     }}
                   >
                     ({scenario?.rateCount})
@@ -212,10 +216,10 @@ export default async function Image({
             {description && (
               <span
                 style={{
-                  fontSize: 16,
-                  color: "#71717a",
+                  fontSize: 22,
+                  color: "#a1a1aa",
                   lineHeight: 1.5,
-                  maxWidth: 500,
+                  maxWidth: 580,
                 }}
               >
                 {description}...
@@ -227,18 +231,18 @@ export default async function Image({
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                gap: 10,
-                marginTop: 8,
+                gap: 12,
+                marginTop: 4,
               }}
             >
               {ruleInfo && (
                 <span
                   style={{
-                    fontSize: 14,
+                    fontSize: 18,
                     color: "#f43f5e",
                     backgroundColor: "rgba(244, 63, 94, 0.15)",
-                    padding: "8px 16px",
-                    borderRadius: 20,
+                    padding: "10px 20px",
+                    borderRadius: 24,
                     fontWeight: 600,
                   }}
                 >
@@ -248,11 +252,11 @@ export default async function Image({
               {playerInfo && (
                 <span
                   style={{
-                    fontSize: 14,
+                    fontSize: 18,
                     color: "#60a5fa",
                     backgroundColor: "rgba(96, 165, 250, 0.15)",
-                    padding: "8px 16px",
-                    borderRadius: 20,
+                    padding: "10px 20px",
+                    borderRadius: 24,
                     fontWeight: 600,
                   }}
                 >
@@ -263,11 +267,11 @@ export default async function Image({
                 <span
                   key={tag}
                   style={{
-                    fontSize: 14,
+                    fontSize: 18,
                     color: "#a5b4fc",
                     backgroundColor: "rgba(165, 180, 252, 0.1)",
-                    padding: "8px 16px",
-                    borderRadius: 20,
+                    padding: "10px 20px",
+                    borderRadius: 24,
                   }}
                 >
                   #{tag}
@@ -275,11 +279,11 @@ export default async function Image({
               ))}
             </div>
 
-            {/* CTA Button - same style as homepage */}
+            {/* CTA Button */}
             <div
               style={{
                 display: "flex",
-                marginTop: 16,
+                marginTop: 12,
               }}
             >
               <div
@@ -289,9 +293,9 @@ export default async function Image({
                   justifyContent: "center",
                   backgroundColor: "#9396f7",
                   color: "white",
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: 600,
-                  padding: "12px 32px",
+                  padding: "14px 36px",
                   borderRadius: 40,
                   boxShadow: "0 4px 16px rgba(147, 150, 247, 0.4)",
                 }}

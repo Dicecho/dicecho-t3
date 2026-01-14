@@ -42,7 +42,7 @@ export default async function Image({
     .replace(/^[-*+]\s+/gm, "• ") // Convert list items
     .replace(/^\d+\.\s+/gm, "• ") // Convert numbered lists
     .trim();
-  const maxLength = 180;
+  const maxLength = 160;
   const remark =
     cleanedRemark.length > maxLength
       ? cleanedRemark.slice(0, maxLength) + "..."
@@ -83,7 +83,7 @@ export default async function Image({
             width: "100%",
             height: "100%",
             padding: "48px 60px",
-            gap: 60,
+            gap: 56,
             alignItems: "center",
             position: "relative",
           }}
@@ -101,17 +101,17 @@ export default async function Image({
               <div
                 style={{
                   display: "flex",
-                  width: 340,
-                  height: 480,
-                  borderRadius: 40,
-                  border: "8px solid #52525b",
+                  width: 320,
+                  height: 450,
+                  borderRadius: 32,
+                  border: "6px solid #52525b",
                   boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.6)",
-                  transform: "rotate(-5deg)",
+                  transform: "rotate(-4deg)",
                   overflow: "hidden",
                 }}
               >
                 <img
-                  src={`${coverUrl}?width=340&height=480&fit=cover`}
+                  src={`${coverUrl}?width=320&height=450&fit=cover`}
                   alt=""
                   style={{
                     width: "100%",
@@ -130,7 +130,7 @@ export default async function Image({
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              gap: 16,
+              gap: 20,
             }}
           >
             {/* Logo + Domain badge */}
@@ -138,12 +138,16 @@ export default async function Image({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 10,
+                gap: 12,
+                padding: "10px 18px",
+                backgroundColor: "rgba(0, 0, 0, 0.3)",
+                borderRadius: 24,
+                alignSelf: "flex-start",
               }}
             >
               <svg
-                width="24"
-                height="24"
+                width="28"
+                height="28"
                 viewBox="0 0 1078 1036"
                 fill="#9396f7"
               >
@@ -151,9 +155,9 @@ export default async function Image({
               </svg>
               <span
                 style={{
-                  fontSize: 16,
-                  color: "#a1a1aa",
-                  fontWeight: 500,
+                  fontSize: 20,
+                  color: "white",
+                  fontWeight: 600,
                 }}
               >
                 dicecho.com
@@ -163,10 +167,10 @@ export default async function Image({
             {/* Mod Title */}
             <span
               style={{
-                fontSize: 44,
+                fontSize: 48,
                 fontWeight: 800,
                 color: "white",
-                lineHeight: 1.1,
+                lineHeight: 1.15,
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
@@ -187,27 +191,27 @@ export default async function Image({
               {/* Avatar */}
               {userAvatar ? (
                 <img
-                  src={`${userAvatar}?width=48&height=48&fit=cover`}
+                  src={`${userAvatar}?width=56&height=56&fit=cover`}
                   alt=""
                   style={{
-                    width: 48,
-                    height: 48,
+                    width: 56,
+                    height: 56,
                     borderRadius: "50%",
-                    border: "2px solid #52525b",
+                    border: "3px solid #52525b",
                   }}
                 />
               ) : (
                 <div
                   style={{
-                    width: 48,
-                    height: 48,
+                    width: 56,
+                    height: 56,
                     borderRadius: "50%",
                     backgroundColor: "#52525b",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#a1a1aa",
-                    fontSize: 20,
+                    color: "#d4d4d8",
+                    fontSize: 24,
                     fontWeight: 600,
                   }}
                 >
@@ -223,15 +227,15 @@ export default async function Image({
               >
                 <span
                   style={{
-                    fontSize: 12,
-                    color: "#71717a",
+                    fontSize: 16,
+                    color: "#a1a1aa",
                   }}
                 >
                   {reviewByText}
                 </span>
                 <span
                   style={{
-                    fontSize: 18,
+                    fontSize: 22,
                     color: "white",
                     fontWeight: 600,
                   }}
@@ -247,24 +251,28 @@ export default async function Image({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 12,
+                  gap: 14,
                 }}
               >
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 2,
+                    gap: 4,
                   }}
                 >
                   {Array.from({ length: 5 }).map((_, i) => (
                     <svg
                       key={i}
-                      width="28"
-                      height="28"
+                      width="32"
+                      height="32"
                       viewBox="0 0 24 24"
-                      fill={i < Math.round(Number(rating) / 2) ? "#fbbf24" : "#52525b"}
-                      stroke={i < Math.round(Number(rating) / 2) ? "#fbbf24" : "#52525b"}
+                      fill={
+                        i < Math.round(Number(rating) / 2) ? "#fbbf24" : "#52525b"
+                      }
+                      stroke={
+                        i < Math.round(Number(rating) / 2) ? "#fbbf24" : "#52525b"
+                      }
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -275,7 +283,7 @@ export default async function Image({
                 </div>
                 <span
                   style={{
-                    fontSize: 24,
+                    fontSize: 28,
                     fontWeight: 700,
                     color: "#fbbf24",
                   }}
@@ -289,11 +297,11 @@ export default async function Image({
             {remark && (
               <span
                 style={{
-                  fontSize: 16,
-                  color: "#a1a1aa",
+                  fontSize: 20,
+                  color: "#d4d4d8",
                   lineHeight: 1.6,
-                  maxWidth: 520,
-                  maxHeight: 104,
+                  maxWidth: 560,
+                  maxHeight: 96,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "pre-line",
@@ -307,7 +315,7 @@ export default async function Image({
             <div
               style={{
                 display: "flex",
-                marginTop: 16,
+                marginTop: 12,
               }}
             >
               <div
@@ -317,9 +325,9 @@ export default async function Image({
                   justifyContent: "center",
                   backgroundColor: "#9396f7",
                   color: "white",
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: 600,
-                  padding: "12px 32px",
+                  padding: "14px 36px",
                   borderRadius: 40,
                   boxShadow: "0 4px 16px rgba(147, 150, 247, 0.4)",
                 }}
