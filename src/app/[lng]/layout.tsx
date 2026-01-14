@@ -15,6 +15,7 @@ import { ThemeScript } from "@/components/theme-script";
 import { env } from "@/env";
 import { getTranslation } from "@/lib/i18n";
 
+
 export const dynamic = "force-static";
 
 const localeMap: Record<string, string> = {
