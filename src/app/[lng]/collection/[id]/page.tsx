@@ -24,7 +24,6 @@ export default async function CollectionDetailPage(props: {
       <div className="md:container md:py-6 max-md:pb-24">
         <CollectionDetail collection={collection} />
       </div>
-      <MobileFooter />
     </>
   );
 }
