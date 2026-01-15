@@ -10,7 +10,7 @@ import { Rate } from "@/components/ui/rate";
 import { Trans } from "react-i18next";
 import { useTranslation } from "@/lib/i18n/react";
 import { Badge } from "@/components/ui/badge";
-import { CommentSection } from "@/components/Comment";
+import { CommentSection, CommentDrawer } from "@/components/Comment";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { MessageCircle, Edit, Trash2, Loader2, Languages, ThumbsUp, ThumbsDown, Laugh, EyeOff, AlertTriangle, MoreHorizontal } from "lucide-react";
@@ -365,19 +365,19 @@ export const RateItem: React.FunctionComponent<IProps> = ({
 
           {!hideComments && (
             <>
-              {/* Mobile: Link to detail page */}
-              <LinkWithLng
-                href={`/rate/${rate._id}`}
-                className="md:hidden"
-                onClick={prefillDetailCache}
+              {/* Mobile: Open comment drawer */}
+              <CommentDrawer
+                targetName="Rate"
+                targetId={rate._id}
+                initialCount={rate.commentCount}
               >
-                <Button size="sm" variant="secondary" className="gap-1">
+                <Button size="sm" variant="secondary" className="gap-1 md:hidden">
                   <MessageCircle className="h-4 w-4" />
                   {rate.commentCount > 0 && (
                     <span>{rate.commentCount}</span>
                   )}
                 </Button>
-              </LinkWithLng>
+              </CommentDrawer>
 
               {/* Desktop: Expand comment section */}
               <Button

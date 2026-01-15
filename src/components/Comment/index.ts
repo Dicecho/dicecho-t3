@@ -5,5 +5,6 @@ export * from "./comment-composer";
 export * from "./comment-dialog-modal";
 export * from "./comment-thread";
 export * from "./comment-panel";
+export * from "./comment-drawer";
 export * from "./reply-section";
 export * from "./reply-item";
