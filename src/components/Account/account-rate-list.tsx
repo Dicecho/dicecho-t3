@@ -67,49 +67,46 @@ export const AccountRateList = ({
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex md:flex-row flex-col gap-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <RateTypeTabs
-              className="max-md:flex-1"
-              value={(query.filter?.type ?? RateType.Rate) as RateType}
-              onChange={(type) =>
-                setStoredQuery({ ...query, filter: { ...query.filter, type } })
-              }
-              rateCount={rateCount}
-              markCount={markCount}
-            />
-          </div>
-          <div className="flex items-center gap-2 flex-1">
-            <RateFilterDrawer
-              filter={query.filter ?? {}}
-              onChange={(filter) => setStoredQuery({ ...query, filter })}
+      <CardHeader className="flex flex-col gap-4">
+        <RateTypeTabs
+          className="w-full"
+          value={(query.filter?.type ?? RateType.Rate) as RateType}
+          onChange={(type) =>
+            setStoredQuery({ ...query, filter: { ...query.filter, type } })
+          }
+          rateCount={rateCount}
+          markCount={markCount}
+        />
+        <div className="flex w-full items-center gap-2">
+          <RateFilterSelector
+            className="flex-1 max-md:hidden"
+            filter={query.filter ?? {}}
+            onChange={(filter) => setStoredQuery({ ...query, filter })}
+          />
+
+          <div className="flex-1"></div>
+          <RateFilterDrawer
+            filter={query.filter ?? {}}
+            onChange={(filter) => setStoredQuery({ ...query, filter })}
+          >
+            <Button
+              className="relative md:hidden"
+              variant="outline"
+              size="icon"
             >
-              <Button
-                className="relative md:hidden ml-auto"
-                variant="outline"
-                size="icon"
-              >
-                <FilterIcon size={16} />
-                {filterCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1 font-mono text-xs tabular-nums">
-                    {filterCount}
-                  </Badge>
-                )}
-              </Button>
-            </RateFilterDrawer>
+              <FilterIcon size={16} />
+              {filterCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1 font-mono text-xs tabular-nums">
+                  {filterCount}
+                </Badge>
+              )}
+            </Button>
+          </RateFilterDrawer>
 
-            <RateFilterSelector
-              className="flex-1 max-md:hidden ml-auto"
-              filter={query.filter ?? {}}
-              onChange={(filter) => setStoredQuery({ ...query, filter })}
-            />
-
-            <RateSortSelect
-              value={query.sort}
-              onChange={(sort) => setStoredQuery({ ...query, sort })}
-            />
-          </div>
+          <RateSortSelect
+            value={query.sort}
+            onChange={(sort) => setStoredQuery({ ...query, sort })}
+          />
         </div>
       </CardHeader>
       <CardContent>

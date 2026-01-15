@@ -54,29 +54,20 @@ export const ScenarioRateList = ({
   return (
     <Card {...props}>
       <CardContent className="flex flex-col gap-4">
-        <div className="flex items-center gap-2">
-          <RateTypeTabs
-            className="max-md:flex-1"
-            value={(query.filter?.type ?? RateType.Rate) as RateType}
-            onChange={(type) =>
-              setQuery({ ...query, filter: { ...query.filter, type } })
-            }
-            rateCount={rateCount}
-            markCount={markCount}
-          />
-          <RateEditDialog modId={scenarioId}>
-            <Button className="ml-auto">
-              <Plus size={16} />
-              {t("rate")}
-            </Button>
-          </RateEditDialog>
-        </div>
+        <RateTypeTabs
+          value={(query.filter?.type ?? RateType.Rate) as RateType}
+          onChange={(type) =>
+            setQuery({ ...query, filter: { ...query.filter, type } })
+          }
+          rateCount={rateCount}
+          markCount={markCount}
+        />
         <div className="flex items-center gap-2">
           <RateFilterDrawer
             filter={query.filter ?? {}}
             onChange={(filter) => setQuery({ ...query, filter })}
           >
-            <Button variant="outline" size="icon" className="relative md:hidden ml-auto">
+            <Button variant="outline" size="icon" className="relative md:hidden">
               <FilterIcon size={16} />
               {filterCount > 0 && (
                 <Badge className="absolute -top-2 -right-2 flex h-5 min-w-5 items-center justify-center rounded-full px-1 font-mono text-xs tabular-nums">
@@ -95,6 +86,12 @@ export const ScenarioRateList = ({
             value={query.sort}
             onChange={(sort) => setQuery({ ...query, sort })}
           />
+          <RateEditDialog modId={scenarioId}>
+            <Button className="ml-auto">
+              <Plus size={16} />
+              {t("rate")}
+            </Button>
+          </RateEditDialog>
         </div>
         <RateList query={rateQuery} />
       </CardContent>
