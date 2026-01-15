@@ -19,6 +19,8 @@ interface MobileCommentFooterProps {
   onSubmit: (content: string) => Promise<void>;
   onClearReply?: () => void;
   className?: string;
+  /** Position variant: "fixed" for standalone pages, "relative" for use inside drawers */
+  variant?: "fixed" | "relative";
 }
 
 export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
@@ -29,6 +31,7 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
   onSubmit,
   onClearReply,
   className,
+  variant = "fixed",
 }) => {
   const { t } = useTranslation();
   const { status } = useSession();
@@ -73,7 +76,8 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
     return (
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 z-5 border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
+          "border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]",
+          variant === "fixed" && "fixed inset-x-0 bottom-0 z-5 md:hidden",
           className
         )}
       >
@@ -94,7 +98,8 @@ export const MobileCommentFooter: React.FC<MobileCommentFooterProps> = ({
   return (
     <div
       className={cn(
-        "fixed inset-x-0 bottom-0 z-5 border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden",
+        "border-t bg-background px-4 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]",
+        variant === "fixed" && "fixed inset-x-0 bottom-0 z-5 md:hidden",
         className
       )}
     >
