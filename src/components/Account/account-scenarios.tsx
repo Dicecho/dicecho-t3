@@ -12,12 +12,13 @@ import { useAccount } from "@/hooks/useAccount";
 import type { IUserDto } from "@dicecho/types";
 import { ControllablePagination } from "@/components/Pagination";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ScenarioCard } from "@/components/Scenario/ScenarioCard";
 
-interface AccountModulesCardProps {
+interface AccountScenariosProps {
   user: IUserDto;
 }
 
-export const AccountModulesCard = ({ user }: AccountModulesCardProps) => {
+export const AccountScenarios = ({ user }: AccountScenariosProps) => {
   const { t } = useTranslation();
   const { api } = useDicecho();
   const { account, isAuthenticated } = useAccount();
@@ -39,7 +40,7 @@ export const AccountModulesCard = ({ user }: AccountModulesCardProps) => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>投稿作品</CardTitle>
+          <CardTitle>{t("submitted_works")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
@@ -59,7 +60,7 @@ export const AccountModulesCard = ({ user }: AccountModulesCardProps) => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>投稿作品</CardTitle>
+          <CardTitle>{t("submitted_works")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Empty>
@@ -75,28 +76,22 @@ export const AccountModulesCard = ({ user }: AccountModulesCardProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>投稿作品</CardTitle>
+        <CardTitle>{t("submitted_works")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {data.data.map((module) => (
-            <LinkWithLng
-              key={module._id}
-              href={`/scenario/${module._id}`}
-            >
-                <div className="group relative aspect-3/4 overflow-hidden rounded-lg bg-muted">
-                <img
-                  src={module.coverUrl}
-                  alt={module.title}
-                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-2">
-                  <div className="line-clamp-2 text-sm font-medium text-white">
-                    {module.title}
-                  </div>
-                </div>
-              </div>
+            <LinkWithLng key={module._id} href={`/scenario/${module._id}`}>
+              <ScenarioCard
+                compact
+                scenario={{
+                  coverUrl: module.coverUrl,
+                  title: module.title,
+                  author: module.author,
+                  rateAvg: module.rateAvg,
+                  rateCount: module.rateCount,
+                }}
+              />
             </LinkWithLng>
           ))}
         </div>
@@ -113,4 +108,3 @@ export const AccountModulesCard = ({ user }: AccountModulesCardProps) => {
     </Card>
   );
 };
-
