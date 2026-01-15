@@ -1,10 +1,16 @@
 "use client";
 import * as React from "react";
 import { RateView as RateViewFilter } from "@dicecho/types";
-import MultipleSelector, { type Option } from "@/components/ui/multiple-selector";
 import { useTranslation } from "@/lib/i18n/react";
-import { isEqual } from "lodash";
 import type { IRateListQuery } from "@dicecho/types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 export enum RateView {
   PL = "view_pl",
@@ -49,12 +55,10 @@ const RateAttitudeMap: Record<RateAttitude, IRateListQuery["filter"]["rate"]> = 
   [RateAttitude.Negative]: { $gte: 1, $lt: 4 },
 };
 
-// Filter category prefixes for option values
-const FILTER_PREFIX = {
-  remarkLength: "remarkLength:",
-  attitude: "attitude:",
-  view: "view:",
-} as const;
+const EMPTY_VALUE = "__all__";
+
+const selectedTriggerClassName =
+  "bg-primary/10 border-primary/50 text-primary hover:bg-primary/20";
 
 interface RateFilterSelectorProps {
   filter: Partial<IRateListQuery["filter"]>;
@@ -89,122 +93,91 @@ export const RateFilterSelector: React.FC<RateFilterSelectorProps> = ({
 
   const rateView = filter.view != null ? RateViewReverseMap[filter.view] : undefined;
 
-  // Build filter badges and removal handlers
-  const { filterBadges, removalHandlers } = React.useMemo(() => {
-    const badges: Option[] = [];
-    const handlers = new Map<string, () => void>();
-
-    if (remarkLengthRange) {
-      const value = `${FILTER_PREFIX.remarkLength}${remarkLengthRange}`;
-      badges.push({
-        value,
-        label: t(`Rate.${remarkLengthRange}`),
-        group: t("Rate.filter_remark_length"),
-      });
-      handlers.set(value, () => onChange({ ...filter, remarkLength: undefined }));
+  const handleRemarkLengthChange = (value: string) => {
+    if (value === EMPTY_VALUE) {
+      onChange({ ...filter, remarkLength: undefined });
+    } else {
+      onChange({ ...filter, remarkLength: RemarkLengthRangeMap[value as RemarkLengthRange] });
     }
+  };
 
-    if (rateAttitude) {
-      const value = `${FILTER_PREFIX.attitude}${rateAttitude}`;
-      badges.push({
-        value,
-        label: t(`Rate.${rateAttitude}`),
-        group: t("Rate.filter_rating"),
-      });
-      handlers.set(value, () => onChange({ ...filter, rate: undefined }));
+  const handleAttitudeChange = (value: string) => {
+    if (value === EMPTY_VALUE) {
+      onChange({ ...filter, rate: undefined });
+    } else {
+      onChange({ ...filter, rate: RateAttitudeMap[value as RateAttitude] });
     }
+  };
 
-    if (rateView) {
-      const value = `${FILTER_PREFIX.view}${rateView}`;
-      badges.push({
-        value,
-        label: t(`Rate.${rateView}`),
-        group: t("Rate.filter_rate_view"),
-      });
-      handlers.set(value, () => onChange({ ...filter, view: undefined }));
-    }
-
-    return { filterBadges: badges, removalHandlers: handlers };
-  }, [filter, remarkLengthRange, rateAttitude, rateView, onChange, t]);
-
-  // Build available options (grouped)
-  const filterOptions: Option[] = React.useMemo(() => {
-    const options: Option[] = [];
-
-    // Remark length options
-    Object.values(RemarkLengthRange).forEach((v) => {
-      options.push({
-        value: `${FILTER_PREFIX.remarkLength}${v}`,
-        label: t(`Rate.${v}`),
-        group: t("Rate.filter_remark_length"),
-      });
-    });
-
-    // Attitude options
-    Object.values(RateAttitude).forEach((v) => {
-      options.push({
-        value: `${FILTER_PREFIX.attitude}${v}`,
-        label: t(`Rate.${v}`),
-        group: t("Rate.filter_rating"),
-      });
-    });
-
-    // View options
-    Object.values(RateView).forEach((v) => {
-      options.push({
-        value: `${FILTER_PREFIX.view}${v}`,
-        label: t(`Rate.${v}`),
-        group: t("Rate.filter_rate_view"),
-      });
-    });
-
-    return options;
-  }, [t]);
-
-  const handleChange = (newOptions: Option[]) => {
-    const oldValues = new Set(filterBadges.map((b) => b.value));
-    const newValues = new Set(newOptions.map((o) => o.value));
-
-    // Find added option (user selected from dropdown)
-    const added = newOptions.find((o) => !oldValues.has(o.value));
-
-    // Find removed option (user clicked X on badge)
-    const removed = filterBadges.find((b) => !newValues.has(b.value));
-
-    if (added) {
-      // Handle selection
-      const value = added.value;
-      let newFilter = { ...filter };
-
-      if (value.startsWith(FILTER_PREFIX.remarkLength)) {
-        const key = value.replace(FILTER_PREFIX.remarkLength, "") as RemarkLengthRange;
-        newFilter.remarkLength = RemarkLengthRangeMap[key];
-      } else if (value.startsWith(FILTER_PREFIX.attitude)) {
-        const key = value.replace(FILTER_PREFIX.attitude, "") as RateAttitude;
-        newFilter.rate = RateAttitudeMap[key];
-      } else if (value.startsWith(FILTER_PREFIX.view)) {
-        const key = value.replace(FILTER_PREFIX.view, "") as RateView;
-        newFilter.view = RateViewMap[key];
-      }
-
-      onChange(newFilter);
-    } else if (removed) {
-      // Handle removal
-      removalHandlers.get(removed.value)?.();
+  const handleViewChange = (value: string) => {
+    if (value === EMPTY_VALUE) {
+      onChange({ ...filter, view: undefined });
+    } else {
+      onChange({ ...filter, view: RateViewMap[value as RateView] });
     }
   };
 
   return (
-    <MultipleSelector
-      value={filterBadges}
-      options={filterOptions}
-      onChange={handleChange}
-      placeholder={t("Rate.filter_placeholder")}
-      hidePlaceholderWhenSelected
-      hideClearAllButton={filterBadges.length === 0}
-      selectFirstItem={false}
-      groupBy="group"
-      className={className}
-    />
+    <div className={cn("flex items-center gap-2", className)}>
+      {/* Remark Length Select */}
+      <Select
+        value={remarkLengthRange ?? EMPTY_VALUE}
+        onValueChange={handleRemarkLengthChange}
+      >
+        <SelectTrigger
+          className={cn(remarkLengthRange && selectedTriggerClassName)}
+        >
+          <SelectValue placeholder={t("Rate.filter_remark_length")} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={EMPTY_VALUE}>{t("Rate.filter_remark_length")}</SelectItem>
+          {Object.values(RemarkLengthRange).map((v) => (
+            <SelectItem key={v} value={v}>
+              {t(`Rate.${v}`)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* Attitude Select */}
+      <Select
+        value={rateAttitude ?? EMPTY_VALUE}
+        onValueChange={handleAttitudeChange}
+      >
+        <SelectTrigger
+          className={cn(rateAttitude && selectedTriggerClassName)}
+        >
+          <SelectValue placeholder={t("Rate.filter_rating")} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={EMPTY_VALUE}>{t("Rate.filter_rating")}</SelectItem>
+          {Object.values(RateAttitude).map((v) => (
+            <SelectItem key={v} value={v}>
+              {t(`Rate.${v}`)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {/* View Select */}
+      <Select
+        value={rateView ?? EMPTY_VALUE}
+        onValueChange={handleViewChange}
+      >
+        <SelectTrigger
+          className={cn(rateView && selectedTriggerClassName)}
+        >
+          <SelectValue placeholder={t("Rate.filter_rate_view")} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value={EMPTY_VALUE}>{t("Rate.filter_rate_view")}</SelectItem>
+          {Object.values(RateView).map((v) => (
+            <SelectItem key={v} value={v}>
+              {t(`Rate.${v}`)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
