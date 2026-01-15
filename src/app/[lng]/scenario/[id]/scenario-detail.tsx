@@ -30,7 +30,7 @@ export async function ScenarioDetail({ lng, scenario }: ScenarioDetailProps) {
       <div className="mt-4 grid grid-cols-6 gap-4">
         <div className="col-span-6 flex flex-col gap-4 md:col-span-4">
           {scenario.imageUrls.length > 0 && (
-            <Card className="relative w-full p-4 max-md:rounded-none">
+            <Card className="relative w-full p-4 max-md:rounded-none max-md:px-0 max-md:bg-transparent max-md:shadow-none">
               <Album imageUrls={scenario.imageUrls} />
             </Card>
           )}
