@@ -205,26 +205,6 @@ export function deserializeDetails(mdastNode: any, deco: any, options: any) {
 
 export function serializeDetails(slateNode: any, options: SerializeMdOptions) {
   const children = slateNode.children || [];
-  if (slateNode.summary && typeof slateNode.summary === "string") {
-    return {
-      type: "mdxJsxFlowElement",
-      name: "Details",
-      attributes: [],
-      children: [{
-        type: "mdxJsxFlowElement",
-        name: "summary",
-        attributes: [],
-        children:
-          [
-            {
-              type: "text",
-              value: slateNode.summary,
-            },
-          ]
-      },
-      ...convertNodesSerialize(children, options)],
-    };
-  }
   const [summaryNode, ...contentChildren] = children;
   const summaryText = summaryNode
     ? NodeApi.string(summaryNode).replace(/\s+/g, " ").trim()
@@ -271,8 +251,65 @@ export function serializeDetails(slateNode: any, options: SerializeMdOptions) {
   };
 }
 
+/**
+ * 旧格式 details 序列化
+ * 旧格式特点：
+ * - summary 作为 details 节点的属性存在（如 { type: "details", summary: "xxx", children: [...] }）
+ * - 如果没有 summary 属性，所有 children 都是 content，summary 应该为空
+ */
+export function serializeLegacyDetails(slateNode: any, options: SerializeMdOptions) {
+  const children = slateNode.children || [];
+
+  // 旧格式：summary 作为属性
+  const summaryText = typeof slateNode.summary === "string" ? slateNode.summary : "";
+
+  // 所有 children 都是 content
+  const contentMdast = convertNodesSerialize(
+    children.length > 0
+      ? children
+      : [{ type: KEYS.p, children: [{ text: "" }] }],
+    options,
+    true
+  );
+
+  return {
+    type: "mdxJsxFlowElement",
+    name: "details",
+    attributes: [],
+    children: [
+      {
+        type: "mdxJsxFlowElement",
+        name: "summary",
+        attributes: [],
+        children: [{ type: "text", value: summaryText }],
+      },
+      ...contentMdast,
+    ],
+  };
+}
+
 const { backgroundColor, color, fontFamily, fontSize, fontWeight, ...restDefaultRules } =
   defaultRules as any;
+
+const baseRules = {
+  ...restDefaultRules,
+  text: {
+    deserialize: restDefaultRules.text.deserialize,
+    serialize: serializeLeafWithStyle,
+  },
+  p: {
+    deserialize: restDefaultRules.p?.deserialize,
+    serialize: serializeParagraph,
+  },
+  span: {
+    deserialize: deserializeSpan,
+    serialize: restDefaultRules.span.serialize,
+  },
+  // 向后兼容：支持旧的 <Details> MDX 组件
+  Details: {
+    deserialize: deserializeDetails,
+  },
+};
 
 export const MarkdownKit = [
   MarkdownPlugin.configure({
@@ -280,27 +317,31 @@ export const MarkdownKit = [
       plainMarks: [KEYS.suggestion],
       remarkPlugins: [remarkMath, remarkGfm, remarkMdx, remarkMention],
       rules: {
-        ...restDefaultRules,
-        text: {
-          deserialize: restDefaultRules.text.deserialize,
-          serialize: serializeLeafWithStyle,
-        },
-        p: {
-          deserialize: restDefaultRules.p?.deserialize,
-          serialize: serializeParagraph,
-        },
-        span: {
-          deserialize: deserializeSpan,
-          serialize: restDefaultRules.span.serialize,
-        },
-        // 支持 HTML <details> 标签
+        ...baseRules,
         details: {
           deserialize: deserializeDetails,
           serialize: serializeDetails,
         },
-        // 向后兼容：支持旧的 <Details> MDX 组件
-        Details: {
+      },
+    },
+  }),
+];
+
+/**
+ * 旧格式 MarkdownKit
+ * 用于序列化 richTextState 字段中的旧格式 AST
+ * 旧格式特点：details 的 summary 作为属性存在，children 全是 content
+ */
+export const LegacyMarkdownKit = [
+  MarkdownPlugin.configure({
+    options: {
+      plainMarks: [KEYS.suggestion],
+      remarkPlugins: [remarkMath, remarkGfm, remarkMdx, remarkMention],
+      rules: {
+        ...baseRules,
+        details: {
           deserialize: deserializeDetails,
+          serialize: serializeLegacyDetails,
         },
       },
     },

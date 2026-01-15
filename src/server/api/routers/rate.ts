@@ -6,7 +6,7 @@ import { createDicechoApi } from "@/utils/api";
 import { env } from "@/env";
 import { translate, getLanguageDisplayName } from "@/server/services/ai";
 import { getTranslationCache } from "@/server/services/translate-cache";
-import { serializeRichTextToMarkdown } from "@/components/Editor/utils/platejson-serializer";
+import { serializeRichTextToMarkdownLegacy } from "@/components/Editor/utils/platejson-serializer";
 import { RemarkContentType } from "@dicecho/types";
 import { LanguageCodes } from "@/utils/language";
 
@@ -75,7 +75,7 @@ export const rateRouter = createTRPCRouter({
           });
         }
 
-        content = serializeRichTextToMarkdown(richTextState);
+        content = serializeRichTextToMarkdownLegacy(richTextState);
       } else {
         const remark = rate.remark;
         if (!remark || remark.trim().length === 0) {
