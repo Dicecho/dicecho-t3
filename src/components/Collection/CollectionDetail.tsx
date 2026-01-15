@@ -8,25 +8,26 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Empty } from "@/components/Empty";
 import { CollectionEditDialog } from "./CollectionEditDialog";
 import { CollectionDeleteDialog } from "./CollectionDeleteDialog";
 import { CollectionItemsList } from "./CollectionItemsList";
+import { CommentPanel } from "@/components/Comment/comment-panel";
+import { ShareButton } from "@/components/ui/share-button";
+import { ReadMoreText } from "@/components/ui/read-more-text";
 import type { CollectionDto } from "@/types/collection";
-import { Heart, MessageSquare, User, Edit, Trash } from "lucide-react";
+import { Pencil, Trash2, FolderPlus, Folder } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
 import { UserAvatar } from "@/components/User/Avatar";
+import { cn } from "@/lib/utils";
 
 interface CollectionDetailProps {
   collection: CollectionDto;
@@ -34,7 +35,10 @@ interface CollectionDetailProps {
 
 export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
   const router = useRouter();
-  const { api } = useDicecho();
+  const params = useParams();
+  const lng = params.lng as string;
+  const { api, session } = useDicecho();
+  const canEdit = session?.user?._id === collection.user._id;
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<"items" | "comments">("items");
@@ -56,11 +60,13 @@ export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
       queryClient.invalidateQueries({
         queryKey: ["collection", "detail", collection._id],
       });
-      toast.success(t(
-        collection.isFavorited
-          ? "collection_unfavorited"
-          : "collection_favorited",
-      ));
+      toast.success(
+        t(
+          collection.isFavorited
+            ? "collection_unfavorited"
+            : "collection_favorited",
+        ),
+      );
     },
     onError: (error: Error) => {
       toast.error(t("error"), {
@@ -69,266 +75,244 @@ export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
     },
   });
 
+  const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/${lng}/collection/${collection._id}`;
+  const itemCount = items?.length ?? 0;
+  const accessLevelText =
+    collection.accessLevel === "public"
+      ? t("collection_access_public")
+      : t("collection_access_private");
+
+  // Description component with fold/unfold
+  const DescriptionBlock = ({ className }: { className?: string }) => {
+    if (!collection.description) {
+      if (canEdit) {
+        return (
+          <CollectionEditDialog collection={collection}>
+            <span
+              className={cn(
+                "text-muted-foreground cursor-pointer text-sm hover:underline",
+                className,
+              )}
+            >
+              {t("collection_add_description")}
+            </span>
+          </CollectionEditDialog>
+        );
+      }
+      return (
+        <p className={cn("text-muted-foreground text-sm", className)}>
+          {t("collection_no_description")}
+        </p>
+      );
+    }
+
+    return (
+      <ReadMoreText className={cn("text-muted-foreground text-sm", className)}>
+        {t("collection_description_prefix")}
+        {collection.description}
+      </ReadMoreText>
+    );
+  };
+
   return (
     <div className="space-y-4">
+      {/* Mobile: Blur Background */}
+      {collection.coverUrl && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-96 overflow-hidden md:hidden">
+          <div
+            className="absolute -inset-5 bg-cover bg-center brightness-[0.7] blur-[20px]"
+            style={{ backgroundImage: `url(${collection.coverUrl})` }}
+          />
+          {/* Gradient overlay for smooth transition */}
+          <div className="from-background/0 via-background/50 to-background absolute inset-x-0 bottom-0 h-32 bg-linear-to-b" />
+        </div>
+      )}
+
       {/* Collection Header */}
-      <Card className="max-md:rounded-none">
+      <Card className="relative max-md:rounded-none max-md:border-0 max-md:bg-transparent max-md:shadow-none max-md:pt-18">
         <CardContent className="flex w-full flex-col gap-4 md:flex-row">
-          {/* 第一行：封面图 + 标题信息 */}
-          <div className="flex gap-3 md:contents">
-            {collection.coverUrl && (
+          {/* Cover Image */}
+          <div className="flex gap-4 md:contents">
+            {collection.coverUrl ? (
               <Image
                 src={collection.coverUrl}
                 alt={collection.name}
-                className="aspect-square h-20 w-20 shrink-0 rounded-md object-cover md:h-40 md:w-40"
+                className="aspect-square h-[120px] w-[120px] shrink-0 rounded-md object-cover md:h-40 md:w-40"
                 width={160}
                 height={160}
                 priority
               />
+            ) : (
+              <div className="bg-muted flex h-[120px] w-[120px] shrink-0 items-center justify-center rounded-md md:h-40 md:w-40">
+                <Folder className="text-muted-foreground h-12 w-12" />
+              </div>
             )}
 
-            {/* 移动端：标题和操作按钮在图片右侧 */}
-            <div className="flex min-w-0 flex-1 flex-col justify-center gap-1 md:hidden">
-              <div className="flex flex-wrap items-center gap-2">
-                <CardTitle className="text-lg">{collection.name}</CardTitle>
-                <Badge
-                  variant={
-                    collection.accessLevel === "public"
-                      ? "secondary"
-                      : "outline"
+            {/* Mobile: Title and basic info next to cover */}
+            <div className="flex gap-2 min-w-0 flex-1 flex-col justify-center md:hidden">
+              <CardTitle className="text-lg">{collection.name}</CardTitle>
+
+              {/* User info */}
+              <Link
+                href={`/account/${collection.user._id}`}
+                className="flex w-fit items-center gap-1.5 transition-opacity hover:opacity-80"
+              >
+                <UserAvatar user={{
+                  nickName: collection.user.nickName,
+                  avatarUrl: collection.user.avatarUrl,
+                }} className="h-6 w-6" />
+                <span className="text-muted-foreground">
+                  {collection.user.nickName}
+                </span>
+              </Link>
+
+              {/* Favorite button */}
+              <div className="mt-2">
+                <Button
+                  variant={collection.isFavorited ? "outline" : "default"}
+                  size="sm"
+                  className="rounded-full"
+                  disabled={canEdit || favoriteMutation.isPending}
+                  onClick={() =>
+                    favoriteMutation.mutate(collection.isFavorited)
                   }
                 >
-                  {collection.accessLevel === "public"
-                    ? t("collection_access_public")
-                    : t("collection_access_private")}
-                </Badge>
+                  {collection.isFavorited ? (
+                    <Folder className="mr-1 h-4 w-4" />
+                  ) : (
+                    <FolderPlus className="mr-1 h-4 w-4" />
+                  )}
+                  {collection.isFavorited
+                    ? t("collection_unfavorite")
+                    : t("collection_favorite")}
+                  {collection.favoriteCount > 0 &&
+                    ` (${collection.favoriteCount})`}
+                </Button>
               </div>
-              <CardDescription className="text-xs">
-                {t("collection_created_at", {
-                  date: new Intl.DateTimeFormat(i18n.language, {
-                    dateStyle: "medium",
-                  }).format(new Date(collection.createdAt)),
-                })}
-              </CardDescription>
             </div>
           </div>
 
-          {/* 桌面端信息区域 */}
-          <div className="hidden flex-1 space-y-4 md:block">
-            <div className="flex items-start justify-between">
-              <div className="flex-1 space-y-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <CardTitle className="text-2xl">{collection.name}</CardTitle>
-                  <Badge
-                    variant={
-                      collection.accessLevel === "public"
-                        ? "secondary"
-                        : "outline"
-                    }
-                  >
-                    {collection.accessLevel === "public"
-                      ? t("collection_access_public")
-                      : t("collection_access_private")}
-                  </Badge>
-                </div>
-                <CardDescription>
-                  {t("collection_created_at", {
-                    date: new Intl.DateTimeFormat(i18n.language, {
-                      dateStyle: "medium",
-                    }).format(new Date(collection.createdAt)),
-                  })}
-                </CardDescription>
-              </div>
+          {/* Desktop: Main info area */}
+          <div className="hidden flex-1 space-y-2 md:block">
+            {/* Title with edit button */}
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-2xl">{collection.name}</CardTitle>
+              {canEdit && (
+                <CollectionEditDialog collection={collection}>
+                  <button className="text-muted-foreground hover:text-primary transition-colors">
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                </CollectionEditDialog>
+              )}
+            </div>
 
-              <div className="flex items-center gap-2">
-                {collection.canEdit && (
-                  <>
-                    <CollectionEditDialog collection={collection}>
-                      <Button variant="ghost" size="icon">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    </CollectionEditDialog>
-                    <CollectionDeleteDialog
-                      collection={collection}
-                      onSuccess={() => router.push(`/collection`)}
-                    >
-                      <Button variant="ghost" size="icon">
-                        <Trash className="text-destructive h-4 w-4" />
-                      </Button>
-                    </CollectionDeleteDialog>
-                  </>
+            {/* User info + created date */}
+            <div className="text-muted-foreground flex items-center gap-2">
+              <Link
+                href={`/account/${collection.user._id}`}
+                className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
+              >
+                <UserAvatar user={{
+                  nickName: collection.user.nickName,
+                  avatarUrl: collection.user.avatarUrl,
+                }} className="h-6 w-6" />
+                <span>{collection.user.nickName}</span>
+              </Link>
+              <span>·</span>
+              <span>
+                {new Intl.DateTimeFormat(i18n.language, {
+                  dateStyle: "medium",
+                }).format(new Date(collection.createdAt))}{" "}
+                {t("collection_created_suffix")}
+              </span>
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-2 pt-1">
+              <Button
+                variant={collection.isFavorited ? "outline" : "default"}
+                size="sm"
+                className="rounded-full"
+                disabled={canEdit || favoriteMutation.isPending}
+                onClick={() => favoriteMutation.mutate(collection.isFavorited)}
+              >
+                {collection.isFavorited ? (
+                  <Folder className="mr-1.5 h-4 w-4" />
+                ) : (
+                  <FolderPlus className="mr-1.5 h-4 w-4" />
                 )}
-              </div>
-            </div>
+                {collection.isFavorited
+                  ? t("collection_unfavorite")
+                  : t("collection_favorite")}
+                {collection.favoriteCount > 0 &&
+                  ` (${collection.favoriteCount})`}
+              </Button>
 
-            {/* Creator */}
-            <Link
-              href={`/account/${collection.user._id}`}
-              className="flex w-fit items-center gap-2 transition-opacity hover:opacity-80"
-            >
-              <UserAvatar user={collection.user} className="h-6 w-6" />
-              <span className="text-muted-foreground text-sm">
-                {collection.user.nickName}
-              </span>
-            </Link>
-            {/* Description */}
-            {collection.description ? (
-              <p className="text-foreground text-sm leading-relaxed">
-                {collection.description}
-              </p>
-            ) : (
-              <p className="text-muted-foreground text-sm">
-                {t("collection_no_description")}
-              </p>
-            )}
+              <ShareButton url={shareUrl} title={collection.name} variant="outline" size="sm" className="rounded-full">
+                {t("share")}
+              </ShareButton>
 
-            {/* Stats and Actions */}
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="text-muted-foreground flex items-center gap-4 text-sm">
-                <span className="flex items-center gap-1">
-                  <Heart className="h-4 w-4" />
-                  {t("collection_favorite_count", {
-                    count: collection.favoriteCount,
-                  })}
-                </span>
-                <span className="flex items-center gap-1">
-                  <MessageSquare className="h-4 w-4" />
-                  {t("collection_comment_count", {
-                    count: collection.commentCount,
-                  })}
-                </span>
-              </div>
-
-              {!collection.canEdit && (
-                <Button
-                  variant={collection.isFavorited ? "outline" : "default"}
-                  size="sm"
-                  onClick={() =>
-                    favoriteMutation.mutate(collection.isFavorited)
-                  }
-                  disabled={favoriteMutation.isPending}
+              {canEdit && !collection.isDefault && (
+                <CollectionDeleteDialog
+                  collection={collection}
+                  onSuccess={() => router.push(`/collection`)}
                 >
-                  <Heart
-                    className={`mr-2 h-4 w-4 ${collection.isFavorited ? "fill-current" : ""}`}
-                  />
-                  {collection.isFavorited
-                    ? t("collection_unfavorite")
-                    : t("collection_favorite")}
-                </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-destructive hover:text-destructive rounded-full"
+                  >
+                    <Trash2 className="mr-1.5 h-4 w-4" />
+                    {t("delete")}
+                  </Button>
+                </CollectionDeleteDialog>
               )}
             </div>
+
+            {/* Stats: item count + access level */}
+            <div className="text-muted-foreground text-sm">
+              {t("collection_items_count", { count: itemCount })} ·{" "}
+              {accessLevelText}
+            </div>
+
+            {/* Description */}
+            <DescriptionBlock />
           </div>
 
-          {/* 移动端：描述、创建者、统计、操作按钮 */}
-          <div className="space-y-3 md:hidden">
-            {/* Creator */}
-            <Link
-              href={`/account/${collection.user._id}`}
-              className="flex w-fit items-center gap-2 transition-opacity hover:opacity-80"
-            >
-              <UserAvatar user={collection.user} className="h-5 w-5" />
-              <span className="text-muted-foreground text-xs">
-                {collection.user.nickName}
-              </span>
-            </Link>
+          {/* Mobile: Stats and description below cover */}
+          <div className="space-y-2 md:hidden">
+            {/* Stats: item count + access level */}
+            <div className="text-muted-foreground text-sm">
+              {t("collection_items_count", { count: itemCount })} ·{" "}
+              {accessLevelText}
+            </div>
 
             {/* Description */}
-            {collection.description ? (
-              <p className="text-foreground text-sm leading-relaxed">
-                {collection.description}
-              </p>
-            ) : (
-              <p className="text-muted-foreground text-sm">
-                {t("collection_no_description")}
-              </p>
-            )}
-
-            {/* Stats and Actions */}
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="text-muted-foreground flex items-center gap-3 text-xs">
-                <span className="flex items-center gap-1">
-                  <Heart className="h-3.5 w-3.5" />
-                  {t("collection_favorite_count", {
-                    count: collection.favoriteCount,
-                  })}
-                </span>
-                <span className="flex items-center gap-1">
-                  <MessageSquare className="h-3.5 w-3.5" />
-                  {t("collection_comment_count", {
-                    count: collection.commentCount,
-                  })}
-                </span>
-              </div>
-
-              {collection.canEdit && (
-                <div className="ml-auto flex items-center gap-1">
-                  <CollectionEditDialog collection={collection}>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                  </CollectionEditDialog>
-                  <CollectionDeleteDialog
-                    collection={collection}
-                    onSuccess={() => router.push(`/collection`)}
-                  >
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Trash className="text-destructive h-4 w-4" />
-                    </Button>
-                  </CollectionDeleteDialog>
-                </div>
-              )}
-
-              {!collection.canEdit && (
-                <Button
-                  variant={collection.isFavorited ? "outline" : "default"}
-                  size="sm"
-                  className="md:ml-auto"
-                  onClick={() =>
-                    favoriteMutation.mutate(collection.isFavorited)
-                  }
-                  disabled={favoriteMutation.isPending}
-                >
-                  <Heart
-                    className={`mr-1.5 h-3.5 w-3.5 ${collection.isFavorited ? "fill-current" : ""}`}
-                  />
-                  {collection.isFavorited
-                    ? t("collection_unfavorite")
-                    : t("collection_favorite")}
-                </Button>
-              )}
-            </div>
+            <DescriptionBlock />
           </div>
         </CardContent>
       </Card>
 
+      {/* Tabs Card */}
       <Card className="max-md:rounded-none">
         <CardContent className="px-4">
-          {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <div className="flex items-center justify-between">
-              <TabsList>
-                <TabsTrigger value="items">
-                  {t("collection_items_tab")}
-                  {(items?.length ?? 0) > 0 && (
-                    <Badge variant="accent" className="ml-2">
-                      {items?.length}
-                    </Badge>
-                  )}
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as "items" | "comments")}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <TabsList className="max-md:flex-1">
+                <TabsTrigger value="items" className="flex-1">
+                  {t("collection_items_tab")}({itemCount})
                 </TabsTrigger>
-                <TabsTrigger value="comments">
-                  {t("comments")}
-                  {collection.commentCount > 0 && (
-                    <Badge variant="accent" className="ml-2">
-                      {collection.commentCount}
-                    </Badge>
-                  )}
+                <TabsTrigger value="comments" className="flex-1">
+                  {t("comments")}({collection.commentCount})
                 </TabsTrigger>
               </TabsList>
 
-              {collection.canEdit && activeTab === "items" && (
+              {canEdit && activeTab === "items" && (
                 <Button
                   variant={isEditMode ? "default" : "outline"}
-                  size="sm"
                   onClick={() => setIsEditMode(!isEditMode)}
                 >
                   {isEditMode ? t("done") : t("edit")}
@@ -355,13 +339,13 @@ export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
                 <CollectionItemsList
                   collectionId={collection._id}
                   items={items}
-                  canEdit={collection.canEdit}
+                  canEdit={canEdit}
                   isEditMode={isEditMode}
                 />
               ) : (
                 <Empty>
                   <div className="text-muted-foreground">
-                    {collection.canEdit
+                    {canEdit
                       ? t("collection_items_empty_self")
                       : t("collection_items_empty")}
                   </div>
@@ -370,9 +354,11 @@ export const CollectionDetail = ({ collection }: CollectionDetailProps) => {
             </TabsContent>
 
             <TabsContent value="comments" className="mt-4">
-              <div className="text-muted-foreground py-12 text-center">
-                TODO: {t("comments_coming_soon")}
-              </div>
+              <CommentPanel
+                targetName="Collection"
+                targetId={collection._id}
+                initialCount={collection.commentCount}
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
