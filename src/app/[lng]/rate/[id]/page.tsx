@@ -62,7 +62,7 @@ const RateDetailPage = async (props: {
   params: Promise<{ lng: string; id: string }>;
 }) => {
   const params = await props.params;
-  const { id } = params;
+  const { lng, id } = params;
 
   // Server-side: fetch public data (no userId)
   const rate = await api.rate.detail({ id }).catch(() => null);
@@ -71,8 +71,43 @@ const RateDetailPage = async (props: {
     return notFound();
   }
 
+  // JSON-LD structured data for Google rich snippets
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Review",
+    "@id": `https://dicecho.com/${lng}/rate/${id}`,
+    url: `https://dicecho.com/${lng}/rate/${id}`,
+    itemReviewed: rate.mod
+      ? {
+          "@type": "Game",
+          name: rate.mod.title,
+          url: `https://dicecho.com/${lng}/scenario/${rate.mod._id}`,
+        }
+      : undefined,
+    author: {
+      "@type": "Person",
+      name: rate.user.nickName,
+    },
+    ...(rate.rate && {
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: rate.rate,
+        bestRating: 10,
+        worstRating: 0,
+      },
+    }),
+    ...(rate.remark && {
+      reviewBody: rate.remark,
+    }),
+    datePublished: rate.createdAt,
+  };
+
   return (
     <HydrateClient>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="md:container grid grid-cols-6 gap-8">
         <div className="col-span-6 md:col-span-4">
           <RateDetailClient rateId={id} />

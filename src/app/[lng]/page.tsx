@@ -26,8 +26,31 @@ export default async function Home(props: {
 
   const { t } = await getTranslation(lng);
 
+  // JSON-LD structured data for Google rich snippets with SearchAction
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://dicecho.com/#website",
+    url: "https://dicecho.com",
+    name: "Dicecho",
+    description: t("metadata.description"),
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: "https://dicecho.com/search?keyword={search_term_string}",
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <MobileHeader left={<HeaderMenu />} right={<NotificationReminder />}>
         <HeaderSearch />
       </MobileHeader>

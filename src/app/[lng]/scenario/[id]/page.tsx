@@ -89,6 +89,8 @@ const ScenarioDetailPage = async ({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Game",
+    "@id": `https://dicecho.com/${lng}/scenario/${id}`,
+    url: `https://dicecho.com/${lng}/scenario/${id}`,
     name: scenario.originTitle || scenario.title,
     description: scenario.description || `${scenario.title} - TRPG scenario`,
     image: scenario.coverUrl,
@@ -104,9 +106,8 @@ const ScenarioDetailPage = async ({
     ...(scenario.releaseDate && {
       datePublished: scenario.releaseDate,
     }),
-    // Additional game-specific properties
     ...(scenario.moduleRule && {
-      gamePlatform: scenario.moduleRule, // e.g., "COC7", "DND5E"
+      genre: scenario.moduleRule,
     }),
     ...(scenario.playerNumber && {
       numberOfPlayers: {
