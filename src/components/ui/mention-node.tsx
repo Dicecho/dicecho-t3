@@ -16,6 +16,7 @@ import {
 
 import { cn } from '@/lib/utils';
 import { useMounted } from '@/hooks/use-mounted';
+import { useIsMobile } from '@/hooks/use-is-mobile';
 import {
   UserMentionCombobox,
   type MentionUserItem,
@@ -84,6 +85,7 @@ export function MentionInputElement(
 ) {
   const { editor, element } = props;
   const [search, setSearch] = React.useState('');
+  const isMobile = useIsMobile();
 
   const handleSelectItem = React.useCallback(
     (item: MentionUserItem) => {
@@ -101,6 +103,7 @@ export function MentionInputElement(
         showTrigger={false}
         trigger="@"
         filter={false}
+        autoSelectFirst={!isMobile}
       >
         <span className="text-primary font-medium">
           @<InlineComboboxInput />

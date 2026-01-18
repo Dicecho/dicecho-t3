@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useDicecho } from "@/hooks/useDicecho";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useTranslation } from "@/lib/i18n/react";
 import { UserAvatar } from "@/components/User/Avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,6 +13,7 @@ import {
   InlineComboboxGroup,
   InlineComboboxItem,
 } from "@/components/ui/inline-combobox";
+import { MobileMentionPanel } from "./MobileMentionPanel";
 
 export interface MentionUserItem {
   key: string;
@@ -33,6 +35,7 @@ export function UserMentionCombobox({
   const { t } = useTranslation();
   const { api } = useDicecho();
   const { data: session } = useSession();
+  const isMobile = useIsMobile();
   const userId = session?.user?._id;
   const hasSearch = !!search.trim();
 
@@ -81,8 +84,8 @@ export function UserMentionCombobox({
   const items = hasSearch ? searchResults : followings;
   const isLoading = hasSearch ? isFetchingSearch : isFetchingFollowings;
 
-  return (
-    <InlineComboboxContent className="my-1.5 w-[360px]">
+  const content = (
+    <>
       <InlineComboboxEmpty className="px-4 py-3 font-medium">
         {hasSearch ? t("search_no_user") : t("followings_empty")}
       </InlineComboboxEmpty>
@@ -128,6 +131,18 @@ export function UserMentionCombobox({
               </InlineComboboxItem>
             ))}
       </InlineComboboxGroup>
+    </>
+  );
+
+  // 移动端：底部固定面板
+  if (isMobile) {
+    return <MobileMentionPanel>{content}</MobileMentionPanel>;
+  }
+
+  // PC 端：光标附近浮动 popover
+  return (
+    <InlineComboboxContent className="my-1.5 w-[360px]">
+      {content}
     </InlineComboboxContent>
   );
 }

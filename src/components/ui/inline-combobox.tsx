@@ -71,6 +71,8 @@ type InlineComboboxProps = {
   showTrigger?: boolean;
   value?: string;
   setValue?: (value: string) => void;
+  /** 是否自动选择第一项，默认 true。移动端可设为 false 避免键盘事件冲突 */
+  autoSelectFirst?: boolean;
 };
 
 const InlineCombobox = ({
@@ -82,6 +84,7 @@ const InlineCombobox = ({
   showTrigger = true,
   trigger,
   value: valueProp,
+  autoSelectFirst = true,
 }: InlineComboboxProps) => {
   const editor = useEditorRef();
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -199,13 +202,13 @@ const InlineCombobox = ({
 
   /**
    * If there is no active ID and the list of items changes, select the first
-   * item.
+   * item. Can be disabled via autoSelectFirst prop for mobile.
    */
   React.useEffect(() => {
-    if (!store.getState().activeId) {
+    if (autoSelectFirst && !store.getState().activeId) {
       store.setActiveId(store.first());
     }
-  }, [items, store]);
+  }, [items, store, autoSelectFirst]);
 
   return (
     <span contentEditable={false}>
