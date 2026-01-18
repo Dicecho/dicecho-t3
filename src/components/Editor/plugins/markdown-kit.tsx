@@ -291,6 +291,43 @@ export function serializeLegacyDetails(slateNode: any, options: SerializeMdOptio
 const { backgroundColor, color, fontFamily, fontSize, fontWeight, ...restDefaultRules } =
   defaultRules as any;
 
+/**
+ * 自定义 mention 规则
+ * 格式：[displayText](mention:id)（Plate.js 标准格式）
+ */
+const mentionRules = {
+  // 反序列化：将 Markdown 的 mention 节点转换为 Slate 节点
+  deserialize: (mdastNode: any) => {
+    // mdastNode 来自 remarkMention
+    // username 存储的是 ID，displayText 是昵称
+    return {
+      type: KEYS.mention,
+      value: mdastNode.displayText || mdastNode.username,
+      key: mdastNode.username, // 用户 ID
+      children: [{ text: "" }],
+    };
+  },
+  // 序列化：使用 Plate.js 标准格式 [displayText](mention:id)
+  serialize: (slateNode: any) => {
+    const mentionId = slateNode.key || slateNode.value;
+    const displayText = slateNode.value;
+    const encodedId = encodeURIComponent(String(mentionId))
+      .replace(/\(/g, "%28")
+      .replace(/\)/g, "%29");
+
+    return {
+      type: "link",
+      url: `mention:${encodedId}`,
+      children: [
+        {
+          type: "text",
+          value: displayText,
+        },
+      ],
+    };
+  },
+};
+
 const baseRules = {
   ...restDefaultRules,
   text: {
@@ -309,6 +346,8 @@ const baseRules = {
   Details: {
     deserialize: deserializeDetails,
   },
+  // 自定义 mention 规则
+  mention: mentionRules,
 };
 
 export const MarkdownKit = [

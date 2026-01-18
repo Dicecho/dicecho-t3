@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { RichTextEditor } from "@/components/Editor/RichTextEditor";
+import { RichTextEditor } from "@/components/Editor";
 import BackgroundUpload from "@/components/ui/background-upload";
 import { useDicecho } from "@/hooks/useDicecho";
 import { useTranslation } from "@/lib/i18n/react";
