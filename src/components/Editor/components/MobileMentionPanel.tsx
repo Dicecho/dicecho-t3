@@ -44,11 +44,11 @@ export function MobileMentionPanel({
 
   return (
     <div
-      style={{ bottom: bottomOffset, maxHeight: 200 }}
+      style={{ bottom: bottomOffset + 12, maxHeight: 200 }}
       className={cn(
-        "fixed inset-x-0 z-50 overflow-y-auto",
-        "bg-popover border-t shadow-[0_-4px_20px_rgba(0,0,0,0.1)]",
-        "rounded-t-xl",
+        "fixed left-3 right-3 z-50 overflow-y-auto",
+        "bg-popover border rounded-xl",
+        "shadow-lg shadow-black/10",
         "animate-in slide-in-from-bottom-4 duration-200",
         className
       )}
