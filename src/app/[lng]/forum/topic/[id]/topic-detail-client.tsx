@@ -16,7 +16,7 @@ import { TopicDeleteDialog } from "@/components/forum/topic-delete-dialog";
 import { TopicActions } from "@/components/forum/topic-actions";
 import { TopicRelatedMods } from "@/components/forum/topic-related-mods";
 import { CommentPanel } from "@/components/Comment";
-import { RichTextPreview } from "@/components/Editor/RichTextPreview";
+import { RichTextPreview } from "@/components/Editor";
 import { Pencil, Trash2 } from "lucide-react";
 import type { ITopicDto } from "@/types/topic";
 

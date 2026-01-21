@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { RichTextEditor } from "@/components/Editor/RichTextEditor";
+import { RichTextEditor } from "@/components/Editor";
 import { ScenarioWidget } from "@/components/Scenario/widget";
 import { ScenarioSearchDialog } from "@/components/Scenario/scenario-search-dialog";
 import { useTranslation } from "@/lib/i18n/react";

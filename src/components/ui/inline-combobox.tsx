@@ -41,6 +41,8 @@ type InlineComboboxContextValue = {
   showTrigger: boolean;
   trigger: string;
   setHasEmpty: (hasEmpty: boolean) => void;
+  onCompositionStart: () => void;
+  onCompositionEnd: (e: React.CompositionEvent<HTMLInputElement>) => void;
 };
 
 const InlineComboboxContext = React.createContext<InlineComboboxContextValue>(
@@ -69,6 +71,8 @@ type InlineComboboxProps = {
   showTrigger?: boolean;
   value?: string;
   setValue?: (value: string) => void;
+  /** 是否自动选择第一项，默认 true。移动端可设为 false 避免键盘事件冲突 */
+  autoSelectFirst?: boolean;
 };
 
 const InlineCombobox = ({
@@ -80,10 +84,12 @@ const InlineCombobox = ({
   showTrigger = true,
   trigger,
   value: valueProp,
+  autoSelectFirst = true,
 }: InlineComboboxProps) => {
   const editor = useEditorRef();
   const inputRef = React.useRef<HTMLInputElement>(null);
   const cursorState = useHTMLInputCursorState(inputRef);
+  const isComposingRef = React.useRef(false);
 
   const [valueState, setValueState] = React.useState('');
   const hasValueProp = valueProp !== undefined;
@@ -124,6 +130,7 @@ const InlineCombobox = ({
   }, [editor, element]);
 
   const { props: inputProps, removeInput } = useComboboxInput({
+    autoFocus: true,
     cancelInputOnBlur: true,
     cursorState,
     ref: inputRef,
@@ -144,6 +151,19 @@ const InlineCombobox = ({
 
   const [hasEmpty, setHasEmpty] = React.useState(false);
 
+  const onCompositionStart = React.useCallback(() => {
+    isComposingRef.current = true;
+  }, []);
+
+  const onCompositionEnd = React.useCallback(
+    (e: React.CompositionEvent<HTMLInputElement>) => {
+      isComposingRef.current = false;
+      // Update value with final composed text
+      React.startTransition(() => setValue(e.currentTarget.value));
+    },
+    [setValue]
+  );
+
   const contextValue: InlineComboboxContextValue = React.useMemo(
     () => ({
       filter,
@@ -153,6 +173,8 @@ const InlineCombobox = ({
       setHasEmpty,
       showTrigger,
       trigger,
+      onCompositionStart,
+      onCompositionEnd,
     }),
     [
       trigger,
@@ -162,25 +184,31 @@ const InlineCombobox = ({
       inputProps,
       removeInput,
       setHasEmpty,
+      onCompositionStart,
+      onCompositionEnd,
     ]
   );
 
   const store = useComboboxStore({
     // open: ,
-    setValue: (newValue) => React.startTransition(() => setValue(newValue)),
+    setValue: (newValue) => {
+      // Skip setValue during IME composition to avoid triggering search
+      if (isComposingRef.current) return;
+      React.startTransition(() => setValue(newValue));
+    },
   });
 
   const items = store.useState('items');
 
   /**
    * If there is no active ID and the list of items changes, select the first
-   * item.
+   * item. Can be disabled via autoSelectFirst prop for mobile.
    */
   React.useEffect(() => {
-    if (!store.getState().activeId) {
+    if (autoSelectFirst && !store.getState().activeId) {
       store.setActiveId(store.first());
     }
-  }, [items, store]);
+  }, [items, store, autoSelectFirst]);
 
   return (
     <span contentEditable={false}>
@@ -211,6 +239,8 @@ const InlineComboboxInput = ({
     inputRef: contextRef,
     showTrigger,
     trigger,
+    onCompositionStart,
+    onCompositionEnd,
   } = React.useContext(InlineComboboxContext);
 
   const store = useComboboxContext()!;
@@ -247,6 +277,8 @@ const InlineComboboxInput = ({
           autoSelect
           {...inputProps}
           {...props}
+          onCompositionStart={onCompositionStart}
+          onCompositionEnd={onCompositionEnd}
         />
       </span>
     </>
@@ -264,7 +296,7 @@ const InlineComboboxContent: typeof ComboboxPopover = ({
     <Portal>
       <ComboboxPopover
         className={cn(
-          'z-500 max-h-[288px] w-[300px] overflow-y-auto rounded-md bg-popover shadow-md',
+          'z-500 max-h-[288px] overflow-y-auto rounded-md bg-popover shadow-md',
           className
         )}
         {...props}
@@ -274,7 +306,7 @@ const InlineComboboxContent: typeof ComboboxPopover = ({
 };
 
 const comboboxItemVariants = cva(
-  'relative mx-1 flex h-[28px] select-none items-center rounded-sm px-2 text-foreground text-sm outline-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'relative flex select-none items-center rounded-sm text-foreground text-sm outline-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     defaultVariants: {
       interactive: true,
@@ -282,7 +314,7 @@ const comboboxItemVariants = cva(
     variants: {
       interactive: {
         false: '',
-        true: 'cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground data-[active-item=true]:bg-accent data-[active-item=true]:text-accent-foreground',
+        true: 'cursor-pointer transition-colors hover:bg-accent/30 hover:text-accent-foreground data-[active-item=true]:bg-accent/30 data-[active-item=true]:text-accent-foreground',
       },
     },
   }

@@ -9,7 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { getDateFnsLocale } from "@/lib/i18n/date-fns-locale";
 import { UserAvatar } from "@/components/User/Avatar";
 import { ScenarioWidget } from "@/components/Scenario/widget";
-import { RichTextPreview } from "@/components/Editor/RichTextPreview";
+import { RichTextPreview } from "@/components/Editor";
 import { useTranslation } from "@/lib/i18n/react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";

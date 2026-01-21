@@ -21,7 +21,7 @@ export function MentionElementStatic(
     <SlateElement
       {...props}
       className={cn(
-        'inline-block rounded-md bg-muted px-1.5 py-0.5 align-baseline font-medium text-sm',
+        'inline text-primary font-medium',
         firstChild[KEYS.bold] === true && 'font-bold',
         firstChild[KEYS.italic] === true && 'italic',
         firstChild[KEYS.underline] === true && 'underline'
@@ -32,8 +32,7 @@ export function MentionElementStatic(
       }}
     >
       {props.children}
-      {prefix}
-      {element.value}
+      {prefix}@{element.value}
     </SlateElement>
   );
 }
